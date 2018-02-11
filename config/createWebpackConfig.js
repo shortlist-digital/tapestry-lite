@@ -2,6 +2,7 @@ const webpack = require('webpack')
 const path = require('path')
 const nodeExternals = require('webpack-node-externals')
 const StartServerPlugin = require('start-server-webpack-plugin')
+const FriendlyErrorsPlugin = require('razzle-dev-utils/FriendlyErrorsPlugin')
 
 module.exports = () => {
   return {
@@ -15,6 +16,11 @@ module.exports = () => {
         whitelist: ['webpack/hot/poll?1000']
     })],
     plugins: [
+      new FriendlyErrorsPlugin({
+        verbose: false,
+        target: 'web',  
+        onSuccessMessage: `Tapestry Lite is Running`,
+      }),
       new StartServerPlugin('server.js'),
       new webpack.NamedModulesPlugin(),
       new webpack.HotModuleReplacementPlugin(),
