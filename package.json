@@ -15,7 +15,7 @@
     "hapi": "^17.2.0",
     "razzle-dev-utils": "^0.8.10",
     "start-server-webpack-plugin": "^2.2.1",
-    "webpack": "^3.11.0",
+    "webpack": "^4.0.0",
     "webpack-node-externals": "^1.6.0"
   }
 }

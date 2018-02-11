@@ -6,6 +6,7 @@ const FriendlyErrorsPlugin = require('razzle-dev-utils/FriendlyErrorsPlugin')
 
 module.exports = () => {
   return {
+    mode: process.env.NODE_ENV || 'development',
     entry: [
       'webpack/hot/poll?1000',
       './server/index'
