@@ -16,7 +16,7 @@ const escapeScriptTags = data => {
   )
 }
 
-const DefaultDocument = ({ html, css, head, bootstrapData, assets }) => {
+const DefaultDocument = ({ html, css, head, bootstrapData }) => {
   const attr = head.htmlAttributes.toComponent()
   return (
     <html lang="en" {...attr}>
@@ -25,15 +25,13 @@ const DefaultDocument = ({ html, css, head, bootstrapData, assets }) => {
         {head.base.toComponent()}
         {head.meta.toComponent()}
         {head.link.toComponent()}
-        {assets.vendor && <script defer src={assets.vendor.js} />}
-        {assets.bundle && <script defer src={assets.bundle.js} />}
         {head.script.toComponent()}
         <style dangerouslySetInnerHTML={{ __html: css }} />
         <link rel="shortcut icon" href="/public/favicon.ico" />
       </head>
       <body>
         <div id="root" dangerouslySetInnerHTML={{ __html: html }} />
-        {asyncProps && (
+        {bootstrapData && (
           <script
             type="text/javascript"
             dangerouslySetInnerHTML={{
