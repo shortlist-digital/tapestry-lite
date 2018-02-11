@@ -124,3 +124,5 @@ dist
 
 # Local testing dir #
 example/
+
+test-app
