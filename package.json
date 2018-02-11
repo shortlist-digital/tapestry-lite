@@ -12,11 +12,17 @@
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
+    "glamor": "^2.20.40",
     "hapi": "^17.2.0",
+    "inert": "^5.1.0",
+    "isomorphic-fetch": "^2.2.1",
+    "lodash.startswith": "^4.2.1",
     "razzle-dev-utils": "^0.8.10",
     "react-helmet": "^5.2.0",
+    "react-router": "^4.2.0",
+    "react-router-config": "^1.0.0-beta.4",
     "start-server-webpack-plugin": "^2.2.1",
-    "webpack": "^4.0.0",
+    "webpack": "4",
     "webpack-node-externals": "^1.6.0"
   },
   "peerDependencies": {

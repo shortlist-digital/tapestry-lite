@@ -1,23 +1,41 @@
 import Hapi from 'hapi'
+import Inert from 'inert'
 
 import DynamicRouteHandler from './handlers/dynamic'
+import StaticRouteHandler from './handlers/static'
 
-const server = Hapi.server({ port: 3000 })
+async function provision() {
+  const server = Hapi.server({ port: 3000 })
 
-server.route({
-  method: 'GET',
-  path: '/',
-  handler: (request, h) => {
-    return h.response('Server OK')
-      .code(200)
+  await server.register(Inert)
+
+  server.route({
+    method: 'GET',
+    path: '/favicon.ico',
+    handler: (request, h) => {
+      return h.redirect('/public/favicon.ico')
+        .permanent()
+        .rewritable(false)
+    }
+  })
+
+  server.route({
+    method: 'GET',
+    path: '/',
+    handler: (request, h) => {
+      return h.response('Server OK')
+        .code(200)
+    }
+  })
+
+  const data = {
+    server
   }
-})
 
-const data = {
-  server
+  DynamicRouteHandler(data)
+  StaticRouteHandler(data)
+
+  return server
 }
 
-DynamicRouteHandler(data)
-
-
-export default server
+export default provision
