@@ -4,9 +4,28 @@ const nodeExternals = require('webpack-node-externals')
 const StartServerPlugin = require('start-server-webpack-plugin')
 const FriendlyErrorsPlugin = require('razzle-dev-utils/FriendlyErrorsPlugin')
 
+const mainBabelOptions = {
+  babelrc: true,
+  cacheDirectory: true,
+  presets: [
+    require('babel-preset-razzle')
+  ]
+}
+
 module.exports = () => {
   return {
     mode: process.env.NODE_ENV || 'development',
+    module: {
+      strictExportPresence: true,
+      rules: [
+        // Transform ES6 with Babel
+        {
+          test: /\.(js|jsx|mjs)$/,
+          loader: require.resolve('babel-loader'),
+          options: mainBabelOptions,
+        },
+      ]
+    },
     entry: [
       'webpack/hot/poll?1000',
       './server/index'
@@ -19,8 +38,8 @@ module.exports = () => {
     plugins: [
       new FriendlyErrorsPlugin({
         verbose: false,
-        target: 'web',  
-        onSuccessMessage: `Tapestry Lite is Running`,
+        target: 'node',
+        onSuccessMessage: 'Tapestry Lite is Running'
       }),
       new StartServerPlugin('server.js'),
       new webpack.NamedModulesPlugin(),

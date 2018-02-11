@@ -1,3 +1,5 @@
+import React from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
 export default function() {
-  return 'This is cool'
+  return renderToStaticMarkup(<p>Life is good </p>)
 }

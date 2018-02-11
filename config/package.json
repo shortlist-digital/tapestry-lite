@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "babel-preset-razzle": "^0.8.7"
+  }
+}

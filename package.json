@@ -17,5 +17,9 @@
     "start-server-webpack-plugin": "^2.2.1",
     "webpack": "^4.0.0",
     "webpack-node-externals": "^1.6.0"
+  },
+  "peerDependencies": {
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
   }
 }
