@@ -6,6 +6,5 @@ process.on('unhandledRejection', (reason, p) => {
 // The only purpose of this file is to ensure the babel transpiler is activated prior to any test code, and using the same babel options
 require('babel-register')({
   sourceMap: 'inline',
-  presets: [['env', { targets: { node: 'current' } }], 'react'],
-  plugins: ['transform-object-rest-spread']
+  presets: ['babel-preset-razzle']
 })
