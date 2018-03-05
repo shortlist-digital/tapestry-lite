@@ -15,7 +15,6 @@
     "request": "^2.81.0"
   },
   "dependencies": {
-    "@shortlist-studio/nuka-carousel-dynamic-height": "^2.0.3",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
@@ -33,7 +32,6 @@
     "lodash.isplainobject": "^4.0.6",
     "lodash.startswith": "^4.2.1",
     "razzle-dev-utils": "^0.8.10",
-    "react-gpt": "^2.0.0",
     "react-helmet": "^5.2.0",
     "react-router": "^4.2.0",
     "react-router-config": "^1.0.0-beta.4",
