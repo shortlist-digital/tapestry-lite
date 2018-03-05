@@ -1,4 +1,4 @@
-import server from './server'
+import TapestryLite from './server'
 import Inert from 'inert'
 
 let currentApp
@@ -10,23 +10,23 @@ const serverPlugins = [
 
 const run = async function() {
   try {
-    currentApp = server
+    currentApp = new TapestryLite({})
     // Register plugins
-    await server.register(serverPlugins)
+    await currentApp.register(serverPlugins)
     // Start server
     await currentApp.start()
     if (module.hot) {
       module.hot.accept('./server', async function() {
         console.time(timeLabel)
         await currentApp.stop({ timeout: 0 })
-        currentApp = server
+        currentApp = new TapestryLite({})
         // Re-register plugins
-        await server.register(serverPlugins)
+        await currentApp.register(serverPlugins)
         await currentApp.start()
         console.timeEnd(timeLabel)
       })
     } 
-    console.log('Server started at: ' + server.info.uri)
+    console.log('Server started at: ' + currentApp.info.uri)
   } catch (e) {
     console.error(e)
   }

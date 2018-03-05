@@ -28,7 +28,7 @@ module.exports = () => {
     },
     entry: [
       'webpack/hot/poll?1000',
-      './server/index'
+      './src/server/hot'
     ],
     watch: true,
     target: 'node',

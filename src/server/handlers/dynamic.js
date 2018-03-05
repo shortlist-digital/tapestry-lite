@@ -12,6 +12,7 @@ import appConfig from '../../../test-app/tapestry.config'
 import fetcher from '../../shared/fetcher'
 
 export default ({ server }) => {
+  console.log('server in dynamic', { server })
   server.route({
     method: 'GET',
     path: '/{path*}',

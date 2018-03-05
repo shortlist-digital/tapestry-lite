@@ -1,12 +1,12 @@
 const webpack = require('webpack')
-const createWebpackConfig = require('../config/createWebpackConfig')
+const createWebpackConfig = require('../src/config/createWebpackConfig')
 
 function compile(config) {
   let compiler
   try {
     compiler = webpack(config)
   } catch (e) {
-    printErrors('Failed to compile.', [e])
+    console.error(e)
     process.exit(1)
   }
   return compiler
