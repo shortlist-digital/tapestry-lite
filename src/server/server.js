@@ -17,15 +17,6 @@ export default class TapestryLite {
       }
     })
 
-    this.server.route({
-      method: 'GET',
-      path: '/',
-      handler: (request, h) => {
-        return h.response('Server OK')
-          .code(200)
-      }
-    })
-
     const data = {
       config: config,
       server: this.server

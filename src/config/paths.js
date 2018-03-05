@@ -56,6 +56,7 @@ module.exports = {
   appBabelRc: resolveApp('.babelrc'),
   appEslintRc: resolveApp('.eslintrc'),
   appTapestryConfig: resolveApp('tapestry.config.js'),
+  appWebpackConfig: resolveApp('webpack.config.js'),
   nodePaths: nodePaths,
   ownPath: resolveOwn('.'),
   ownNodeModules: resolveOwn('node_modules'),

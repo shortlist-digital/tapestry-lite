@@ -3,6 +3,7 @@ import { matchRoutes } from 'react-router-config'
 import { renderStaticOptimized } from 'glamor/server'
 import { renderToStaticMarkup, renderToString } from 'react-dom/server'
 import Helmet from 'react-helmet'
+import RouteWrapper from '../route-wrapper'
 
 // Same default document
 import Document from '../render/default-document'
@@ -11,24 +12,37 @@ import appConfig from '../../../test-app/tapestry.config'
 // Tuned fetched from normal tapestry
 import fetcher from '../../shared/fetcher'
 
+console.log({appConfig})
+
 export default ({ server }) => {
   console.log('server in dynamic', { server })
   server.route({
     method: 'GET',
     path: '/{path*}',
     handler: async function (request, h) {
+      console.log('called dynamic handler')
       // Don't even import react-router any more, but backwards compatible
       // With the exception of optional params: (:thing) becomes :thing?
-      const branch = matchRoutes(appConfig.routes, request.url.pathname)
+      const routes = RouteWrapper(appConfig)
+      const branch = matchRoutes(routes, request.url.pathname)
       // Make this more robust
       const route = branch[0].route
       // Steal the endpoint data resolver and normalisation bits
       // from normal tapestry
       const endpoint = route.endpoint(branch[0].match.params)
       const url = `${appConfig.siteUrl}/wp-json/wp/v2/${endpoint}`
+      console.log({url})
       // Async/Await dereams
-      const responseBody= await fetcher(url)
-      const data = await responseBody.json()
+      
+      let data = false
+    
+      try {
+        const responseBody = await fetcher(url)
+        data = await responseBody.json()
+      } catch (e) {
+        console.error(e)
+        process.exit(1)
+      }
       // Glamor works as before
       const { html, css, ids } = renderStaticOptimized(() =>
         renderToString(<route.component {...data} />))
