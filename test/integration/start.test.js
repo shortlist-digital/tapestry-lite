@@ -16,8 +16,8 @@ describe('tapestry start', () => {
         resolve(outputTest)
       })
       child.stdout.on('data', data => {
-        if (data.includes('Tapestry Lite')) {
-          outputTest = data.includes('Tapestry Lite is Running')
+        if (data.includes('Tapestry Lite is Running')) {
+          outputTest = true
           kill(child.pid)
         }
       })
