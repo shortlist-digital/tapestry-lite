@@ -10,7 +10,4 @@ export default {
     FrontPage
   },
   siteUrl: 'http://shortliststudio.foundry.press',
-  options: {
-    wordpressDotComHosting: true
-  }
 }
