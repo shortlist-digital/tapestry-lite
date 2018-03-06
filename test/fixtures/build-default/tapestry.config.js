@@ -9,8 +9,5 @@ export default {
     Page,
     FrontPage
   },
-  siteUrl: 'https://en.blog.wordpress.com',
-  options: {
-    wordpressDotComHosting: true
-  }
+  siteUrl: 'http://shortliststudio.foundry.press',
 }

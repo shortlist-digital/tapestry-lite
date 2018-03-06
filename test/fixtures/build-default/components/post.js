@@ -1,12 +1,9 @@
 import React, { PropTypes } from 'react'
-import ObjectInspector from 'react-object-inspector'
-import { Link } from 'react-router'
 
-const Post = ({data}) => {
-  const post = data[0]
+const Post = (props) => {
+  const post = props[0]
   return (
     <section style={{margin: '20px auto', maxWidth: '760px'}} >
-      <Link to="/">Home</Link>
       <style>
         {`img {
           display: block;

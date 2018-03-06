@@ -24,6 +24,7 @@ module.exports = () => {
       alias: {
         // This is required so symlinks work during development.
         'webpack/hot/poll': require.resolve('webpack/hot/poll'),
+        'tapestry.config.js': paths.appTapestryConfig
       },
     },
     resolveLoader: {
@@ -49,7 +50,7 @@ module.exports = () => {
     },
     entry: [
       'webpack/hot/poll?1000',
-      './src/server/hot'
+      paths.ownDevServer
     ],
     watch: true,
     target: 'node',

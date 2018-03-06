@@ -32,7 +32,7 @@ function getServedPath(appPackageJson) {
   return ensureSlash(servedUrl, true)
 }
 
-const resolveOwn = relativePath => path.resolve(__dirname, '..', relativePath)
+const resolveOwn = relativePath => path.resolve(__dirname, '../../', relativePath)
 
 // Windows compatability
 const nodePaths = (process.env.NODE_PATH || '')
@@ -60,6 +60,7 @@ module.exports = {
   nodePaths: nodePaths,
   ownPath: resolveOwn('.'),
   ownNodeModules: resolveOwn('node_modules'),
+  ownDevServer: resolveOwn('src/server/hot'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
 }

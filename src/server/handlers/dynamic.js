@@ -8,7 +8,7 @@ import RouteWrapper from '../route-wrapper'
 // Same default document
 import Document from '../render/default-document'
 // Using an old dummy app I have for now
-import appConfig from '../../../test-app/tapestry.config'
+import appConfig from 'tapestry.config.js'
 // Tuned fetched from normal tapestry
 import fetcher from '../../shared/fetcher'
 
