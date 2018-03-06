@@ -59,9 +59,9 @@ module.exports = () => {
     })],
     plugins: [
       new FriendlyErrorsPlugin({
-        verbose: false,
         target: 'node',
-        onSuccessMessage: 'Tapestry Lite is Running'
+        onSuccessMessage: 'Tapestry Lite is Running',
+        verbose: (process.env.NODE_ENV === 'test')
       }),
       new StartServerPlugin('server.js'),
       new webpack.NamedModulesPlugin(),

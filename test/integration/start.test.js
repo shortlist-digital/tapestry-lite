@@ -8,11 +8,30 @@ const stageName = 'stage-start'
 
 describe('tapestry start', () => {
 
-  it('Should start a dev server', () => {
+  before(() => {
     setupStageWithFixture(stageName, 'build-default')
+  })
+
+  it('Should start a dev server firstly', () => {
     let outputTest
     const run = new Promise(resolve => {
-      const child = shell.exec('NODE_ENV=\'development\' node ../bin/start.js', () => {
+      const child = shell.exec('node ../bin/start.js', () => {
+        resolve(outputTest)
+      })
+      child.stdout.on('data', data => {
+        if (data.includes('Tapestry Lite is Running')) {
+          outputTest = true
+          kill(child.pid)
+        }
+      })
+    })
+    return run.then(test => expect(test).to.equal(true))
+  })
+
+  it('Should start a dev server', () => {
+    let outputTest
+    const run = new Promise(resolve => {
+      const child = shell.exec('node ../bin/start.js', () => {
         resolve(outputTest)
       })
       child.stdout.on('data', data => {
