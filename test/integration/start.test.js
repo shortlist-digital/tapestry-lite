@@ -23,6 +23,10 @@ describe('tapestry start', () => {
       })
     })
     return run.then(test => expect(test).to.equal(true))
+  })
+
+
+  after(() => {
     teardownStage(stageName)
   })
 
