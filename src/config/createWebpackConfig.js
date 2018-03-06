@@ -86,6 +86,5 @@ module.exports = () => {
       webpack
     )
   }
-  console.log({config})
   return config
 }

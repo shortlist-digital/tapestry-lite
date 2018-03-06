@@ -12,15 +12,11 @@ import appConfig from 'tapestry.config.js'
 // Tuned fetched from normal tapestry
 import fetcher from '../../shared/fetcher'
 
-console.log({appConfig})
-
 export default ({ server }) => {
-  console.log('server in dynamic', { server })
   server.route({
     method: 'GET',
     path: '/{path*}',
     handler: async function (request, h) {
-      console.log('called dynamic handler')
       // Don't even import react-router any more, but backwards compatible
       // With the exception of optional params: (:thing) becomes :thing?
       const routes = RouteWrapper(appConfig)
@@ -31,7 +27,6 @@ export default ({ server }) => {
       // from normal tapestry
       const endpoint = route.endpoint(branch[0].match.params)
       const url = `${appConfig.siteUrl}/wp-json/wp/v2/${endpoint}`
-      console.log({url})
       // Async/Await dereams
       
       let data = false
