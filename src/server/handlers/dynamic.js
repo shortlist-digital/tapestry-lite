@@ -16,31 +16,36 @@ export default ({ server }) => {
   server.route({
     method: 'GET',
     path: '/{path*}',
-    handler: async function (request, h) {
+    handler: async function(request, h) {
       // Don't even import react-router any more, but backwards compatible
       // With the exception of optional params: (:thing) becomes :thing?
       const routes = RouteWrapper(appConfig)
       const branch = matchRoutes(routes, request.url.pathname)
+      if (!branch.length) return 'hello'
+      console.log({branch, pathname: request.url.pathname})
       // Make this more robust
       const route = branch[0].route
       // Steal the endpoint data resolver and normalisation bits
       // from normal tapestry
-      const endpoint = route.endpoint(branch[0].match.params)
-      const url = `${appConfig.siteUrl}/wp-json/wp/v2/${endpoint}`
-      // Async/Await dereams
-      
+      const endpoint = route.endpoint && route.endpoint(branch[0].match.params)
+
       let data = false
-    
-      try {
-        const responseBody = await fetcher(url)
-        data = await responseBody.json()
-      } catch (e) {
-        console.error(e)
-        process.exit(1)
+      if (endpoint) {
+        const url = `${appConfig.siteUrl}/wp-json/wp/v2/${endpoint}`
+        // Async/Await dereams
+
+        try {
+          const responseBody = await fetcher(url)
+          data = await responseBody.json()
+        } catch (e) {
+          console.error(e)
+          process.exit(1)
+        }
       }
       // Glamor works as before
       const { html, css, ids } = renderStaticOptimized(() =>
-        renderToString(<route.component {...data} />))
+        renderToString(<route.component {...data} />)
+      )
       // Assets to come, everything else works
       const renderData = {
         html,
@@ -54,7 +59,7 @@ export default ({ server }) => {
       return h
         .response(responseString)
         .type('text/html')
-        .code(200) 
+        .code(200)
     }
   })
 }

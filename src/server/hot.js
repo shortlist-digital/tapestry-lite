@@ -1,5 +1,6 @@
 import TapestryLite from './server'
 import Inert from 'inert'
+import appConfig from 'tapestry.config.js'
 
 let currentApp
 const timeLabel = 'Hot Reload Restart'
@@ -10,20 +11,20 @@ const serverPlugins = [
 
 const run = async function() {
   try {
-    currentApp = new TapestryLite({})
+    currentApp = new TapestryLite(appConfig)
     // Register plugins
     await currentApp.register(serverPlugins)
     // Start server
     await currentApp.start()
     if (module.hot) {
       module.hot.accept('./server', async function() {
-        console.time(timeLabel)
+        console.log(timeLabel)
         await currentApp.stop({ timeout: 0 })
-        currentApp = new TapestryLite({})
-        // Re-register plugins
+        currentApp = new TapestryLite(appConfig)
+        // // Re-register plugins
         await currentApp.register(serverPlugins)
         await currentApp.start()
-        console.timeEnd(timeLabel)
+        console.log(timeLabel)
       })
     } 
     console.log('Server started at: ' + currentApp.info.uri)

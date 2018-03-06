@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "build": "tapestry build"
+  },
+  "name": "build-default"
+}

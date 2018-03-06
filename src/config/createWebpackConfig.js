@@ -7,28 +7,27 @@ const FriendlyErrorsPlugin = require('razzle-dev-utils/FriendlyErrorsPlugin')
 const paths = require('./paths')
 
 const mainBabelOptions = {
-  babelrc: true,
+  // babelrc: true,
   cacheDirectory: true,
-  presets: [
-    require('babel-preset-razzle')
-  ]
+  presets: [require('babel-preset-react')],
+  plugins: [require('babel-plugin-syntax-dynamic-import'), require('babel-plugin-transform-object-rest-spread')]
+  // presets: [require('babel-preset-razzle')]
 }
 
 module.exports = () => {
-
   let config = {
     mode: process.env.ENV || 'development',
     resolve: {
-      modules: ['node_modules', './test-app/node_modules'],
+      modules: [paths.appNodeModules, paths.ownNodeModules],
       extensions: ['.js', '.json', '.jsx', '.mjs'],
       alias: {
         // This is required so symlinks work during development.
         'webpack/hot/poll': require.resolve('webpack/hot/poll'),
         'tapestry.config.js': paths.appTapestryConfig
-      },
+      }
     },
     resolveLoader: {
-      modules: [paths.appNodeModules, paths.ownNodeModules],
+      modules: [paths.appNodeModules, paths.ownNodeModules]
     },
     module: {
       strictExportPresence: true,
@@ -48,43 +47,39 @@ module.exports = () => {
         }
       ]
     },
-    entry: [
-      'webpack/hot/poll?1000',
-      paths.ownDevServer
-    ],
+    entry: ['webpack/hot/poll?2000', paths.ownDevServer],
     watch: true,
     target: 'node',
-    externals: [nodeExternals({
-        whitelist: ['webpack/hot/poll?1000']
-    })],
+    externals: [
+      nodeExternals({
+        whitelist: ['webpack/hot/poll?2000']
+      })
+    ],
     plugins: [
       new FriendlyErrorsPlugin({
         target: 'node',
         onSuccessMessage: 'Tapestry Lite is Running',
-        verbose: (process.env.NODE_ENV === 'test')
+        verbose: true//process.env.NODE_ENV === 'test'
       }),
       new StartServerPlugin('server.js'),
       new webpack.NamedModulesPlugin(),
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
       new webpack.DefinePlugin({
+        __DEV__: true,
         'process.env': {
-          'BUILD_TARGET': JSON.stringify('server')
+          BUILD_TARGET: JSON.stringify('server')
         }
-      }),
+      })
     ],
     output: {
-      path: path.join(__dirname, '.build'),
+      path: paths.appBuild,
       filename: 'server.js'
     }
   }
-  if (fs.existsSync('./test-app/webpack.config.js')) {
-    const appWebpackConfig = require('../../test-app/webpack.config.js')
-    config = appWebpackConfig(
-      config,
-      {},
-      webpack
-    )
+  if (fs.existsSync(paths.appWebpackConfig)) {
+    const appWebpackConfig = require(paths.appWebpackConfig)
+    config = appWebpackConfig(config, {}, webpack)
   }
   return config
 }

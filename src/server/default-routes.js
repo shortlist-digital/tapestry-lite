@@ -23,6 +23,7 @@ export default ({ FrontPage, Post, Page, Category }) => [
   {
     path: '/:category/:year/:monthnum/:postname',
     component: Post,
+    exact: true,
     endpoint: params => `posts?slug=${params.postname}&_embed`
   }
 ]
