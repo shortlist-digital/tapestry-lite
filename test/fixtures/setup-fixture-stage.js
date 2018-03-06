@@ -7,6 +7,7 @@ const rootDir = process.cwd()
 module.exports = {
   setupStageWithFixture: (stageName, fixtureName) => {
     const stagePath = path.join(rootDir, stageName)
+    console.log({rootDir}, {stagePath})
     shell.mkdir(stagePath)
     shell.exec(`cp -a ${rootDir}/test/fixtures/${fixtureName}/. ${stagePath}/`)
     shell.ln(
