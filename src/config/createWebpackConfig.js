@@ -9,10 +9,8 @@ const paths = require('./paths')
 const mainBabelOptions = {
   babelrc: true,
   cacheDirectory: true,
-  // presets: [require('babel-preset-react')],
-  // plugins: [require('babel-plugin-syntax-dynamic-import'), require('babel-plugin-transform-object-rest-spread')]
   presets: [require('babel-preset-razzle')],
-  plugins: ['react-hot-loader/babel']
+  plugins: [require('react-hot-loader/babel')]
 }
 
 module.exports = () => {
@@ -37,6 +35,7 @@ module.exports = () => {
         {
           test: /\.(js|jsx|mjs)$/,
           loader: require.resolve('babel-loader'),
+          exclude: /node_modules/,
           options: mainBabelOptions
         },
         {
@@ -48,10 +47,7 @@ module.exports = () => {
         }
       ]
     },
-    entry: [
-      'webpack/hot/poll?1000',
-      paths.ownDevServer
-    ],
+    entry: ['webpack/hot/poll?1000', paths.ownDevServer],
     watch: true,
     target: 'node',
     externals: [
