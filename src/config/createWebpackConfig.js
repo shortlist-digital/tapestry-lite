@@ -9,9 +9,9 @@ const paths = require('./paths')
 const mainBabelOptions = {
   // babelrc: true,
   cacheDirectory: true,
-  presets: [require('babel-preset-react')],
-  plugins: [require('babel-plugin-syntax-dynamic-import'), require('babel-plugin-transform-object-rest-spread')]
-  // presets: [require('babel-preset-razzle')]
+  // presets: [require('babel-preset-react')],
+  // plugins: [require('babel-plugin-syntax-dynamic-import'), require('babel-plugin-transform-object-rest-spread')]
+  presets: [require('babel-preset-razzle')]
 }
 
 module.exports = () => {
@@ -47,19 +47,19 @@ module.exports = () => {
         }
       ]
     },
-    entry: ['webpack/hot/poll?2000', paths.ownDevServer],
+    entry: ['webpack/hot/poll?1000', paths.ownDevServer],
     watch: true,
     target: 'node',
     externals: [
       nodeExternals({
-        whitelist: ['webpack/hot/poll?2000']
+        whitelist: ['webpack/hot/poll?1000']
       })
     ],
     plugins: [
       new FriendlyErrorsPlugin({
         target: 'node',
         onSuccessMessage: 'Tapestry Lite is Running',
-        verbose: true//process.env.NODE_ENV === 'test'
+        verbose: process.env.NODE_ENV === 'test'
       }),
       new StartServerPlugin('server.js'),
       new webpack.NamedModulesPlugin(),
