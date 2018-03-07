@@ -8,7 +8,7 @@ const paths = require('./paths')
 
 const mainBabelOptions = {
   babelrc: true,
-  cacheDirectory: false,
+  cacheDirectory: true,
   // presets: [require('babel-preset-react')],
   // plugins: [require('babel-plugin-syntax-dynamic-import'), require('babel-plugin-transform-object-rest-spread')]
   presets: [require('babel-preset-razzle')],
