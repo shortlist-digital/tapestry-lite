@@ -7,11 +7,12 @@ const FriendlyErrorsPlugin = require('razzle-dev-utils/FriendlyErrorsPlugin')
 const paths = require('./paths')
 
 const mainBabelOptions = {
-  // babelrc: true,
-  cacheDirectory: true,
+  babelrc: true,
+  cacheDirectory: false,
   // presets: [require('babel-preset-react')],
   // plugins: [require('babel-plugin-syntax-dynamic-import'), require('babel-plugin-transform-object-rest-spread')]
-  presets: [require('babel-preset-razzle')]
+  presets: [require('babel-preset-razzle')],
+  plugins: ['react-hot-loader/babel']
 }
 
 module.exports = () => {
@@ -47,7 +48,10 @@ module.exports = () => {
         }
       ]
     },
-    entry: ['webpack/hot/poll?1000', paths.ownDevServer],
+    entry: [
+      'webpack/hot/poll?1000',
+      paths.ownDevServer
+    ],
     watch: true,
     target: 'node',
     externals: [
@@ -61,7 +65,10 @@ module.exports = () => {
         onSuccessMessage: 'Tapestry Lite is Running',
         verbose: process.env.NODE_ENV === 'test'
       }),
-      new StartServerPlugin('server.js'),
+      new StartServerPlugin({
+        name: 'server.js',
+        signal: false
+      }),
       new webpack.NamedModulesPlugin(),
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),

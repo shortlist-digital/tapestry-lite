@@ -10,6 +10,7 @@ const serverPlugins = [
 ]
 
 const run = async function() {
+  console.log('Run was called')
   try {
     currentApp = new TapestryLite(appConfig)
     // Register plugins
