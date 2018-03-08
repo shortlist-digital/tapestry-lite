@@ -8,21 +8,22 @@ import RouteWrapper from '../route-wrapper'
 // Same default document
 import Document from '../render/default-document'
 // Using an old dummy app I have for now
-import appConfig from 'tapestry.config.js'
 // Tuned fetched from normal tapestry
 import fetcher from '../../shared/fetcher'
 
-export default ({ server }) => {
+export default ({ server, config }) => {
   server.route({
     method: 'GET',
     path: '/{path*}',
     handler: async function(request, h) {
       // Don't even import react-router any more, but backwards compatible
       // With the exception of optional params: (:thing) becomes :thing?
-      const routes = RouteWrapper(appConfig)
+      const routes = RouteWrapper(config)
       const branch = matchRoutes(routes, request.url.pathname)
-      if (!branch.length) return 'hello'
-      console.log({branch, pathname: request.url.pathname})
+      if (!branch.length) {
+        console.error('No paths matched: ', config.routes)
+        throw new Error({message: 'No routes matched'})
+      }
       // Make this more robust
       const route = branch[0].route
       // Steal the endpoint data resolver and normalisation bits
@@ -31,7 +32,7 @@ export default ({ server }) => {
 
       let data = false
       if (endpoint) {
-        const url = `${appConfig.siteUrl}/wp-json/wp/v2/${endpoint}`
+        const url = `${config.siteUrl}/wp-json/wp/v2/${endpoint}`
         // Async/Await dereams
 
         try {
@@ -46,12 +47,13 @@ export default ({ server }) => {
       const { html, css, ids } = renderStaticOptimized(() =>
         renderToString(<route.component {...data} />)
       )
+      const helmet = Helmet.renderStatic()
       // Assets to come, everything else works
       const renderData = {
         html,
         css,
         ids,
-        head: Helmet.rewind(),
+        head: helmet,
         bootstrapData: data
       }
       const responseString = renderToStaticMarkup(<Document {...renderData} />)

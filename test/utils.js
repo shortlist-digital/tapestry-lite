@@ -1,4 +1,4 @@
-import Server from '../src/server'
+import TapestryLite from '../src/server/server'
 
 const cwd = process.cwd()
 const env = 'test'
@@ -9,7 +9,7 @@ export const bootServer = (config, options = {}) => {
   global.__SERVER__ = options.__SERVER__ === false ? false : true
   const configOptions = config.options ? config.options : {}
   // create and return a new Tapestry instance
-  return new Server({
+  return new TapestryLite({
     config: {
       ...config,
       options: {

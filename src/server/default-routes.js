@@ -3,10 +3,11 @@ export default ({ FrontPage, Post, Page, Category }) => [
   {
     path: '/',
     component: FrontPage,
-    endpoint: () => 'posts?_embed'
+    endpoint: () => 'posts?_embed',
+    exact: true
   },
   {
-    path: '/category/:category(/:subcategory)',
+    path: '/category/:category/:subcategory?',
     component: Category,
     endpoint: params =>
       `posts?filter[category_name]=${params.category ||
@@ -16,14 +17,14 @@ export default ({ FrontPage, Post, Page, Category }) => [
     }
   },
   {
-    path: ':page(/:subpage)',
+    path: '/:page/:subpage?',
     component: Page,
-    endpoint: params => `pages?slug=${params.subpage || params.page}&_embed`
+    endpoint: params => `pages?slug=${params.subpage || params.page}&_embed`,
+    exact: true
   },
   {
     path: '/:category/:year/:monthnum/:postname',
     component: Post,
-    exact: true,
     endpoint: params => `posts?slug=${params.postname}&_embed`
   }
 ]

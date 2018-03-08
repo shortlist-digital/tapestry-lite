@@ -1,6 +1,5 @@
 import Hapi from 'hapi'
 import Inert from 'inert'
-
 import DynamicRouteHandler from './handlers/dynamic'
 
 export default class TapestryLite {
