@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import request from 'request'
 import nock from 'nock'
 
-import { bootServer } from '../utils'
+import TapestryLite from '../../src/server/server'
 import dataPage from '../mocks/page.json'
 import dataPost from '../mocks/post.json'
 import dataPages from '../mocks/pages.json'
@@ -16,7 +16,7 @@ const prepareJson = data =>
     .replace(/\u2029/g, '\\u2029')
 
 describe('Handling custom static routes', () => {
-  let tapestry = null
+  let server = null
   let uri = null
   let config = {
     routes: [
@@ -32,16 +32,14 @@ describe('Handling custom static routes', () => {
     siteUrl: 'http://dummy.api'
   }
 
-  before(done => {
-    // boot tapestry server
-    tapestry = bootServer(config)
-    tapestry.server.on('start', () => {
-      uri = tapestry.server.info.uri
-      done()
-    })
+  before(async done => {
+    // boot server server
+    server = TapestryLite({config: config})
+    await server.start()
+    uri = server.info.uri
   })
 
-  after(() => tapestry.server.stop())
+  after(async () => await server.stop())
 
   it('Route matched, render component', done => {
     request.get(`${uri}/static-route`, (err, res, body) => {
@@ -59,7 +57,7 @@ describe('Handling custom static routes', () => {
 })
 
 describe('Handling custom endpoint routes', () => {
-  let tapestry = null
+  let server = null
   let uri = null
   let config = {
     routes: [
@@ -106,7 +104,7 @@ describe('Handling custom endpoint routes', () => {
     siteUrl: 'http://dummy.api'
   }
 
-  before(done => {
+  before(async done => {
     // mock api response
     nock('http://dummy.api')
       .get('/wp-json/wp/v2/pages')
@@ -121,15 +119,13 @@ describe('Handling custom endpoint routes', () => {
       .get('/wp-json/wp/v2/pages?slug=test')
       .times(5)
       .reply(200, dataPage)
-    // boot tapestry server
-    tapestry = bootServer(config)
-    tapestry.server.on('start', () => {
-      uri = tapestry.server.info.uri
-      done()
-    })
+    // boot server server
+    server = TapestryLite({config: config})
+    await server.start()
+    uri = server.info.uri
   })
 
-  after(() => tapestry.server.stop())
+  after(() => server.server.stop())
 
   it('Route matched, string endpoint works', done => {
     request.get(`${uri}/string-endpoint`, (err, res, body) => {
@@ -201,7 +197,7 @@ describe('Handling custom endpoint routes', () => {
 })
 
 describe('Handling preview endpoint routes', () => {
-  let tapestry = null
+  let server = null
   let uri = null
   let config = {
     routes: [
@@ -219,26 +215,24 @@ describe('Handling preview endpoint routes', () => {
     siteUrl: 'http://dummy.api'
   }
 
-  before(done => {
+  before(async done => {
     // mock api response
     nock('http://dummy.api')
-      .get('/wp-json/revision/v1/pages/10?tapestry_hash=hash&p=10')
+      .get('/wp-json/revision/v1/pages/10?server_hash=hash&p=10')
       .reply(200, dataPage)
-      .get('/wp-json/revision/v1/pages/10?_embed&tapestry_hash=hash&p=10')
+      .get('/wp-json/revision/v1/pages/10?_embed&server_hash=hash&p=10')
       .reply(200, dataPage)
-    // boot tapestry server
-    tapestry = bootServer(config)
-    tapestry.server.on('start', () => {
-      uri = tapestry.server.info.uri
-      done()
-    })
+    // boot server server
+    server = TapestryLite({config})
+    await server.start()
+    uri = server.info.uri
   })
 
-  after(() => tapestry.server.stop())
+  after(() => server.server.stop())
 
   it('Preview route without embed, endpoint works', done => {
     request.get(
-      `${uri}/path-without-embed?tapestry_hash=hash&p=10`,
+      `${uri}/path-without-embed?server_hash=hash&p=10`,
       (err, res, body) => {
         expect(body).to.contain(prepareJson(dataPage))
         done()
@@ -248,7 +242,7 @@ describe('Handling preview endpoint routes', () => {
 
   it('Preview route with embed, endpoint works', done => {
     request.get(
-      `${uri}/path-with-embed?tapestry_hash=hash&p=10`,
+      `${uri}/path-with-embed?server_hash=hash&p=10`,
       (err, res, body) => {
         expect(body).to.contain(prepareJson(dataPage))
         done()
