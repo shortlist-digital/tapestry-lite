@@ -4,6 +4,7 @@ const fs = require('fs-extra')
 const nodeExternals = require('webpack-node-externals')
 const StartServerPlugin = require('start-server-webpack-plugin')
 const FriendlyErrorsPlugin = require('razzle-dev-utils/FriendlyErrorsPlugin')
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 const paths = require('./paths')
 
 const mainBabelOptions = {
@@ -64,6 +65,16 @@ module.exports = () => {
       new StartServerPlugin({
         name: 'server.js',
         signal: false
+      }),
+      new BrowserSyncPlugin({
+        // browse to http://localhost:3000/ during development
+        host: 'localhost',
+        port: 3001,
+        // proxy the Webpack Dev Server endpoint
+        // (which should be serving on http://localhost:3100/)
+        // through BrowserSync
+        proxy: 'http://localhost:3000/',
+        reloadDelay: 500
       }),
       new webpack.NamedModulesPlugin(),
       new webpack.HotModuleReplacementPlugin(),

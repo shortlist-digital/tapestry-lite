@@ -21,8 +21,7 @@ export default ({ server }) => {
       // With the exception of optional params: (:thing) becomes :thing?
       const routes = RouteWrapper(appConfig)
       const branch = matchRoutes(routes, request.url.pathname)
-      if (!branch.length) return 'hello'
-      console.log({branch, pathname: request.url.pathname})
+      if (!branch.length) return 'No route matched'
       // Make this more robust
       const route = branch[0].route
       // Steal the endpoint data resolver and normalisation bits
