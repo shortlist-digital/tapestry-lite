@@ -14,31 +14,37 @@ describe('Handling server responses using Wordpress.com API', () => {
     routes: [
       {
         path: '/',
+        exact: true,
         endpoint: () => 'posts?_embed',
         component: () => <p>Hello</p>
       },
       {
         path: '/:cat/:subcat/:id',
+        exact: true,
         component: () => <p>Hello</p>
       },
       {
         path: '/404-response',
+        exact: true,
         endpoint: () => 'pages?slug=404-response',
         component: () => <p>Hello</p>
       },
       {
         path: '/empty-response',
-        endpoint: 'pages?slug=empty-response',
+        exact: true,
+        endpoint: () => 'pages?slug=empty-response',
         component: () => <p>Hello</p>
       },
       {
         path: '/empty-allowed-response',
+        exact: true,
         endpoint: () => 'pages?slug=empty-response',
         options: { allowEmptyResponse: true },
         component: () => <p>Hello</p>
       },
       {
         path: '/static-endpoint',
+        exact: true,
         component: () => <p>Static endpoint</p>
       }
     ],
@@ -70,14 +76,13 @@ describe('Handling server responses using Wordpress.com API', () => {
       .times(5)
       .reply(200, [])
     // boot tapestry server
-    process.env.CACHE_CONTROL_MAX_AGE = 60
     server = new TapestryLite({config})
+    await server.start()
     uri = server.info.uri
   })
 
   after(async () => {
     await server.stop()
-    delete process.env.CACHE_CONTROL_MAX_AGE
   })
 
   it('WP.com Route matched, status code is 200', done => {
@@ -115,12 +120,6 @@ describe('Handling server responses using Wordpress.com API', () => {
     })
   })
 
-  it('Route matched, multiple API requests, status code is 200', done => {
-    request.get(`${uri}/object-endpoint`, (err, res) => {
-      expect(res.statusCode).to.equal(200)
-      done()
-    })
-  })
 
   it('Static route matched, no data loaded, status code is 200', done => {
     request.get(`${uri}/static-endpoint`, (err, res) => {

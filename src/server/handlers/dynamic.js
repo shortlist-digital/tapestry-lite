@@ -7,6 +7,7 @@ import RouteWrapper from '../route-wrapper'
 import idx from 'idx'
 // Tuned fetched from normal tapestry
 import fetcher from '../../shared/fetcher'
+import baseUrlResolver from '../../utilities/base-url-resolver'
 
 export default ({ server, config }) => {
   server.route({
@@ -20,7 +21,8 @@ export default ({ server, config }) => {
       if (!branch.length) {
         console.log(request.url)
         console.error('No paths matched: ', config.routes)
-        throw new Error({message: 'No routes matched'})
+        console.log({message: 'No routes matched'})
+        return h.response('Not found').code(404)
       }
       // Make this more robust
       const { route, match } = branch[0]
@@ -30,15 +32,16 @@ export default ({ server, config }) => {
 
       let data = false
       if (endpoint) {
-        const url = `${config.siteUrl}/wp-json/wp/v2/${endpoint}`
+        const url = `${baseUrlResolver(config)}/${endpoint}`
+        console.log({requestUrl: url})
         // Async/Await dereams
 
         try {
           const responseBody = await fetcher(url)
           data = await responseBody.json()
         } catch (e) {
+          console.log('Throwing error in dynamic fetch')
           console.error(e)
-          process.exit(1)
         }
       }
       // Glamor works as before
