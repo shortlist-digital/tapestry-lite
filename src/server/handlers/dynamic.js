@@ -54,7 +54,9 @@ export default ({ server, config }) => {
         }
         const missing = (typeof route.component === 'undefined')
         componentData = errorData || data
-        route.component = buildErrorView({config, missing})
+        if (errorData && !allowEmptyResponse) {
+          route.component = buildErrorView({config, missing})
+        }
       } else {
         route = {
           component: buildErrorView({config, missing: false})
@@ -65,8 +67,8 @@ export default ({ server, config }) => {
         }
       }
       // Glamor works as before
+      console.log({route})
       const { html, css, ids } = renderStaticOptimized(() =>
-
         renderToString(<route.component {...match} {...componentData} />)
       )
       const helmet = Helmet.renderStatic()
