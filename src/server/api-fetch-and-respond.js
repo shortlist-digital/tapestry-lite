@@ -2,8 +2,8 @@ import fetcher from '../shared/fetcher'
 import { log } from '../utilities/logger'
 import chalk from 'chalk'
 
-const AFAR = (url) => {
-  fetcher(url)
+const AFAR = (url, allowEmptyResponse = false) => {
+  return fetcher(url)
     .then(resp => {
       if (!resp.ok) {
         throw {
@@ -23,7 +23,17 @@ const AFAR = (url) => {
     })
     .then(resp => resp.json())
     .then(apiData => {
-      return apiData
+      if ((apiData.length == false) && (allowEmptyResponse !== true)) {
+        throw {
+          name: 'FetchError',
+          type: 'http-error',
+          statusText: 'WP-API returned no results',
+          message: 'WP-API returned no results and empty results are not allowed on this route',
+          code: 404
+        }
+      } else {
+        return apiData
+      }
     })
 }
 

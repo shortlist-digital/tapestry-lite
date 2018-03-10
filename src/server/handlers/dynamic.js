@@ -7,7 +7,9 @@ import RouteWrapper from '../route-wrapper'
 import idx from 'idx'
 // Tuned fetched from normal tapestry
 import AFAR from '../../server/api-fetch-and-respond'
+import fetcher from '../../shared/fetcher'
 import baseUrlResolver from '../../utilities/base-url-resolver'
+import { log } from '../../utilities/logger'
 
 export default ({ server, config }) => {
   server.route({
@@ -19,9 +21,7 @@ export default ({ server, config }) => {
       const routes = RouteWrapper(config)
       const branch = matchRoutes(routes, request.url.pathname)
       if (!branch.length) {
-        console.log(request.url)
-        console.error('No paths matched: ', config.routes)
-        console.log({message: 'No routes matched'})
+        log.error('No paths matched: ', config.routes)
         return h.response('Not found').code(404)
       }
       // Make this more robust
@@ -33,15 +33,15 @@ export default ({ server, config }) => {
       let data = false
       if (endpoint) {
         const url = `${baseUrlResolver(config)}/${endpoint}`
-        console.log({requestUrl: url})
         // Async/Await dereams
+        //
+        const allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
 
         try {
-          const data = await AFAR(url)
+          data = await AFAR(url, allowEmptyResponse)
         } catch (e) {
-          console.log('Throwing error in dynamic fetch')
-          console.error(e)
-          return h.response('Not Found').code(404)
+          log.error(e)
+          return h.response(e.message).code(e.code)
         }
       }
       // Glamor works as before
