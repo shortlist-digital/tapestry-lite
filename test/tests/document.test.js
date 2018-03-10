@@ -4,30 +4,31 @@ import { expect } from 'chai'
 import request from 'request'
 import nock from 'nock'
 import { css } from 'glamor'
-
-import { bootServer } from '../utils'
 import dataPosts from '../mocks/posts.json'
+import TapestryLite from '../../src/server/server'
 
 describe('Document contents', () => {
-  let tapestry = null
+  let server = null
   let uri = null
   let config = {
     routes: [
       {
         path: '/',
-        endpoint: 'posts',
+        endpoint: () => 'posts',
+        exact: true,
         component: () => <p className={css({ color: '#639' })}>Hello</p>
       },
       {
-        path: 'custom-document',
+        path: '/custom-document',
+        exact: true,
         component: () => <p>Custom HTML</p>,
         options: {
           customDocument: () => 'testing-document'
         }
       },
       {
-        path: 'custom-document/with-data',
-        endpoint: 'posts',
+        path: '/custom-document/with-data',
+        endpoint: () => 'posts',
         component: () => (
           <div>
             <Helmet>
@@ -37,7 +38,7 @@ describe('Document contents', () => {
           </div>
         ),
         options: {
-          customDocument: ({ html, css, head, asyncProps }) => (
+          customDocument: ({ html, css, head, bootstrapData}) => (
             <html>
               <head>
                 {head.title.toComponent()}
@@ -47,7 +48,7 @@ describe('Document contents', () => {
                 <div dangerouslySetInnerHTML={{ __html: html }} />
                 <script
                   dangerouslySetInnerHTML={{
-                    __html: `const test = ${JSON.stringify(asyncProps)}`
+                    __html: `const test = ${JSON.stringify(bootstrapData)}`
                   }}
                 />
               </body>
@@ -59,29 +60,27 @@ describe('Document contents', () => {
     siteUrl: 'http://dummy.api'
   }
 
-  beforeEach(done => {
+  beforeEach(async () => {
     // mock api response
     nock('http://dummy.api')
       .get('/wp-json/wp/v2/posts')
       .times(5)
       .reply(200, dataPosts.data)
     // boot tapestry server
-    tapestry = bootServer(config)
-    tapestry.server.on('start', () => {
-      uri = tapestry.server.info.uri
-      done()
-    })
+    server = new TapestryLite({config})
+    await server.start()
+    uri = server.info.uri
   })
 
-  afterEach(() => tapestry.server.stop())
+  afterEach(async () => await server.stop())
 
-  it('Contains correct AsyncProps data', done => {
+  it('Contains correct Bootstrap data', done => {
     request.get(uri, (err, res, body) => {
       expect(body).to.contain(
-        `window.__ASYNC_PROPS__ = [{"data":${JSON.stringify(dataPosts.data)
+        `window.__BOOTSTRAP_DATA__ = ${JSON.stringify(dataPosts.data)
           .replace(/\//g, '\\/')
           .replace(/\u2028/g, '\\u2028')
-          .replace(/\u2029/g, '\\u2029')}}]`
+          .replace(/\u2029/g, '\\u2029')}`
       )
       done()
     })
@@ -115,7 +114,7 @@ describe('Document contents', () => {
       expect(body).to.contain('Custom Title')
       expect(body).to.contain('Custom HTML')
       expect(body).to.contain(
-        `const test = [{"data":${JSON.stringify(dataPosts.data)}}]`
+        `const test = ${JSON.stringify(dataPosts.data)}`
       )
       expect(body).to.contain('{font-size:13px;}')
       done()

@@ -4,10 +4,7 @@ import { renderStaticOptimized } from 'glamor/server'
 import { renderToStaticMarkup, renderToString } from 'react-dom/server'
 import Helmet from 'react-helmet'
 import RouteWrapper from '../route-wrapper'
-
-// Same default document
-import Document from '../render/default-document'
-// Using an old dummy app I have for now
+import idx from 'idx'
 // Tuned fetched from normal tapestry
 import fetcher from '../../shared/fetcher'
 
@@ -56,6 +53,7 @@ export default ({ server, config }) => {
         head: helmet,
         bootstrapData: data
       }
+      let Document = idx(route, _ => _.options.customDocument) || require('../render/default-document').default
       const responseString = renderToStaticMarkup(<Document {...renderData} />)
       // Respond with new Hapi 17 api
       return h
