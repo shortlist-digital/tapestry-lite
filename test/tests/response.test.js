@@ -48,12 +48,12 @@ describe('Handling server responses', () => {
         component: () => <p>Static endpoint</p>
       }
     ],
-    siteUrl: 'http://dummy.api'
+    siteUrl: 'http://response-dummy.api'
   }
 
   before(async () => {
     // mock api response
-    nock('http://dummy.api')
+    nock('http://response-dummy.api')
       .get('/wp-json/wp/v2/posts/571')
       .times(1)
       .reply(200, dataPages.data)
