@@ -10,6 +10,7 @@ import AFAR from '../../server/api-fetch-and-respond'
 import fetcher from '../../shared/fetcher'
 import baseUrlResolver from '../../utilities/base-url-resolver'
 import { log } from '../../utilities/logger'
+import buildErrorView from '../render/error-view'
 
 export default ({ server, config }) => {
   server.route({
@@ -27,33 +28,46 @@ export default ({ server, config }) => {
       // With the exception of optional params: (:thing) becomes :thing?
       const routes = RouteWrapper(config)
       const branch = matchRoutes(routes, request.url.pathname)
-      if (!branch.length) {
-        log.error('No paths matched: ', config.routes)
-        return h.response('Not found').code(404)
-      }
-      // Make this more robust
-      const { route, match } = branch[0]
-      // Steal the endpoint data resolver and normalisation bits
-      // from normal tapestry
-      const endpoint = route.endpoint && route.endpoint(match.params)
+      let route, match, componentData, data, errorData
+      if (branch[0]) {
+        // Make this more robust
+        route = branch[0].route
+        match = branch[0].match
+        // Steal the endpoint data resolver and normalisation bits
+        // from normal tapestry
+        const endpoint = route.endpoint && route.endpoint(match.params)
+        // Setup a default ocomponent
 
-      let data = false
-      if (endpoint) {
-        const url = `${baseUrlResolver(config)}/${endpoint}`
-        // Async/Await dereams
-        //
-        const allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
+        data = false
+        let errorData = false
+        if (endpoint) {
+          const url = `${baseUrlResolver(config)}/${endpoint}`
+          // Async/Await dereams
+          const allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
 
-        try {
-          data = await AFAR(url, allowEmptyResponse)
-        } catch (e) {
-          log.error(e)
-          return h.response(e.message).code(e.code)
+          try {
+            data = await AFAR(url, allowEmptyResponse)
+          } catch (e) {
+            log.error(e)
+            errorData = e
+          }
+        }
+        const missing = (typeof route.component === 'undefined')
+        componentData = errorData || data
+        route.component = buildErrorView({config, missing})
+      } else {
+        route = {
+          component: buildErrorView({config, missing: false})
+        }
+        componentData = {
+          message: 'Not Found',
+          code: 404
         }
       }
       // Glamor works as before
       const { html, css, ids } = renderStaticOptimized(() =>
-        renderToString(<route.component {...match} {...data} />)
+
+        renderToString(<route.component {...match} {...componentData} />)
       )
       const helmet = Helmet.renderStatic()
       // Assets to come, everything else works
@@ -70,7 +84,7 @@ export default ({ server, config }) => {
       return h
         .response(responseString)
         .type('text/html')
-        .code(200)
+        .code(componentData.code || 200)
     }
   })
 }
