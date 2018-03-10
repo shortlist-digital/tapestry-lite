@@ -6,7 +6,7 @@ import Helmet from 'react-helmet'
 import RouteWrapper from '../route-wrapper'
 import idx from 'idx'
 // Tuned fetched from normal tapestry
-import fetcher from '../../shared/fetcher'
+import AFAR from '../../server/api-fetch-and-respond'
 import baseUrlResolver from '../../utilities/base-url-resolver'
 
 export default ({ server, config }) => {
@@ -37,11 +37,11 @@ export default ({ server, config }) => {
         // Async/Await dereams
 
         try {
-          const responseBody = await fetcher(url)
-          data = await responseBody.json()
+          const data = await AFAR(url)
         } catch (e) {
           console.log('Throwing error in dynamic fetch')
           console.error(e)
+          return h.response('Not Found').code(404)
         }
       }
       // Glamor works as before
