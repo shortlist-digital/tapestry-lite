@@ -19,8 +19,7 @@ describe('Handling redirects', () => {
     routes: [
       {
         path: '/page',
-        component: () => <p>Redirected component</p>,
-        exact: true
+        component: () => <p>Redirected component</p>
       }
     ],
     redirectPaths: {

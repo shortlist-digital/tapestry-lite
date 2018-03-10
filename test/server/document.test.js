@@ -15,12 +15,10 @@ describe('Document contents', () => {
       {
         path: '/',
         endpoint: () => 'posts',
-        exact: true,
         component: () => <p className={css({ color: '#639' })}>Hello</p>
       },
       {
         path: '/custom-document',
-        exact: true,
         component: () => <p>Custom HTML</p>,
         options: {
           customDocument: () => 'testing-document'

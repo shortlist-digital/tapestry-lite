@@ -22,12 +22,10 @@ describe('Handling custom static routes', () => {
     routes: [
       {
         path: '/static-route',
-        exact: true,
         component: () => <p>Static route</p>
       },
       {
         path: '/static-route/:custom',
-        exact: true,
         component: props => <p>Param: {props.params.custom}</p>
       }
     ],

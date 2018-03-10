@@ -14,37 +14,31 @@ describe('Handling server responses using Wordpress.com API', () => {
     routes: [
       {
         path: '/',
-        exact: true,
         endpoint: () => 'posts?_embed',
         component: () => <p>Hello</p>
       },
       {
         path: '/:cat/:subcat/:id',
-        exact: true,
         component: () => <p>Hello</p>
       },
       {
         path: '/404-response',
-        exact: true,
         endpoint: () => 'pages?slug=404-response',
         component: () => <p>Hello</p>
       },
       {
         path: '/empty-response',
-        exact: true,
         endpoint: () => 'pages?slug=empty-response',
         component: () => <p>Hello</p>
       },
       {
         path: '/empty-allowed-response',
-        exact: true,
         endpoint: () => 'pages?slug=empty-response',
         options: { allowEmptyResponse: true },
         component: () => <p>Hello</p>
       },
       {
         path: '/static-endpoint',
-        exact: true,
         component: () => <p>Static endpoint</p>
       }
     ],

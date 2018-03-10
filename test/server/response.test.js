@@ -14,37 +14,31 @@ describe('Handling server responses', () => {
     routes: [
       {
         path: '/',
-        exact: true,
         endpoint: () => 'posts?_embed',
         component: () => <p>Root</p>
       },
       {
         path: '/:cat/:subcat/:id',
-        exact: true,
         component: () => <p>3 Dynamic</p>
       },
       {
         path: '/404-response',
-        exact: true,
         endpoint: () => 'pages?slug=404-response',
         component: () => <p>404 Response</p>
       },
       {
         path: '/empty-response',
-        exact: true,
         endpoint: () => 'pages?slug=empty-response',
         component: () => <p>Empty Response</p>
       },
       {
         path: '/empty-allowed-response',
-        exact: true,
         endpoint: () => 'pages?slug=empty-response',
         options: { allowEmptyResponse: true },
         component: () => <p>Empty Response Allowed</p>
       },
       {
         path: '/static-endpoint',
-        exact: true,
         component: () => <p>Static endpoint</p>
       }
     ],
