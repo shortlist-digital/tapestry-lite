@@ -1,12 +1,14 @@
 import TapestryLite from './server'
 import Inert from 'inert'
+import h2o2 from 'h2o2'
 import appConfig from 'tapestry.config.js'
 
 let currentApp
 const timeLabel = 'Hot Reload Restart'
 
 const serverPlugins = [
-  Inert
+  Inert,
+  h2o2
 ]
 
 const run = async function() {

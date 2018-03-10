@@ -2018,6 +2018,15 @@ gzip-size@3.0.0:
   dependencies:
     duplexer "^0.1.1"
 
+h2o2@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/h2o2/-/h2o2-8.0.0.tgz#5bcb0e6ec5c05e50842f6cb75532f69646611b66"
+  dependencies:
+    boom "7.x.x"
+    hoek "5.x.x"
+    joi "13.x.x"
+    wreck "14.x.x"
+
 hapi@^17.2.1:
   version "17.2.2"
   resolved "https://registry.npmjs.org/hapi/-/hapi-17.2.2.tgz#c6c882d698a1a2a2a20e74a0b9f604cf10aac5a5"
