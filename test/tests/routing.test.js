@@ -27,10 +27,11 @@ describe('Handling custom static routes', () => {
       },
       {
         path: '/static-route/:custom',
+        exact: true,
         component: props => <p>Param: {props.params.custom}</p>
       }
     ],
-    siteUrl: 'http://dummy.api'
+    siteUrl: 'http://routing-dummy.api'
   }
 
   before(async () => {
@@ -73,12 +74,12 @@ describe('Handling custom endpoint routes', () => {
         component: () => <p>Custom endpoint</p>
       }
     ],
-    siteUrl: 'http://dummy.api'
+    siteUrl: 'http://routing-dummy.api'
   }
 
   before(async () => {
     // mock api response
-    nock('http://dummy.api')
+    nock('http://routing-dummy.api')
       .get('/wp-json/wp/v2/pages')
       .times(5)
       .reply(200, dataPages.data)
