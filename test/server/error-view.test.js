@@ -18,7 +18,7 @@ describe('Error view rendering', () => {
     siteUrl: 'http://error-dummy.api'
   }
 
-  beforeEach(done => {
+  before(done => {
     // mock api response
     nock('http://error-dummy.api')
       .get('/wp-json/wp/v2/posts?_embed')
