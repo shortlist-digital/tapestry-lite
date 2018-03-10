@@ -52,7 +52,7 @@ describe('Handling redirects', () => {
   })
 
   after(async () => {
-    fs.unlink(redirectsFilePath) // tidy up redirects.json asynchronously
+    fs.unlink(redirectsFilePath, () => {}) // tidy up redirects.json asynchronously
     await server.stop()
   })
 
