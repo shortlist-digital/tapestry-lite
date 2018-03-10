@@ -18,6 +18,7 @@ export default ({ server, config }) => {
       const routes = RouteWrapper(config)
       const branch = matchRoutes(routes, request.url.pathname)
       if (!branch.length) {
+        console.log(request.url)
         console.error('No paths matched: ', config.routes)
         throw new Error({message: 'No routes matched'})
       }

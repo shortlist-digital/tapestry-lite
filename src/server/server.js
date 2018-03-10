@@ -1,6 +1,7 @@
 import Hapi from 'hapi'
 import Inert from 'inert'
 import DynamicRouteHandler from './handlers/dynamic'
+import RedirectHandler from './handlers/redirect'
 
 export default class TapestryLite {
   constructor({ config, assets = {} }) {
@@ -22,6 +23,7 @@ export default class TapestryLite {
     }
 
     DynamicRouteHandler(data)
+    RedirectHandler(data)
 
     return this.server
   }
