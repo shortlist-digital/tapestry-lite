@@ -16,30 +16,31 @@ describe('Handling server responses', () => {
         path: '/',
         exact: true,
         endpoint: () => 'posts?_embed',
-        component: () => <p>Hello</p>
+        component: () => <p>Root</p>
       },
       {
         path: '/:cat/:subcat/:id',
-        component: () => <p>Hello</p>
+        exact: true,
+        component: () => <p>3 Dynamic</p>
       },
       {
         path: '/404-response',
         exact: true,
         endpoint: () => 'pages?slug=404-response',
-        component: () => <p>Hello</p>
+        component: () => <p>404 Response</p>
       },
       {
         path: '/empty-response',
         exact: true,
         endpoint: () => 'pages?slug=empty-response',
-        component: () => <p>Hello</p>
+        component: () => <p>Empty Response</p>
       },
       {
         path: '/empty-allowed-response',
         exact: true,
         endpoint: () => 'pages?slug=empty-response',
         options: { allowEmptyResponse: true },
-        component: () => <p>Hello</p>
+        component: () => <p>Empty Response Allowed</p>
       },
       {
         path: '/static-endpoint',
