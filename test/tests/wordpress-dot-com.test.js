@@ -3,18 +3,18 @@ import { expect } from 'chai'
 import request from 'request'
 import nock from 'nock'
 
-import { bootServer } from '../utils'
+import TapestryLite from '../../src/server/server'
 import dataPosts from '../mocks/posts.json'
 import dataPages from '../mocks/posts.json'
 
 describe('Handling server responses using Wordpress.com API', () => {
-  let tapestry = null
+  let server = null
   let uri = null
   let config = {
     routes: [
       {
         path: '/',
-        endpoint: 'posts?_embed',
+        endpoint: () => 'posts?_embed',
         component: () => <p>Hello</p>
       },
       {
@@ -23,7 +23,7 @@ describe('Handling server responses using Wordpress.com API', () => {
       },
       {
         path: '/404-response',
-        endpoint: 'pages?slug=404-response',
+        endpoint: () => 'pages?slug=404-response',
         component: () => <p>Hello</p>
       },
       {
@@ -33,17 +33,9 @@ describe('Handling server responses using Wordpress.com API', () => {
       },
       {
         path: '/empty-allowed-response',
-        endpoint: 'pages?slug=empty-response',
+        endpoint: () => 'pages?slug=empty-response',
         options: { allowEmptyResponse: true },
         component: () => <p>Hello</p>
-      },
-      {
-        path: '/object-endpoint',
-        endpoint: {
-          pages: 'pages',
-          posts: 'posts'
-        },
-        component: () => <p>Custom endpoint</p>
       },
       {
         path: '/static-endpoint',
@@ -56,7 +48,7 @@ describe('Handling server responses using Wordpress.com API', () => {
     }
   }
 
-  before(done => {
+  before(async () => {
     // mock api response
     nock('https://public-api.wordpress.com')
       .get('/wp/v2/sites/dummy.site.wordpress.com/posts/571')
@@ -79,15 +71,12 @@ describe('Handling server responses using Wordpress.com API', () => {
       .reply(200, [])
     // boot tapestry server
     process.env.CACHE_CONTROL_MAX_AGE = 60
-    tapestry = bootServer(config)
-    tapestry.server.on('start', () => {
-      uri = tapestry.server.info.uri
-      done()
-    })
+    server = new TapestryLite({config})
+    uri = server.info.uri
   })
 
-  after(() => {
-    tapestry.server.stop()
+  after(async () => {
+    await server.stop()
     delete process.env.CACHE_CONTROL_MAX_AGE
   })
 
