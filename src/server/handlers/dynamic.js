@@ -6,7 +6,10 @@ import Helmet from 'react-helmet'
 import RouteWrapper from '../route-wrapper'
 import idx from 'idx'
 // Tuned fetched from normal tapestry
+import AFAR from '../../server/api-fetch-and-respond'
 import fetcher from '../../shared/fetcher'
+import baseUrlResolver from '../../utilities/base-url-resolver'
+import { log } from '../../utilities/logger'
 
 export default ({ server, config }) => {
   server.route({
@@ -25,9 +28,8 @@ export default ({ server, config }) => {
       const routes = RouteWrapper(config)
       const branch = matchRoutes(routes, request.url.pathname)
       if (!branch.length) {
-        console.log(request.url)
-        console.error('No paths matched: ', config.routes)
-        throw new Error({message: 'No routes matched'})
+        log.error('No paths matched: ', config.routes)
+        return h.response('Not found').code(404)
       }
       // Make this more robust
       const { route, match } = branch[0]
@@ -37,15 +39,16 @@ export default ({ server, config }) => {
 
       let data = false
       if (endpoint) {
-        const url = `${config.siteUrl}/wp-json/wp/v2/${endpoint}`
+        const url = `${baseUrlResolver(config)}/${endpoint}`
         // Async/Await dereams
+        //
+        const allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
 
         try {
-          const responseBody = await fetcher(url)
-          data = await responseBody.json()
+          data = await AFAR(url, allowEmptyResponse)
         } catch (e) {
-          console.error(e)
-          process.exit(1)
+          log.error(e)
+          return h.response(e.message).code(e.code)
         }
       }
       // Glamor works as before
