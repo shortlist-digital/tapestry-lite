@@ -3,8 +3,7 @@ export default ({ FrontPage, Post, Page, Category }) => [
   {
     path: '/',
     component: FrontPage,
-    endpoint: () => 'posts?_embed',
-    exact: true
+    endpoint: () => 'posts?_embed'
   },
   {
     path: '/category/:category/:subcategory?',
@@ -20,7 +19,6 @@ export default ({ FrontPage, Post, Page, Category }) => [
     path: '/:page/:subpage?',
     component: Page,
     endpoint: params => `pages?slug=${params.subpage || params.page}&_embed`,
-    exact: true
   },
   {
     path: '/:category/:year/:monthnum/:postname',
