@@ -10,6 +10,13 @@ import fetcher from '../../shared/fetcher'
 
 export default ({ server, config }) => {
   server.route({
+    config: {
+      cache: {
+        expiresIn:
+          (parseInt(process.env.CACHE_CONTROL_MAX_AGE, 10) || 0) * 1000, // 1 Minute
+        privacy: 'public'
+      }
+    },
     method: 'GET',
     path: '/{path*}',
     handler: async function(request, h) {

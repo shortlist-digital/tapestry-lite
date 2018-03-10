@@ -3,18 +3,19 @@ import { expect } from 'chai'
 import request from 'request'
 import nock from 'nock'
 
-import { bootServer } from '../utils'
+import TapestryLite from '../../src/server/server'
 import dataPosts from '../mocks/posts.json'
 import dataPages from '../mocks/posts.json'
 
 describe('Handling server responses', () => {
-  let tapestry = null
+  let server = null
   let uri = null
   let config = {
     routes: [
       {
         path: '/',
-        endpoint: 'posts?_embed',
+        exact: true,
+        endpoint: () => 'posts?_embed',
         component: () => <p>Hello</p>
       },
       {
@@ -23,37 +24,33 @@ describe('Handling server responses', () => {
       },
       {
         path: '/404-response',
-        endpoint: 'pages?slug=404-response',
+        exact: true,
+        endpoint: () => 'pages?slug=404-response',
         component: () => <p>Hello</p>
       },
       {
         path: '/empty-response',
-        endpoint: 'pages?slug=empty-response',
+        exact: true,
+        endpoint: () => 'pages?slug=empty-response',
         component: () => <p>Hello</p>
       },
       {
         path: '/empty-allowed-response',
-        endpoint: 'pages?slug=empty-response',
+        exact: true,
+        endpoint: () => 'pages?slug=empty-response',
         options: { allowEmptyResponse: true },
         component: () => <p>Hello</p>
       },
       {
-        path: '/object-endpoint',
-        endpoint: {
-          pages: 'pages',
-          posts: 'posts'
-        },
-        component: () => <p>Custom endpoint</p>
-      },
-      {
         path: '/static-endpoint',
+        exact: true,
         component: () => <p>Static endpoint</p>
       }
     ],
     siteUrl: 'http://dummy.api'
   }
 
-  before(done => {
+  before(async () => {
     // mock api response
     nock('http://dummy.api')
       .get('/wp-json/wp/v2/posts/571')
@@ -76,15 +73,13 @@ describe('Handling server responses', () => {
       .reply(200, [])
     // boot tapestry server
     process.env.CACHE_CONTROL_MAX_AGE = 60
-    tapestry = bootServer(config)
-    tapestry.server.on('start', () => {
-      uri = tapestry.server.info.uri
-      done()
-    })
+    server = new TapestryLite({config})
+    await server.start()
+    uri = server.info.uri
   })
 
-  after(() => {
-    tapestry.server.stop()
+  after(async () => {
+    await server.stop()
     delete process.env.CACHE_CONTROL_MAX_AGE
   })
 
@@ -105,16 +100,16 @@ describe('Handling server responses', () => {
     })
   })
 
-  it('Preview routes send no-cache headers', done => {
-    request.get(
-      `${uri}/foo/bar/571?tapestry_hash=somesortofhash&p=571`,
-      (err, res) => {
-        expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
-        expect(res.headers['cache-control']).to.equal('no-cache')
-        done()
-      }
-    )
-  })
+  // it('Preview routes send no-cache headers', done => {
+  //   request.get(
+  //     `${uri}/foo/bar/571?tapestry_hash=somesortofhash&p=571`,
+  //     (err, res) => {
+  //       expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
+  //       expect(res.headers['cache-control']).to.equal('no-cache')
+  //       done()
+  //     }
+  //   )
+  // })
 
   it('Route not matched, status code is 404', done => {
     request.get(`${uri}/route/not/matched/in/any/way`, (err, res) => {
@@ -144,12 +139,12 @@ describe('Handling server responses', () => {
     })
   })
 
-  it('Route matched, multiple API requests, status code is 200', done => {
-    request.get(`${uri}/object-endpoint`, (err, res) => {
-      expect(res.statusCode).to.equal(200)
-      done()
-    })
-  })
+  // it('Route matched, multiple API requests, status code is 200', done => {
+  //   request.get(`${uri}/object-endpoint`, (err, res) => {
+  //     expect(res.statusCode).to.equal(200)
+  //     done()
+  //   })
+  // })
 
   it('Static route matched, no data loaded, status code is 200', done => {
     request.get(`${uri}/static-endpoint`, (err, res) => {
