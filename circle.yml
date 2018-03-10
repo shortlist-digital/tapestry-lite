@@ -1,4 +1,4 @@
-achine:
+machine:
   node:
     version: 9.5.0
   environment:
