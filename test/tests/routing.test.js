@@ -21,20 +21,21 @@ describe('Handling custom static routes', () => {
   let config = {
     routes: [
       {
-        path: 'static-route',
+        path: '/static-route',
+        exact: true,
         component: () => <p>Static route</p>
       },
       {
-        path: 'static-route/:custom',
+        path: '/static-route/:custom',
         component: props => <p>Param: {props.params.custom}</p>
       }
     ],
     siteUrl: 'http://dummy.api'
   }
 
-  before(async done => {
+  before(async () => {
     // boot server server
-    server = TapestryLite({config: config})
+    server = new TapestryLite({config: config})
     await server.start()
     uri = server.info.uri
   })
@@ -62,49 +63,20 @@ describe('Handling custom endpoint routes', () => {
   let config = {
     routes: [
       {
-        path: 'string-endpoint',
-        endpoint: 'pages',
+        path: '/string-endpoint',
+        endpoint: () => 'pages',
         component: () => <p>Basic endpoint</p>
       },
       {
-        path: 'array-endpoint',
-        endpoint: ['pages', 'posts'],
-        component: () => <p>Custom endpoint</p>
-      },
-      {
-        path: 'object-endpoint',
-        endpoint: {
-          pages: 'pages',
-          posts: 'posts'
-        },
-        component: () => <p>Custom endpoint</p>
-      },
-      {
-        path: 'dynamic-string-endpoint/:custom',
+        path: '/dynamic-string-endpoint/:custom',
         endpoint: params => `pages?slug=${params.custom}`,
-        component: () => <p>Custom endpoint</p>
-      },
-      {
-        path: 'dynamic-array-endpoint/:custom',
-        endpoint: params => [
-          `pages?slug=${params.custom}`,
-          `posts?slug=${params.custom}`
-        ],
-        component: () => <p>Custom endpoint</p>
-      },
-      {
-        path: 'dynamic-object-endpoint/:custom',
-        endpoint: params => ({
-          page: `pages?slug=${params.custom}`,
-          post: `posts?slug=${params.custom}`
-        }),
         component: () => <p>Custom endpoint</p>
       }
     ],
     siteUrl: 'http://dummy.api'
   }
 
-  before(async done => {
+  before(async () => {
     // mock api response
     nock('http://dummy.api')
       .get('/wp-json/wp/v2/pages')
@@ -120,43 +92,16 @@ describe('Handling custom endpoint routes', () => {
       .times(5)
       .reply(200, dataPage)
     // boot server server
-    server = TapestryLite({config: config})
+    server = new TapestryLite({config: config})
     await server.start()
     uri = server.info.uri
   })
 
-  after(() => server.server.stop())
+ after(async () => await server.stop())
 
   it('Route matched, string endpoint works', done => {
     request.get(`${uri}/string-endpoint`, (err, res, body) => {
       expect(body).to.contain(prepareJson(dataPages.data))
-      done()
-    })
-  })
-
-  it('Route matched, array endpoint works', done => {
-    request.get(`${uri}/array-endpoint`, (err, res, body) => {
-      const expectedJson = [
-        {
-          data: [dataPages.data, dataPosts.data]
-        }
-      ]
-      expect(body).to.contain(prepareJson(expectedJson))
-      done()
-    })
-  })
-
-  it('Route matched, object endpoint works', done => {
-    request.get(`${uri}/object-endpoint`, (err, res, body) => {
-      const expectedJson = [
-        {
-          data: {
-            pages: dataPages.data,
-            posts: dataPosts.data
-          }
-        }
-      ]
-      expect(body).to.contain(prepareJson(expectedJson))
       done()
     })
   })
@@ -167,86 +112,5 @@ describe('Handling custom endpoint routes', () => {
       done()
     })
   })
-
-  it('Route matched, dynamic array endpoint works', done => {
-    request.get(`${uri}/dynamic-array-endpoint/test`, (err, res, body) => {
-      const expectedJson = [
-        {
-          data: [dataPage, dataPost]
-        }
-      ]
-      expect(body).to.contain(prepareJson(expectedJson))
-      done()
-    })
-  })
-
-  it('Route matched, dynamic object endpoint works', done => {
-    request.get(`${uri}/dynamic-object-endpoint/test`, (err, res, body) => {
-      const expectedJson = [
-        {
-          data: {
-            page: dataPage,
-            post: dataPost
-          }
-        }
-      ]
-      expect(body).to.contain(prepareJson(expectedJson))
-      done()
-    })
-  })
 })
 
-describe('Handling preview endpoint routes', () => {
-  let server = null
-  let uri = null
-  let config = {
-    routes: [
-      {
-        path: 'path-without-embed',
-        endpoint: 'pages/10',
-        component: () => <p>Basic endpoint</p>
-      },
-      {
-        path: 'path-with-embed',
-        endpoint: 'pages/10?_embed',
-        component: () => <p>Basic endpoint</p>
-      }
-    ],
-    siteUrl: 'http://dummy.api'
-  }
-
-  before(async done => {
-    // mock api response
-    nock('http://dummy.api')
-      .get('/wp-json/revision/v1/pages/10?server_hash=hash&p=10')
-      .reply(200, dataPage)
-      .get('/wp-json/revision/v1/pages/10?_embed&server_hash=hash&p=10')
-      .reply(200, dataPage)
-    // boot server server
-    server = TapestryLite({config})
-    await server.start()
-    uri = server.info.uri
-  })
-
-  after(() => server.server.stop())
-
-  it('Preview route without embed, endpoint works', done => {
-    request.get(
-      `${uri}/path-without-embed?server_hash=hash&p=10`,
-      (err, res, body) => {
-        expect(body).to.contain(prepareJson(dataPage))
-        done()
-      }
-    )
-  })
-
-  it('Preview route with embed, endpoint works', done => {
-    request.get(
-      `${uri}/path-with-embed?server_hash=hash&p=10`,
-      (err, res, body) => {
-        expect(body).to.contain(prepareJson(dataPage))
-        done()
-      }
-    )
-  })
-})

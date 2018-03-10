@@ -25,10 +25,10 @@ export default ({ server, config }) => {
         throw new Error({message: 'No routes matched'})
       }
       // Make this more robust
-      const route = branch[0].route
+      const { route, match } = branch[0]
       // Steal the endpoint data resolver and normalisation bits
       // from normal tapestry
-      const endpoint = route.endpoint && route.endpoint(branch[0].match.params)
+      const endpoint = route.endpoint && route.endpoint(match.params)
 
       let data = false
       if (endpoint) {
@@ -45,7 +45,7 @@ export default ({ server, config }) => {
       }
       // Glamor works as before
       const { html, css, ids } = renderStaticOptimized(() =>
-        renderToString(<route.component {...data} />)
+        renderToString(<route.component {...match} {...data} />)
       )
       const helmet = Helmet.renderStatic()
       // Assets to come, everything else works
