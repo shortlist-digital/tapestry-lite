@@ -28,7 +28,7 @@ export default ({ server, config }) => {
       // With the exception of optional params: (:thing) becomes :thing?
       const routes = RouteWrapper(config)
       const branch = matchRoutes(routes, request.url.pathname)
-      let route, match, componentData, data, errorData
+      let route, match, componentData, data, errorData, allowEmptyResponse
       if (branch[0]) {
         // Make this more robust
         route = branch[0].route
@@ -43,7 +43,7 @@ export default ({ server, config }) => {
         if (endpoint) {
           const url = `${baseUrlResolver(config)}/${endpoint}`
           // Async/Await dereams
-          const allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
+          allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
 
           try {
             data = await AFAR(url, allowEmptyResponse)
@@ -54,7 +54,7 @@ export default ({ server, config }) => {
         }
         const missing = (typeof route.component === 'undefined')
         componentData = errorData || data
-        if (errorData && !allowEmptyResponse) {
+        if (missing || (errorData && !allowEmptyResponse)) {
           route.component = buildErrorView({config, missing})
         }
       } else {
@@ -67,7 +67,6 @@ export default ({ server, config }) => {
         }
       }
       // Glamor works as before
-      console.log({route})
       const { html, css, ids } = renderStaticOptimized(() =>
         renderToString(<route.component {...match} {...componentData} />)
       )
