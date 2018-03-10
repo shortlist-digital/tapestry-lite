@@ -48,7 +48,7 @@
     "start-server-webpack-plugin": "^2.2.1",
     "webpack": "^4.1.0",
     "webpack-node-externals": "^1.6.0",
-    "winston": "^3.0.0-rc2"
+    "winston": "2.3"
   },
   "peerDependencies": {
     "react": "^16.2.0",
