@@ -950,7 +950,7 @@ boom@6.x.x:
 
 boom@7.x.x, boom@^7.2.0:
   version "7.2.0"
-  resolved "https://registry.npmjs.org/boom/-/boom-7.2.0.tgz#2bff24a55565767fde869ec808317eb10c48e966"
+  resolved "https://registry.yarnpkg.com/boom/-/boom-7.2.0.tgz#2bff24a55565767fde869ec808317eb10c48e966"
   dependencies:
     hoek "5.x.x"
 
@@ -2300,7 +2300,7 @@ indexof@0.0.1:
 
 inert@^5.1.0:
   version "5.1.0"
-  resolved "https://registry.npmjs.org/inert/-/inert-5.1.0.tgz#e9f130dc3047ccd9ffaa64b157b4c1114611035d"
+  resolved "https://registry.yarnpkg.com/inert/-/inert-5.1.0.tgz#e9f130dc3047ccd9ffaa64b157b4c1114611035d"
   dependencies:
     ammo "3.x.x"
     boom "7.x.x"

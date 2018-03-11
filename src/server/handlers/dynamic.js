@@ -42,6 +42,7 @@ export default ({ server, config }) => {
         let errorData = false
         if (endpoint) {
           const url = `${baseUrlResolver(config)}/${endpoint}`
+          console.log({url})
           // Async/Await dereams
           allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
 
