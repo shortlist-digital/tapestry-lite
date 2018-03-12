@@ -1,4 +1,4 @@
-import fetcher from '../shared/fetcher'
+import fetcher from '../utilities/fetcher'
 import { log } from '../utilities/logger'
 import chalk from 'chalk'
 

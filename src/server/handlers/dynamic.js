@@ -3,16 +3,19 @@ import { matchRoutes } from 'react-router-config'
 import { renderStaticOptimized } from 'glamor/server'
 import { renderToStaticMarkup, renderToString } from 'react-dom/server'
 import Helmet from 'react-helmet'
-import RouteWrapper from '../route-wrapper'
+import RouteWrapper from '../routing/route-wrapper'
 import idx from 'idx'
 // Tuned fetched from normal tapestry
 import AFAR from '../../server/api-fetch-and-respond'
-import fetcher from '../../shared/fetcher'
+import fetcher from '../../utilities/fetcher'
 import baseUrlResolver from '../../utilities/base-url-resolver'
 import { log } from '../../utilities/logger'
 import buildErrorView from '../render/error-view'
 
 export default ({ server, config }) => {
+  // Build App Routes
+  const routes = RouteWrapper(config)
+
   server.route({
     config: {
       cache: {
@@ -26,18 +29,24 @@ export default ({ server, config }) => {
     handler: async function(request, h) {
       // Don't even import react-router any more, but backwards compatible
       // With the exception of optional params: (:thing) becomes :thing?
-      const routes = RouteWrapper(config)
+      // Match Routes
+      // this should only have one route as we force "exact" on each route
+      // How would we error out if two routes match here? "Ambigous routes detected?" maybe earlier in app
       const branch = matchRoutes(routes, request.url.pathname)
+      // This needs tidying
       let route, match, componentData, data, errorData, allowEmptyResponse
+      // If there's a branch of the route config, we have a route
       if (branch[0]) {
         // Make this more robust
+        // Assign the route object
         route = branch[0].route
+        // Assign the match object for the route
+        // https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/api/match.md
         match = branch[0].match
         // Steal the endpoint data resolver and normalisation bits
         // from normal tapestry
         const endpoint = route.endpoint && route.endpoint(match.params)
         // Setup a default ocomponent
-
         data = false
         let errorData = false
         if (endpoint) {

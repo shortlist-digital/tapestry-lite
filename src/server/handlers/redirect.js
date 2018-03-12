@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 import fs from 'fs'
 import path from 'path'
-import fetcher from '../../shared/fetcher'
+import fetcher from '../../utilities/fetcher'
 import { log } from '../../utilities/logger'
 
 const setRedirects = (server, redirects) => {
