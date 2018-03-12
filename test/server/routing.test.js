@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import request from 'request'
 import nock from 'nock'
 
-import TapestryLite from '../../src/server/server'
+import Server from '../../src/server'
 import dataPage from '../mocks/page.json'
 import dataPost from '../mocks/post.json'
 import dataPages from '../mocks/pages.json'
@@ -34,7 +34,7 @@ describe('Handling custom static routes', () => {
 
   before(async () => {
     // boot server server
-    server = new TapestryLite({config: config})
+    server = new Server({config: config})
     await server.start()
     uri = server.info.uri
   })
@@ -91,7 +91,7 @@ describe('Handling custom endpoint routes', () => {
       .times(5)
       .reply(200, dataPage)
     // boot server server
-    server = new TapestryLite({config: config})
+    server = new Server({config: config})
     await server.start()
     uri = server.info.uri
   })

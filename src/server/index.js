@@ -6,7 +6,9 @@ import ProxyHandler from './handlers/proxy'
 
 export default class TapestryLite {
   constructor({ config, assets = {} }) {
-    this.server = Hapi.server({ port: 3000 })
+    this.server = Hapi.server({
+      port: process.env.PORT || 3000 
+    })
 
     this.server.route({
       method: 'GET',

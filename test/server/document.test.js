@@ -5,7 +5,7 @@ import request from 'request'
 import nock from 'nock'
 import { css } from 'glamor'
 import dataPosts from '../mocks/posts.json'
-import TapestryLite from '../../src/server/server'
+import Server from '../../src/server'
 
 describe('Document contents', () => {
   let server = null
@@ -65,7 +65,7 @@ describe('Document contents', () => {
       .times(5)
       .reply(200, dataPosts.data)
     // boot tapestry server
-    server = new TapestryLite({config})
+    server = new Server({config})
     await server.start()
     uri = server.info.uri
   })

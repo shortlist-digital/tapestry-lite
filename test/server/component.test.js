@@ -5,7 +5,7 @@ import { expect } from 'chai'
 import request from 'request'
 import nock from 'nock'
 
-import TapestryLite from '../../src/server/server'
+import Server from '../../src/server'
 import dataPost from '../mocks/post.json'
 import dataPosts from '../mocks/posts.json'
 import dataPage from '../mocks/page.json'
@@ -35,7 +35,7 @@ describe('Custom components rendering', () => {
       .reply(200, dataPosts.data)
       .get('/wp-json/wp/v2/posts?slug=slug&_embed')
       .reply(200, dataPage)
-    server = new TapestryLite({config: config})
+    server = new Server({config: config})
     await server.start()
     uri = server.info.uri
   })
@@ -84,7 +84,7 @@ describe('Default view rendering', () => {
       .get('/wp-json/wp/v2/posts?slug=slug&_embed')
       .reply(200, dataPost)
     // boot  server
-    server = new TapestryLite({config :config})
+    server = new Server({config :config})
     await server.start()
     uri = server.info.uri
   })
@@ -144,7 +144,7 @@ describe('Default view rendering', () => {
 //   afterEach(async () => await server.stop())
 
 //   it('Show MissingView in DEV if component missing', async done => {
-//     server = await TapestryLite(config)
+//     server = await Server(config)
 //     await server.start()
 //     request.get(server.info.uri, (err, res, body) => {
 //       expect(body).to.contain('Missing component')
@@ -153,7 +153,7 @@ describe('Default view rendering', () => {
 //   })
 
 //   it('Show DefaultError in PROD if component missing', async done => {
-//     server = await TapestryLite(config, { __DEV__: false })
+//     server = await Server(config, { __DEV__: false })
 //     server.start()
 //     request.get(server.info.uri, (err, res, body) => {
 //       expect(body).to.contain('Application Error')
@@ -162,7 +162,7 @@ describe('Default view rendering', () => {
 //   })
 
 //   it('Show DefaultError if API 404', async done => {
-//     server = await TapestryLite({
+//     server = await Server({
 //       ...config,
 //       components: { Page: () => <p>Hello</p> }
 //     })
@@ -175,7 +175,7 @@ describe('Default view rendering', () => {
 //   })
 
 //   it('Show DefaultError if route 404', async done => {
-//     server = await TapestryLite({
+//     server = await Server({
 //       ...config,
 //       components: { Page: () => <p>Hello</p> }
 //     })
@@ -191,7 +191,7 @@ describe('Default view rendering', () => {
 //   })
 
 //   it('Show CustomError if defined', async done => {
-//     server = await TapestryLite({
+//     server = await Server({
 //       ...config,
 //       components: {
 //         CustomError: () => <p>Custom Error</p>,
@@ -206,7 +206,7 @@ describe('Default view rendering', () => {
 //   })
 
 //   it('Status code and message are available to CustomError', async done => {
-//     server = await TapestryLite({
+//     server = await Server({
 //       ...config,
 //       components: {
 //         CustomError: ({ code, message }) => (

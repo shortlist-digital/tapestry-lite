@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import request from 'request'
 import nock from 'nock'
 
-import TapestryLite from '../../src/server/server'
+import Server from '../../src/server'
 import dataPosts from '../mocks/posts.json'
 import dataPages from '../mocks/posts.json'
 
@@ -68,7 +68,7 @@ describe('Handling server responses', () => {
       .reply(200, [])
     // boot tapestry server
     process.env.CACHE_CONTROL_MAX_AGE = 60
-    server = new TapestryLite({config})
+    server = new Server({config})
     await server.start()
     uri = server.info.uri
   })

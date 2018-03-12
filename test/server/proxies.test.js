@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import request from 'request'
 import nock from 'nock'
 
-import TapestryLite from '../../src/server/server'
+import Server from '../../src/server'
 
 describe('Handling static proxies', () => {
   let server = null
@@ -23,7 +23,7 @@ describe('Handling static proxies', () => {
       .get('/wp-json/wp/v2/pages?slug=test.txt&_embed')
       .reply(404, { data: { status: 404 } })
     // boot tapestry server
-    server = new TapestryLite({config})
+    server = new Server({config})
     await server.register({ plugin: require('h2o2') })
     await server.start()
     uri = server.info.uri
@@ -58,7 +58,7 @@ describe('Handling wildcard proxies', () => {
       .get('/sitemap/different-id.xml')
       .reply(200, proxyContents)
     // boot tapestry server
-    server = new TapestryLite({config})
+    server = new Server({config})
     await server.register({ plugin: require('h2o2') })
     await server.start()
     uri = server.info.uri

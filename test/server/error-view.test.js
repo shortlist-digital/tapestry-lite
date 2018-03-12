@@ -6,7 +6,7 @@ import request from 'request'
 import r from 'requisition'
 import nock from 'nock'
 
-import TapestryLite from '../../src/server/server'
+import Server from '../../src/server'
 import dataPost from '../mocks/post.json'
 import dataPosts from '../mocks/posts.json'
 import dataPage from '../mocks/page.json'
@@ -35,7 +35,7 @@ describe('Error view rendering', () => {
   afterEach(async () => await server.stop())
 
   it('Show MissingView in DEV if component missing', async () => {
-    server = new TapestryLite({config})
+    server = new Server({config})
     await server.start()
     let res = await r.get(server.info.uri)
     let body = await res.text()
@@ -43,7 +43,7 @@ describe('Error view rendering', () => {
   })
 
   it('Show DefaultError in PROD if component missing', async () => {
-    server = new TapestryLite({config})
+    server = new Server({config})
     await server.start()
     let res = await r.get(server.info.uri)
     let body = await res.text()
@@ -51,7 +51,7 @@ describe('Error view rendering', () => {
   })
 
   it('Show DefaultError if API 404', async () => {
-    server = new TapestryLite({
+    server = new Server({
       config: {
         ...config,
         components: { Page: () => <p>Hello</p> }
@@ -65,7 +65,7 @@ describe('Error view rendering', () => {
   })
 
   it('Show DefaultError if route 404', async () => {
-    server = new TapestryLite({
+    server = new Server({
       config: {
         ...config,
         components: { Page: () => <p>Hello</p> }
@@ -79,7 +79,7 @@ describe('Error view rendering', () => {
   })
 
   it('Show CustomError if defined', async () => {
-    server = new TapestryLite({
+    server = new Server({
       config: {
         ...config,
         components: {
@@ -95,7 +95,7 @@ describe('Error view rendering', () => {
   })
 
   it('Status code and message are available to CustomError', async () => {
-    server = new TapestryLite({
+    server = new Server({
       config: {
         ...config,
         components: {

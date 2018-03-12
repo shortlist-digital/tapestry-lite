@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import request from 'request'
 import nock from 'nock'
 
-import TapestryLite from '../../src/server/server'
+import Server from '../../src/server'
 import dataPosts from '../mocks/posts.json'
 import dataPages from '../mocks/posts.json'
 
@@ -70,7 +70,7 @@ describe('Handling server responses using Wordpress.com API', () => {
       .times(5)
       .reply(200, [])
     // boot tapestry server
-    server = new TapestryLite({config})
+    server = new Server({config})
     await server.start()
     uri = server.info.uri
   })

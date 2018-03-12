@@ -7,7 +7,7 @@ import request from 'request'
 import r from 'requisition'
 import nock from 'nock'
 
-import TapestryLite from '../../src/server/server'
+import Server from '../../src/server'
 import dataPage from '../mocks/page.json'
 import dataRedirects from '../mocks/redirects.json'
 
@@ -46,7 +46,7 @@ describe('Handling redirects', () => {
       .reply(200, { '/redirect/from/endpoint': '/page' })
 
     // boot tapestry server
-    server = new TapestryLite({config})
+    server = new Server({config})
     await server.start()
     uri = server.info.uri
   })
@@ -120,7 +120,7 @@ describe('Handling endpoint redirects', () => {
       .reply(200, dataRedirects)
 
     // boot tapestry server
-    server = new TapestryLite({config})
+    server = new Server({config})
     await server.start()
     uri = server.info.uri
     let res = await r.get(`${uri}/redirect/from/this`)
@@ -136,7 +136,7 @@ describe('Handling endpoint redirects', () => {
       .reply(404)
 
     // boot tapestry server
-    server = new TapestryLite({config})
+    server = new Server({config})
     await server.start()
     uri = server.info.uri
     let res = await r.get(`${uri}/page`)
@@ -152,7 +152,7 @@ describe('Handling endpoint redirects', () => {
       .reply(200, 'Error: <p>Something went wrong')
 
     // boot tapestry server
-    server = new TapestryLite({config})
+    server = new Server({config})
     await server.start()
     uri = server.info.uri
     let res = await r.get(`${uri}/page`)
