@@ -6,8 +6,7 @@ import Helmet from 'react-helmet'
 import RouteWrapper from '../routing/route-wrapper'
 import idx from 'idx'
 // Tuned fetched from normal tapestry
-import AFAR from '../data-fetching/api-fetch-and-respond'
-import fetcher from '../../utilities/fetcher'
+import apiFetch from '../data-fetching/api-fetch'
 import baseUrlResolver from '../../utilities/base-url-resolver'
 import { log } from '../../utilities/logger'
 import buildErrorView from '../render/error-view'
@@ -56,7 +55,7 @@ export default ({ server, config }) => {
           allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
 
           try {
-            data = await AFAR(url, allowEmptyResponse)
+            data = await apiFetch(url, allowEmptyResponse)
           } catch (e) {
             log.error(e)
             errorData = e

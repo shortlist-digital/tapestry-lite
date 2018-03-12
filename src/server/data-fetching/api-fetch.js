@@ -2,7 +2,7 @@ import fetcher from './fetcher'
 import { log } from '../../utilities/logger'
 import chalk from 'chalk'
 
-const AFAR = (url, allowEmptyResponse = false) => {
+const apiFetch = (url, allowEmptyResponse = false) => {
   console.time(`fetch: ${url}`)
   return fetcher(url)
     .then(resp => {
@@ -39,4 +39,4 @@ const AFAR = (url, allowEmptyResponse = false) => {
     })
 }
 
-export default AFAR
+export default apiFetch
