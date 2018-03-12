@@ -60,7 +60,7 @@ module.exports = {
   nodePaths: nodePaths,
   ownPath: resolveOwn('.'),
   ownNodeModules: resolveOwn('node_modules'),
-  ownDevServer: resolveOwn('src/server/hot'),
+  ownDevServer: resolveOwn('src/config/hot'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
 }

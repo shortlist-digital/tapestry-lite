@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test LOG_LEVEL=silent mocha ./src/**/*.test.js ./test/**/*.test.js --require test/babel-register --bail",
+    "test": "PORT=4321 NODE_ENV=test LOG_LEVEL=silent mocha ./src/**/*.test.js ./test/server/*.test.js --require test/babel-register",
     "test:integration": "NODE_ENV=test mocha ./test/integration/**/*.test.js --bail"
   },
   "author": "",
@@ -15,6 +15,7 @@
     "nock": "^9.0.11",
     "pstree": "^0.0.1",
     "request": "^2.81.0",
+    "requisition": "^1.7.0",
     "shelljs": "^0.8.1"
   },
   "dependencies": {
@@ -28,12 +29,14 @@
     "file-loader": "^1.1.11",
     "fs-extra": "^5.0.0",
     "glamor": "^2.20.40",
+    "h2o2": "^8.0.0",
     "hapi": "^17.2.1",
     "history": "^4.7.2",
     "http-status": "^1.0.1",
     "idx": "^2.2.0",
     "inert": "^5.1.0",
     "isomorphic-fetch": "^2.2.1",
+    "lodash.isempty": "^4.4.0",
     "lodash.isfunction": "^3.0.9",
     "lodash.isplainobject": "^4.0.6",
     "lodash.startswith": "^4.2.1",
@@ -41,11 +44,13 @@
     "razzle-dev-utils": "^0.8.10",
     "react-helmet": "^5.2.0",
     "react-hot-loader": "^4.0.0",
+    "react-inspector": "^2.2.2",
     "react-router": "^4.2.0",
     "react-router-config": "^1.0.0-beta.4",
     "start-server-webpack-plugin": "^2.2.1",
     "webpack": "^4.1.0",
-    "webpack-node-externals": "^1.6.0"
+    "webpack-node-externals": "^1.6.0",
+    "winston": "2.3"
   },
   "peerDependencies": {
     "react": "^16.2.0",

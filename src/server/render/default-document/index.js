@@ -35,7 +35,7 @@ const DefaultDocument = ({ html, css, head, bootstrapData }) => {
           <script
             type="text/javascript"
             dangerouslySetInnerHTML={{
-              __html: `window.__INIT_DATA__ = ${escapeScriptTags(bootstrapData)}`
+              __html: `window.__BOOTSTRAP_DATA__ = ${escapeScriptTags(bootstrapData)}`
             }}
           />
         )}

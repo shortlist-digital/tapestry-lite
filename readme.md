@@ -14,3 +14,7 @@
 * Efficient bundling spitting
 * Streaming
 * Super fast Hot Loading on the client
+
+## Testing
+
+Run `yarn test` to run the test

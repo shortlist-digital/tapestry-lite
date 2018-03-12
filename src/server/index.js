@@ -1,11 +1,14 @@
 import Hapi from 'hapi'
 import Inert from 'inert'
-
 import DynamicRouteHandler from './handlers/dynamic'
+import RedirectHandler from './handlers/redirect'
+import ProxyHandler from './handlers/proxy'
 
 export default class TapestryLite {
   constructor({ config, assets = {} }) {
-    this.server = Hapi.server({ port: 3000 })
+    this.server = Hapi.server({
+      port: process.env.PORT || 3000 
+    })
 
     this.server.route({
       method: 'GET',
@@ -23,6 +26,8 @@ export default class TapestryLite {
     }
 
     DynamicRouteHandler(data)
+    ProxyHandler(data)
+    RedirectHandler(data)
 
     return this.server
   }

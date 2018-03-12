@@ -8,7 +8,7 @@ const paths = require('./paths')
 
 const mainBabelOptions = {
   babelrc: true,
-  cacheDirectory: false,
+  cacheDirectory: true,
   presets: [require('babel-preset-razzle')],
   plugins: [require('react-hot-loader/babel')]
 }
@@ -52,7 +52,7 @@ module.exports = () => {
     target: 'node',
     externals: [
       nodeExternals({
-        whitelist: ['webpack/hot/poll?1000']
+        whitelist: ['webpack/hot/poll?1000', 'tapestry-lite']
       })
     ],
     plugins: [

@@ -2,10 +2,10 @@ import { expect } from 'chai'
 import request from 'request'
 import nock from 'nock'
 
-import { bootServer } from '../utils'
+import Server from '../../src/server'
 
 describe('Handling static proxies', () => {
-  let tapestry = null
+  let server = null
   let uri = null
   let proxyPath = '/robots.txt'
   let proxyContents = 'Test file'
@@ -15,7 +15,7 @@ describe('Handling static proxies', () => {
     components: {}
   }
 
-  before(done => {
+  before(async () => {
     // mock api response
     nock('http://dummy.api')
       .get(proxyPath)
@@ -23,14 +23,13 @@ describe('Handling static proxies', () => {
       .get('/wp-json/wp/v2/pages?slug=test.txt&_embed')
       .reply(404, { data: { status: 404 } })
     // boot tapestry server
-    tapestry = bootServer(config)
-    tapestry.server.on('start', () => {
-      uri = tapestry.server.info.uri
-      done()
-    })
+    server = new Server({config})
+    await server.register({ plugin: require('h2o2') })
+    await server.start()
+    uri = server.info.uri
   })
 
-  after(() => tapestry.server.stop())
+  after(async () => await server.stop())
 
   it('Proxy should return correct content', done => {
     request.get(uri + proxyPath, (err, res, body) => {
@@ -38,17 +37,10 @@ describe('Handling static proxies', () => {
       done()
     })
   })
-
-  it('Undeclared proxy should return 404', done => {
-    request.get(`${uri}/test.txt`, (err, res) => {
-      expect(res.statusCode).to.equal(404)
-      done()
-    })
-  })
 })
 
 describe('Handling wildcard proxies', () => {
-  let tapestry = null
+  let server = null
   let uri = null
   let proxyPath = '/sitemap/{sitemapId}'
   let proxyContents = 'Test file'
@@ -58,7 +50,7 @@ describe('Handling wildcard proxies', () => {
     components: {}
   }
 
-  before(done => {
+  before(async () => {
     // mock api response
     nock('http://dummy.api')
       .get('/sitemap/test.xml')
@@ -66,14 +58,13 @@ describe('Handling wildcard proxies', () => {
       .get('/sitemap/different-id.xml')
       .reply(200, proxyContents)
     // boot tapestry server
-    tapestry = bootServer(config)
-    tapestry.server.on('start', () => {
-      uri = tapestry.server.info.uri
-      done()
-    })
+    server = new Server({config})
+    await server.register({ plugin: require('h2o2') })
+    await server.start()
+    uri = server.info.uri
   })
 
-  after(() => tapestry.server.stop())
+  after(async () => await server.stop())
 
   it('Proxy should return correct content from test a', done => {
     request.get(uri + '/sitemap/test.xml', (err, res, body) => {

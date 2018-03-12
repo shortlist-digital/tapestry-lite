@@ -3,39 +3,43 @@ import { expect } from 'chai'
 import request from 'request'
 import nock from 'nock'
 
-import { bootServer } from '../utils'
+import Server from '../../src/server'
 import dataPosts from '../mocks/posts.json'
 import dataPages from '../mocks/posts.json'
 
-describe('Handling server responses using Wordpress.com API', () => {
-  let tapestry = null
+describe('Handling server responses', () => {
+  let server = null
   let uri = null
   let config = {
     routes: [
       {
         path: '/',
-        endpoint: 'posts?_embed',
-        component: () => <p>Hello</p>
+        endpoint: () => 'posts?_embed',
+        component: () => <p>Root</p>
       },
       {
         path: '/:cat/:subcat/:id',
-        component: () => <p>Hello</p>
+        component: () => <p>3 Dynamic</p>
       },
       {
         path: '/404-response',
-        endpoint: 'pages?slug=404-response',
-        component: () => <p>Hello</p>
+        endpoint: () => 'pages?slug=404-response',
+        component: () => <p>404 Response</p>
       },
       {
         path: '/empty-response',
-        endpoint: 'pages?slug=empty-response',
-        component: () => <p>Hello</p>
+        endpoint: () => 'pages?slug=empty-response',
+        component: () => <p>Empty Response</p>
       },
       {
         path: '/empty-allowed-response',
-        endpoint: 'pages?slug=empty-response',
+        endpoint: () => 'pages?slug=empty-response',
         options: { allowEmptyResponse: true },
-        component: () => <p>Hello</p>
+        component: () => <p>Empty Response Allowed</p>
+      },
+      {
+        path: '/static-endpoint',
+        component: () => <p>Static endpoint</p>
       },
       {
         path: '/object-endpoint',
@@ -44,82 +48,94 @@ describe('Handling server responses using Wordpress.com API', () => {
           posts: 'posts'
         },
         component: () => <p>Custom endpoint</p>
-      },
-      {
-        path: '/static-endpoint',
-        component: () => <p>Static endpoint</p>
       }
     ],
-    siteUrl: 'http://dummy.site.wordpress.com',
-    options: {
-      wordpressDotComHosting: true
-    }
+    siteUrl: 'http://response-dummy.api'
   }
 
-  before(done => {
+  before(async () => {
     // mock api response
-    nock('https://public-api.wordpress.com')
-      .get('/wp/v2/sites/dummy.site.wordpress.com/posts/571')
+    nock('http://response-dummy.api')
+      .get('/wp-json/wp/v2/posts/571')
       .times(1)
       .reply(200, dataPages.data)
-      .get('/wp/v2/sites/dummy.site.wordpress.com/posts')
+      .get('/wp-json/wp/v2/pages')
       .times(1)
       .reply(200, dataPages.data)
-      .get('/wp/v2/sites/dummy.site.wordpress.com/pages')
+      .get('/wp-json/wp/v2/posts')
       .times(1)
       .reply(200, dataPosts.data)
-      .get('/wp/v2/sites/dummy.site.wordpress.com/posts?_embed')
+      .get('/wp-json/wp/v2/posts?_embed')
       .times(5)
       .reply(200, dataPosts.data)
-      .get('/wp/v2/sites/dummy.site.wordpress.com/pages?slug=404-response')
+      .get('/wp-json/wp/v2/pages?slug=404-response')
       .times(5)
       .reply(404, { data: { status: 404 } })
-      .get('/wp/v2/sites/dummy.site.wordpress.com/pages?slug=empty-response')
+      .get('/wp-json/wp/v2/pages?slug=empty-response')
       .times(5)
       .reply(200, [])
     // boot tapestry server
     process.env.CACHE_CONTROL_MAX_AGE = 60
-    tapestry = bootServer(config)
-    tapestry.server.on('start', () => {
-      uri = tapestry.server.info.uri
-      done()
-    })
+    server = new Server({config})
+    await server.start()
+    uri = server.info.uri
   })
 
-  after(() => {
-    tapestry.server.stop()
+  after(async () => {
+    await server.stop()
     delete process.env.CACHE_CONTROL_MAX_AGE
   })
 
-  it('WP.com Route matched, status code is 200', done => {
+  it('Route matched, status code is 200', done => {
     request.get(uri, (err, res) => {
       expect(res.statusCode).to.equal(200)
       done()
     })
   })
 
-  it('WP.com Route not matched, status code is 404', done => {
+  it('Route matched, has correct headers', done => {
+    request.get(uri, (err, res) => {
+      expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
+      expect(res.headers['cache-control']).to.equal(
+        'max-age=60, must-revalidate, public'
+      )
+      done()
+    })
+  })
+
+  // it('Preview routes send no-cache headers', done => {
+  //   request.get(
+  //     `${uri}/foo/bar/571?tapestry_hash=somesortofhash&p=571`,
+  //     (err, res) => {
+  //       expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
+  //       expect(res.headers['cache-control']).to.equal('no-cache')
+  //       done()
+  //     }
+  //   )
+  // })
+
+  it('Route not matched, status code is 404', done => {
     request.get(`${uri}/route/not/matched/in/any/way`, (err, res) => {
       expect(res.statusCode).to.equal(404)
       done()
     })
   })
 
-  it('WP.com Route matched, API 404, status code is 404', done => {
+  it('Route matched, API 404, status code is 404', done => {
     request.get(`${uri}/404-response`, (err, res) => {
       expect(res.statusCode).to.equal(404)
       done()
     })
   })
 
-  it('WP.com Route matched, API empty response, status code is 404', done => {
+  it('Route matched, API empty response, status code is 404', done => {
     request.get(`${uri}/empty-response`, (err, res) => {
       expect(res.statusCode).to.equal(404)
       done()
     })
   })
 
-  it('WP.com Route matched, API empty but allowed, status code is 200', done => {
+  it('Route matched, API empty but allowed, status code is 200', done => {
     request.get(`${uri}/empty-allowed-response`, (err, res) => {
       expect(res.statusCode).to.equal(200)
       done()

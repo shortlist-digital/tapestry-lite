@@ -6,7 +6,13 @@ import defaultRoutes from './default-routes'
 
 const RouteWrapper = config => {
   // if user routes have been defined, take those in preference to the defaults
-  return config.routes || defaultRoutes(config.components)
+  const routes = config.routes || defaultRoutes(config.components)
+  return routes.map(route => {
+    return {
+      ...route,
+      exact: true
+    }
+  })
 }
 
 export default RouteWrapper

@@ -3,63 +3,103 @@ import { matchRoutes } from 'react-router-config'
 import { renderStaticOptimized } from 'glamor/server'
 import { renderToStaticMarkup, renderToString } from 'react-dom/server'
 import Helmet from 'react-helmet'
-import RouteWrapper from '../route-wrapper'
-
-// Same default document
-import Document from '../render/default-document'
-// Using an old dummy app I have for now
-import appConfig from 'tapestry.config.js'
+import RouteWrapper from '../routing/route-wrapper'
+import idx from 'idx'
 // Tuned fetched from normal tapestry
-import fetcher from '../../shared/fetcher'
+import apiFetch from '../data-fetching/api-fetch'
+import normalizeApiResponse from '../data-fetching/normalize-api-response'
+import fetchFromEndpointConfig from '../data-fetching/fetch-from-endpoint-config'
+import baseUrlResolver from '../../utilities/base-url-resolver'
+import { log } from '../../utilities/logger'
+import buildErrorView from '../render/error-view'
 
-export default ({ server }) => {
+export default ({ server, config }) => {
+  // Build App Routes
+  const routes = RouteWrapper(config)
+
   server.route({
+    config: {
+      cache: {
+        expiresIn:
+          (parseInt(process.env.CACHE_CONTROL_MAX_AGE, 10) || 0) * 1000, // 1 Minute
+        privacy: 'public'
+      }
+    },
     method: 'GET',
     path: '/{path*}',
     handler: async function(request, h) {
       // Don't even import react-router any more, but backwards compatible
       // With the exception of optional params: (:thing) becomes :thing?
-      const routes = RouteWrapper(appConfig)
+      // Match Routes
+      // this should only have one route as we force "exact" on each route
+      // How would we error out if two routes match here? "Ambigous routes detected?" maybe earlier in app
       const branch = matchRoutes(routes, request.url.pathname)
-      if (!branch.length) return 'hello'
-      console.log({branch, pathname: request.url.pathname})
-      // Make this more robust
-      const route = branch[0].route
-      // Steal the endpoint data resolver and normalisation bits
-      // from normal tapestry
-      const endpoint = route.endpoint && route.endpoint(branch[0].match.params)
-
-      let data = false
-      if (endpoint) {
-        const url = `${appConfig.siteUrl}/wp-json/wp/v2/${endpoint}`
-        // Async/Await dereams
-
-        try {
-          const responseBody = await fetcher(url)
-          data = await responseBody.json()
-        } catch (e) {
-          console.error(e)
-          process.exit(1)
+      // This needs tidying
+      let route, match, componentData, data, errorData, allowEmptyResponse
+      // If there's a branch of the route config, we have a route
+      if (branch[0]) {
+        // Make this more robust
+        // Assign the route object
+        route = branch[0].route
+        // Assign the match object for the route
+        // https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/api/match.md
+        match = branch[0].match
+        // Steal the endpoint data resolver and normalisation bits
+        // from normal tapestry
+        // Setup a default ocomponent
+        data = false
+        let errorData = false
+        if (route.endpoint) {
+          // Async/Await dereams
+          allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
+          try {
+            const multidata = await fetchFromEndpointConfig({
+              endpointConfig: route.endpoint,
+              baseUrl: baseUrlResolver(config),
+              requestUrlObject: request.url,
+              params: match.params,
+              allowEmptyResponse
+            })
+            data = normalizeApiResponse(multidata, route)
+          } catch (e) {
+            log.error(e)
+            errorData = e
+          }
+        }
+        const missing = (typeof route.component === 'undefined')
+        componentData = errorData || data
+        if (missing || (errorData && !allowEmptyResponse)) {
+          route.component = buildErrorView({config, missing})
+        }
+      } else {
+        route = {
+          component: buildErrorView({config, missing: false})
+        }
+        componentData = {
+          message: 'Not Found',
+          code: 404
         }
       }
       // Glamor works as before
       const { html, css, ids } = renderStaticOptimized(() =>
-        renderToString(<route.component {...data} />)
+        renderToString(<route.component {...match} {...componentData} />)
       )
+      const helmet = Helmet.renderStatic()
       // Assets to come, everything else works
       const renderData = {
         html,
         css,
         ids,
-        head: Helmet.rewind(),
+        head: helmet,
         bootstrapData: data
       }
+      let Document = idx(route, _ => _.options.customDocument) || require('../render/default-document').default
       const responseString = renderToStaticMarkup(<Document {...renderData} />)
       // Respond with new Hapi 17 api
       return h
         .response(responseString)
         .type('text/html')
-        .code(200)
+        .code(componentData.code || 200)
     }
   })
 }
