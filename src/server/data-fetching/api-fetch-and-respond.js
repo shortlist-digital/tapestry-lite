@@ -1,5 +1,5 @@
-import fetcher from '../utilities/fetcher'
-import { log } from '../utilities/logger'
+import fetcher from './fetcher'
+import { log } from '../../utilities/logger'
 import chalk from 'chalk'
 
 const AFAR = (url, allowEmptyResponse = false) => {

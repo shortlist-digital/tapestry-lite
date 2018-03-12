@@ -6,7 +6,7 @@ import Helmet from 'react-helmet'
 import RouteWrapper from '../routing/route-wrapper'
 import idx from 'idx'
 // Tuned fetched from normal tapestry
-import AFAR from '../../server/api-fetch-and-respond'
+import AFAR from '../data-fetching/api-fetch-and-respond'
 import fetcher from '../../utilities/fetcher'
 import baseUrlResolver from '../../utilities/base-url-resolver'
 import { log } from '../../utilities/logger'
