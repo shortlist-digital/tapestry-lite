@@ -3,6 +3,7 @@ import { log } from '../utilities/logger'
 import chalk from 'chalk'
 
 const AFAR = (url, allowEmptyResponse = false) => {
+  console.time(`fetch: ${url}`)
   return fetcher(url)
     .then(resp => {
       if (!resp.ok) {
@@ -23,6 +24,7 @@ const AFAR = (url, allowEmptyResponse = false) => {
     })
     .then(resp => resp.json())
     .then(apiData => {
+      console.timeEnd(`fetch: ${url}`)
       if ((apiData.length == false) && (allowEmptyResponse !== true)) {
         throw {
           name: 'FetchError',
