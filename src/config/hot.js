@@ -1,7 +1,7 @@
-import TapestryLite from './server'
+import Server from '../server'
 import Inert from 'inert'
 import h2o2 from 'h2o2'
-import appConfig from './config-proxy'
+import appConfig from '../src/config/config-proxy'
 
 let currentApp
 const serverLabel = 'Server Restart:'
@@ -15,16 +15,16 @@ const serverPlugins = [
 const run = async function() {
   console.log('Run was called')
   try {
-    currentApp = new TapestryLite({config: appConfig})
+    currentApp = new Server({config: appConfig})
     // Register plugins
     await currentApp.register(serverPlugins)
     // Start server
     await currentApp.start()
     if (module.hot) {
-      module.hot.accept('./config-proxy', async function() {
+      module.hot.accept('../src/config/config-proxy', async function() {
         console.time(serverLabel)
         await currentApp.stop({ timeout: 0 })
-        currentApp = new TapestryLite({config: require('./config-proxy').default})
+        currentApp = new Server({config: require('../src/config/config-proxy').default})
         // // Re-register plugins
         await currentApp.register(serverPlugins)
         await currentApp.start()
