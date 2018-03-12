@@ -40,7 +40,6 @@ export default ({ server, config }) => {
         // Make this more robust
         // Assign the route object
         route = branch[0].route
-        console.log('Route: ', route)
         // Assign the match object for the route
         // https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/api/match.md
         match = branch[0].match
@@ -59,7 +58,6 @@ export default ({ server, config }) => {
           try {
             data = await apiFetch(url, allowEmptyResponse)
             data = normalizeApiResponse(data, route)
-            log.debug('Normalized Data: ', data)
           } catch (e) {
             log.error(e)
             errorData = e
