@@ -75,7 +75,7 @@ describe('Document contents', () => {
   it('Contains correct Bootstrap data', done => {
     request.get(uri, (err, res, body) => {
       expect(body).to.contain(
-        `window.__BOOTSTRAP_DATA__ = ${JSON.stringify(dataPosts.data)
+        `window.__BOOTSTRAP_DATA__ = {"data":${JSON.stringify(dataPosts.data)
           .replace(/\//g, '\\/')
           .replace(/\u2028/g, '\\u2028')
           .replace(/\u2029/g, '\\u2029')}`
@@ -112,7 +112,7 @@ describe('Document contents', () => {
       expect(body).to.contain('Custom Title')
       expect(body).to.contain('Custom HTML')
       expect(body).to.contain(
-        `const test = ${JSON.stringify(dataPosts.data)}`
+        `const test = {"data":${JSON.stringify(dataPosts.data)}}`
       )
       expect(body).to.contain('{font-size:13px;}')
       done()

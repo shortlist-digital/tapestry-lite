@@ -40,6 +40,14 @@ describe('Handling server responses', () => {
       {
         path: '/static-endpoint',
         component: () => <p>Static endpoint</p>
+      },
+      {
+        path: '/object-endpoint',
+        endpoint: {
+          pages: 'pages',
+          posts: 'posts'
+        },
+        component: () => <p>Custom endpoint</p>
       }
     ],
     siteUrl: 'http://response-dummy.api'
@@ -134,12 +142,12 @@ describe('Handling server responses', () => {
     })
   })
 
-  // it('Route matched, multiple API requests, status code is 200', done => {
-  //   request.get(`${uri}/object-endpoint`, (err, res) => {
-  //     expect(res.statusCode).to.equal(200)
-  //     done()
-  //   })
-  // })
+  it('Route matched, multiple API requests, status code is 200', done => {
+    request.get(`${uri}/object-endpoint`, (err, res) => {
+      expect(res.statusCode).to.equal(200)
+      done()
+    })
+  })
 
   it('Static route matched, no data loaded, status code is 200', done => {
     request.get(`${uri}/static-endpoint`, (err, res) => {

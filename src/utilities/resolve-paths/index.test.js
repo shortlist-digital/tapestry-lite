@@ -17,10 +17,10 @@ describe('Resolve paths', () => {
     expect(paths).to.equal(expected)
   })
 
-  it('should run callback method if passed', () => {
+  it('should run generatPromise method id supplied', () => {
     const { paths, result } = resolvePaths({
       paths: 'hello',
-      cb: () => 'world'
+      generatePromise: () => 'world'
     })
     expect(paths).to.equal('hello')
     expect(result).to.equal('world')

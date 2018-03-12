@@ -7,6 +7,8 @@ import RouteWrapper from '../routing/route-wrapper'
 import idx from 'idx'
 // Tuned fetched from normal tapestry
 import apiFetch from '../data-fetching/api-fetch'
+import normalizeApiResponse from '../data-fetching/normalize-api-response'
+import fetchFromEndpointConfig from '../data-fetching/fetch-from-endpoint-config'
 import baseUrlResolver from '../../utilities/base-url-resolver'
 import { log } from '../../utilities/logger'
 import buildErrorView from '../render/error-view'
@@ -44,18 +46,21 @@ export default ({ server, config }) => {
         match = branch[0].match
         // Steal the endpoint data resolver and normalisation bits
         // from normal tapestry
-        const endpoint = route.endpoint && route.endpoint(match.params)
         // Setup a default ocomponent
         data = false
         let errorData = false
-        if (endpoint) {
-          const url = `${baseUrlResolver(config)}/${endpoint}`
-          log.debug('API request to: ', {url})
+        if (route.endpoint) {
           // Async/Await dereams
           allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
-
           try {
-            data = await apiFetch(url, allowEmptyResponse)
+            const multidata = await fetchFromEndpointConfig({
+              endpointConfig: route.endpoint,
+              baseUrl: baseUrlResolver(config),
+              requestUrlObject: request.url,
+              params: match.params,
+              allowEmptyResponse
+            })
+            data = normalizeApiResponse(multidata, route)
           } catch (e) {
             log.error(e)
             errorData = e

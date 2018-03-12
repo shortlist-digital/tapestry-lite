@@ -1,14 +1,13 @@
 import idx from 'idx'
 import HTTPStatus from 'http-status'
 import isEmpty from 'lodash.isempty'
+import isPlainObject from 'lodash.isplainobject'
 
 export default (response, route) => {
   // WP returns single objects or arrays
   const arrayResp = Array.isArray(response)
-  const routes = idx(route, _ => _.config.routes)
-  let routeConfig = routes
-    ? routes.filter(item => item.path === route.path)
-    : null
+  // We can configure a route response to be an object "on purpose"
+  const objectOnPurpose = isPlainObject(route.endpoint)
   // 1: is it a falsey value
   // 2: does it contain a status code? then it'll be an error response from WP
   // 3: is it an array, that is empty, and options.allowEmptyResponse is falsey
@@ -17,14 +16,14 @@ export default (response, route) => {
     idx(response, _ => _.data.status) ||
     (arrayResp &&
       isEmpty(response) &&
-      !idx(routeConfig, _ => _[0].options.allowEmptyResponse))
+      !idx(route, _ => _.options.allowEmptyResponse))
   ) {
     // Assign status
     let status = idx(response, _ => _.data.status) || HTTPStatus.NOT_FOUND
 
     // Check for static routes with no endpoint
     const routeExistsWithNoEndpoint =
-      idx(routeConfig, _ => _[0].path) && !idx(routeConfig, _ => _[0].endpoint)
+      idx(route, _ => _.path) && !idx(route, _ => _.endpoint)
 
     // If the route is registered but has no endpoint, assume 200
     status = routeExistsWithNoEndpoint ? HTTPStatus.OK : status
@@ -36,5 +35,5 @@ export default (response, route) => {
   }
   // to avoid React mangling the array to {'0':{},'1':{}}
   // wrap in an object
-  return arrayResp ? { data: response } : response
+  return (objectOnPurpose || arrayResp) ? { data: response } : response
 }
