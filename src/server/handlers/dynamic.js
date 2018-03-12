@@ -57,7 +57,8 @@ export default ({ server, config }) => {
               endpointConfig: route.endpoint,
               baseUrl: baseUrlResolver(config),
               requestUrlObject: request.url,
-              params: match.params
+              params: match.params,
+              allowEmptyResponse
             })
             data = normalizeApiResponse(multidata, route)
           } catch (e) {

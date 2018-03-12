@@ -20,7 +20,7 @@ export default (response, route) => {
 
     // Check for static routes with no endpoint
     const routeExistsWithNoEndpoint =
-      idx(route => _.path) && !idx(routeConfig, _ => _.endpoint)
+      idx(route, _ => _.path) && !idx(route, _ => _.endpoint)
 
     // If the route is registered but has no endpoint, assume 200
     status = routeExistsWithNoEndpoint ? HTTPStatus.OK : status

@@ -1,11 +1,12 @@
 import idx from 'idx'
 import isPlainObject from 'lodash.isplainobject'
 import resolvePaths from '../../utilities/resolve-paths'
-import fetcher from './fetcher'
+import apiFetch from './api-fetch'
 
 let query = null
 let origin = null
 let preview = false
+let allowEmpty = false
 let fetchRequests = []
 
 const fetchJSON = endpoint => {
@@ -18,7 +19,7 @@ const fetchJSON = endpoint => {
     url = `${origin}/api/preview/v1/${endpoint}${queryPrefix}${queryParams}`
   }
   // return fetch as promise
-  return fetcher(url).then(resp => resp.json())
+  return apiFetch(url, allowEmpty)
 }
 
 const mapArrayToObject = (arr, obj) => {
@@ -29,10 +30,11 @@ const mapArrayToObject = (arr, obj) => {
   }, {})
 }
 
-export default async ({ endpointConfig, baseUrl, requestUrlObject, params}) => {
+export default async ({ endpointConfig, baseUrl, requestUrlObject, params, allowEmptyResponse}) => {
   // save data for use in util functions
   query = idx(requestUrlObject, _ => _.query)
   origin = baseUrl
+  allowEmpty = allowEmptyResponse
   preview = idx(requestUrlObject, _ => _.query.tapestry_hash)
   // kick off progress loader
   // fetch each endpoint
