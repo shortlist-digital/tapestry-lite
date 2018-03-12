@@ -234,10 +234,8 @@ describe('Handling custom endpoint routes', () => {
   it('Route matched, dynamic object endpoint works', done => {
     request.get(`${uri}/dynamic-object-endpoint/test`, (err, res, body) => {
       const expectedJson = {
-        data: {
-          page: dataPage,
-          post: dataPost
-        }
+        page: dataPage,
+        post: dataPost
       }
       expect(body).to.contain(prepareJson(expectedJson))
       done()
