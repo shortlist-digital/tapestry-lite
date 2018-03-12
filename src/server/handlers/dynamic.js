@@ -7,6 +7,7 @@ import RouteWrapper from '../routing/route-wrapper'
 import idx from 'idx'
 // Tuned fetched from normal tapestry
 import apiFetch from '../data-fetching/api-fetch'
+import normalizeApiResponse from '../data-fetching/normalize-api-response'
 import baseUrlResolver from '../../utilities/base-url-resolver'
 import { log } from '../../utilities/logger'
 import buildErrorView from '../render/error-view'
@@ -39,6 +40,7 @@ export default ({ server, config }) => {
         // Make this more robust
         // Assign the route object
         route = branch[0].route
+        console.log('Route: ', route)
         // Assign the match object for the route
         // https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/api/match.md
         match = branch[0].match
@@ -56,6 +58,8 @@ export default ({ server, config }) => {
 
           try {
             data = await apiFetch(url, allowEmptyResponse)
+            data = normalizeApiResponse(data, route)
+            log.debug('Normalized Data: ', data)
           } catch (e) {
             log.error(e)
             errorData = e
