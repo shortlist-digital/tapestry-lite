@@ -35,7 +35,12 @@ export default ({ server, config }) => {
       // How would we error out if two routes match here? "Ambigous routes detected?" maybe earlier in app
       const branch = matchRoutes(routes, request.url.pathname)
       // This needs tidying
-      let route, match, componentData
+      let route, match
+      // Optimistic default component data for static routes
+      let componentData = {
+        status: 200,
+        message: '200'
+      }
       let fetchRequestHasErrored = false
       // If there's a branch of the route config, we have a route
       if (branch[0]) {
@@ -46,12 +51,11 @@ export default ({ server, config }) => {
         match = branch[0].match
         // Set a flag for whether we have a missing component later on
         const routeComponentUndefined  = (typeof route.component === 'undefined')
+        // Does the fetch we are about to perform allow an empty response from WordPress?
+        // If it doesn't, then we will override WP's 200 with a 404
+        const allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
         // If we have an endpoint
         if (route.endpoint) {
-          // Set a flag for missing component on the route
-          // Does the fetch we are about to perform allow an empty response from WordPress?
-          // If it doesn't, then we will override WP's 200 with a 404
-          const allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
           // Start to try and fetch data 
           try {
             const multidata = await fetchFromEndpointConfig({
@@ -76,7 +80,7 @@ export default ({ server, config }) => {
         // an empty response is not allowed, we replace the route component
         // with our error view component
         if (routeComponentUndefined || (fetchRequestHasErrored && !allowEmptyResponse)) {
-          route.component = buildErrorView({config, routeComponentUndefined})
+          route.component = buildErrorView({config, missing: routeComponentUndefined})
         }
       } else { // end of route match block
         // No routes match, so we kick off rendering a 404 page
