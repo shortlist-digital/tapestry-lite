@@ -1,9 +1,10 @@
 import fetcher from './fetcher'
 import { log } from '../utilities/logger'
+import timing from '../utilities/timing'
 import chalk from 'chalk'
 
 const apiFetch = (url, allowEmptyResponse = false) => {
-  console.time(`fetch: ${url}`)
+  timing.start(`fetch: ${url}`)
   return fetcher(url)
     .then(resp => {
       if (!resp.ok) {
@@ -24,7 +25,7 @@ const apiFetch = (url, allowEmptyResponse = false) => {
     })
     .then(resp => resp.json())
     .then(apiData => {
-      console.timeEnd(`fetch: ${url}`)
+      timing.end(`fetch: ${url}`)
       if ((apiData.length == false) && (allowEmptyResponse !== true)) {
         throw {
           name: 'FetchError',
