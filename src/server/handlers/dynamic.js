@@ -1,15 +1,19 @@
 import React from 'react'
-import { matchRoutes } from 'react-router-config'
-import { renderStaticOptimized } from 'glamor/server'
 import { renderToStaticMarkup, renderToString } from 'react-dom/server'
 import Helmet from 'react-helmet'
-import prepareAppRoutes from '../routing/prepare-app-routes'
+import { matchRoutes } from 'react-router-config'
+
+import { renderStaticOptimized } from 'glamor/server'
 import idx from 'idx'
-// Tuned fetched from normal tapestry
-import normalizeApiResponse from '../data-fetching/normalize-api-response'
-import fetchFromEndpointConfig from '../data-fetching/fetch-from-endpoint-config'
+
 import baseUrlResolver from '../utilities/base-url-resolver'
 import { log } from '../utilities/logger'
+
+import prepareAppRoutes from '../routing/prepare-app-routes'
+
+import normalizeApiResponse from '../data-fetching/normalize-api-response'
+import fetchFromEndpointConfig from '../data-fetching/fetch-from-endpoint-config'
+
 import buildErrorView from '../render/error-view'
 import renderTreeToHTML from '../render/tree-to-html'
 
