@@ -3,7 +3,7 @@ import { matchRoutes } from 'react-router-config'
 import { renderStaticOptimized } from 'glamor/server'
 import { renderToStaticMarkup, renderToString } from 'react-dom/server'
 import Helmet from 'react-helmet'
-import RouteWrapper from '../routing/route-wrapper'
+import prepareAppRoutes from '../routing/prepare-app-routes'
 import idx from 'idx'
 // Tuned fetched from normal tapestry
 import normalizeApiResponse from '../data-fetching/normalize-api-response'
@@ -15,7 +15,7 @@ import renderTreeToHTML from '../render/tree-to-html'
 
 export default ({ server, config }) => {
   // Build App Routes
-  const routes = RouteWrapper(config)
+  const routes = prepareAppRoutes(config)
 
   server.route({
     config: {

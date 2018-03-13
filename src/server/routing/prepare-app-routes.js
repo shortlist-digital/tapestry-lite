@@ -4,17 +4,17 @@ import HTTPStatus from 'http-status'
 import defaultRoutes from './default-routes'
 import buildErrorView from '../render/error-view'
 
-const RouteWrapper = config => {
+export default config => {
   // if user routes have been defined, take those in preference to the defaults
   const routes = config.routes || defaultRoutes(config.components)
-  let routesWithExact = routes.map(route => {
+  let preparedRoutes = routes.map(route => {
     return {
       ...route,
       exact: true
     }
   })
   // Add the a default 404 route
-  routesWithExact.push({
+  preparedRoutes.push({
     path: '/*',
     notFoundRoute: true,
     component: buildErrorView({
@@ -22,7 +22,6 @@ const RouteWrapper = config => {
       missing: false
     })
   })
-  return routesWithExact
-}
 
-export default RouteWrapper
+  return preparedRoutes
+}
