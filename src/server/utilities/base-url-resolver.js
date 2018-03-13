@@ -1,5 +1,6 @@
 import idx from 'idx'
 import normaliseUrlPath from './normalise-url-path'
+
 export default (config) => {
   if (idx(config, _ => _.options.wordpressDotComHosting)) {
     // Remove protocol

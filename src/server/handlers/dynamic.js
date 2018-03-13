@@ -9,8 +9,8 @@ import idx from 'idx'
 import apiFetch from '../data-fetching/api-fetch'
 import normalizeApiResponse from '../data-fetching/normalize-api-response'
 import fetchFromEndpointConfig from '../data-fetching/fetch-from-endpoint-config'
-import baseUrlResolver from '../../utilities/base-url-resolver'
-import { log } from '../../utilities/logger'
+import baseUrlResolver from '../utilities/base-url-resolver'
+import { log } from '../utilities/logger'
 import buildErrorView from '../render/error-view'
 
 export default ({ server, config }) => {

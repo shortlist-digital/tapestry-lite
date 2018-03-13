@@ -1,5 +1,5 @@
 import fetcher from './fetcher'
-import { log } from '../../utilities/logger'
+import { log } from '../utilities/logger'
 import chalk from 'chalk'
 
 const apiFetch = (url, allowEmptyResponse = false) => {

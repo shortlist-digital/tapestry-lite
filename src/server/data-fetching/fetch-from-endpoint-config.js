@@ -1,6 +1,6 @@
 import idx from 'idx'
 import isPlainObject from 'lodash.isplainobject'
-import resolvePaths from '../../utilities/resolve-paths'
+import resolvePaths from '../utilities/resolve-paths'
 import apiFetch from './api-fetch'
 
 let query = null

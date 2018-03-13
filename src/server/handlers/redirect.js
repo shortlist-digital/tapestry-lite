@@ -2,7 +2,7 @@ import chalk from 'chalk'
 import fs from 'fs'
 import path from 'path'
 import fetcher from '../data-fetching/fetcher'
-import { log } from '../../utilities/logger'
+import { log } from '../utilities/logger'
 
 const setRedirects = (server, redirects) => {
   server.ext('onPreHandler', async (request, h, err) => {
