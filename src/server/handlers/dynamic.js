@@ -35,15 +35,15 @@ export default ({ server, config }) => {
       // How would we error out if two routes match here? "Ambigous routes detected?" maybe earlier in app
       const branch = matchRoutes(routes, request.url.pathname)
       // This needs tidying
-      let route, match
-      // Optimistic default component data for static routes
-      let componentData = {
-        status: 200,
-        message: '200'
-      }
+      let route, match, componentData
       let fetchRequestHasErrored = false
       // If there's a branch of the route config, we have a route
       if (branch[0]) {
+        // Optimistic default component data for static routes
+        componentData = {
+          status: 200,
+          message: '200'
+        }
         // Assign the route object
         route = branch[0].route
         // Assign the match object for the route
@@ -82,13 +82,10 @@ export default ({ server, config }) => {
         if (routeComponentUndefined || (fetchRequestHasErrored && !allowEmptyResponse)) {
           route.component = buildErrorView({config, missing: routeComponentUndefined})
         }
-      } else { // end of route match block
-        // No routes match, so we kick off rendering a 404 page
-        // Create a fake route object with an error view,
-        // and add componentData with 404 status and message
-        route = {
-          component: buildErrorView({config, missing: false})
-        }
+      }
+      // If our route is the not found route
+      // Overwrite the data
+      if (route.notFoundRoute) {
         componentData = {
           message: 'Not Found',
           code: 404
