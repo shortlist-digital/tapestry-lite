@@ -6,12 +6,12 @@ import Helmet from 'react-helmet'
 import RouteWrapper from '../routing/route-wrapper'
 import idx from 'idx'
 // Tuned fetched from normal tapestry
-import apiFetch from '../data-fetching/api-fetch'
 import normalizeApiResponse from '../data-fetching/normalize-api-response'
 import fetchFromEndpointConfig from '../data-fetching/fetch-from-endpoint-config'
 import baseUrlResolver from '../utilities/base-url-resolver'
 import { log } from '../utilities/logger'
 import buildErrorView from '../render/error-view'
+import renderTreeToHTML from '../render/tree-to-html'
 
 export default ({ server, config }) => {
   // Build App Routes
@@ -80,21 +80,13 @@ export default ({ server, config }) => {
           code: 404
         }
       }
-      // Glamor works as before
-      const { html, css, ids } = renderStaticOptimized(() =>
-        renderToString(<route.component {...match} {...componentData} />)
-      )
-      const helmet = Helmet.renderStatic()
-      // Assets to come, everything else works
-      const renderData = {
-        html,
-        css,
-        ids,
-        head: helmet,
-        bootstrapData: data
-      }
-      let Document = idx(route, _ => _.options.customDocument) || require('../render/default-document').default
-      const responseString = renderToStaticMarkup(<Document {...renderData} />)
+
+      const responseString = renderTreeToHTML({
+        route,
+        match,
+        componentData
+      })
+
       // Respond with new Hapi 17 api
       return h
         .response(responseString)
