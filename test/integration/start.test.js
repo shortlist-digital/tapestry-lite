@@ -25,7 +25,7 @@ describe('tapestry start', () => {
       })
     })
     return run.then(test => expect(test).to.equal(true))
-  })
+  }).timeout(5000)
 
   after(() => {
     fixture.teardownStage(stageName)
@@ -51,7 +51,7 @@ describe('tapestry start with custom webpack', () => {
       })
     })
     return run.then(test => expect(test).to.equal(true))
-  })
+  }).timeout(5000)
 
   after(() => {
     fixture.teardownStage(stageName)
