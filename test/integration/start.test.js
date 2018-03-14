@@ -1,23 +1,22 @@
-const setupStageWithFixture = require('../fixtures/setup-fixture-stage')
-  .setupStageWithFixture
-const teardownStage = require('../fixtures/setup-fixture-stage').teardownStage
-const expect = require('chai').expect
 const shell = require('shelljs')
+const expect = require('chai').expect
 const kill = require('./kill')
+const fixture = require('../fixtures/setup-fixture-stage')
 
+shell.config.silent = true
 const stageName = 'stage-start'
 
 describe('tapestry start', () => {
   before(() => {
-    setupStageWithFixture(stageName, 'build-default')
+    fixture.setupStageWithFixture(stageName, 'build-default')
   })
 
   it('Should start a dev server', () => {
     let outputTest
     const run = new Promise(resolve => {
-      const child = shell.exec('node ../bin/start.js', () => {
+      const child = shell.exec('node ../bin/start.js', () =>
         resolve(outputTest)
-      })
+      )
       child.stdout.on('data', data => {
         if (data.includes('Tapestry Lite is Running')) {
           outputTest = true
@@ -29,21 +28,21 @@ describe('tapestry start', () => {
   })
 
   after(() => {
-    teardownStage(stageName)
+    fixture.teardownStage(stageName)
   })
 })
 
 describe('tapestry start with custom webpack', () => {
   before(() => {
-    setupStageWithFixture(stageName, 'build-with-custom-webpack')
+    fixture.setupStageWithFixture(stageName, 'build-with-custom-webpack')
   })
 
   it('Should pick up webpack config updates', () => {
     let outputTest
     const run = new Promise(resolve => {
-      const child = shell.exec('node ../bin/start.js', () => {
+      const child = shell.exec('node ../bin/start.js', () =>
         resolve(outputTest)
-      })
+      )
       child.stdout.on('data', data => {
         if (data.includes('Tapestry Lite is Running')) {
           outputTest = true
@@ -55,6 +54,6 @@ describe('tapestry start with custom webpack', () => {
   })
 
   after(() => {
-    teardownStage(stageName)
+    fixture.teardownStage(stageName)
   })
 })

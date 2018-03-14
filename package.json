@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "PORT=4321 NODE_ENV=test LOG_LEVEL=silent mocha ./src/**/*.test.js ./test/server/*.test.js --require test/babel-register",
-    "test:integration": "NODE_ENV=test mocha ./test/integration/**/*.test.js --bail"
+    "test:integration": "NODE_ENV=test mocha ./test/integration/**/*.test.js --bail --timeout 0"
   },
   "author": "",
   "license": "ISC",
