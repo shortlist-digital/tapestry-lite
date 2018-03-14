@@ -3,6 +3,11 @@ import Inert from 'inert'
 import DynamicRouteHandler from './handlers/dynamic'
 import RedirectHandler from './handlers/redirect'
 import ProxyHandler from './handlers/proxy'
+import PurgeHandler from './handlers/purge'
+import CacheManager from './utilities/cache-manager'
+
+// Create CacheManager Singleton
+new CacheManager()
 
 export default class TapestryLite {
   constructor({ config, assets = {} }) {
@@ -28,6 +33,7 @@ export default class TapestryLite {
     DynamicRouteHandler(data)
     ProxyHandler(data)
     RedirectHandler(data)
+    PurgeHandler(data)
 
     return this.server
   }

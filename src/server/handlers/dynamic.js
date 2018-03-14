@@ -8,6 +8,7 @@ import idx from 'idx'
 
 import baseUrlResolver from '../utilities/base-url-resolver'
 import { log } from '../utilities/logger'
+import CacheManager from '../utilities/cache-manager'
 
 import prepareAppRoutes from '../routing/prepare-app-routes'
 
@@ -17,8 +18,10 @@ import fetchFromEndpointConfig from '../data-fetching/fetch-from-endpoint-config
 import buildErrorView from '../render/error-view'
 import renderTreeToHTML from '../render/tree-to-html'
 
+
 export default ({ server, config }) => {
-  // Build App Routes
+  let cacheManager = new CacheManager()
+  const cache = cacheManager.createCache('html')
   const routes = prepareAppRoutes(config)
 
   server.route({
@@ -32,6 +35,17 @@ export default ({ server, config }) => {
     method: 'GET',
     path: '/{path*}',
     handler: async function(request, h) {
+      // Set a cache key
+      const cacheKey = request.url.pathname || '/'
+      // Is there cached HTML?
+      const cachedHTML = await cache.get(cacheKey) 
+      // If there's a cache response, return the response straight away
+      if (cachedHTML) {
+        return h.response(cachedHTML)
+          .type('text/html')
+          .code(200)
+      }
+
       // Don't even import react-router any more, but backwards compatible
       // With the exception of optional params: (:thing) becomes :thing?
       // Match Routes
@@ -96,6 +110,7 @@ export default ({ server, config }) => {
         }
       }
 
+
       // Render the route with componentData, the route
       const responseString = renderTreeToHTML({
         route,
@@ -103,11 +118,16 @@ export default ({ server, config }) => {
         componentData
       })
 
+      // Set status code
+      const code = componentData.code || 200
+      if (code == 200) {
+        cache.set(cacheKey, responseString)      
+      }
       // Respond with new Hapi 17 api
-      return h
-        .response(responseString)
+      return h.response(responseString)
         .type('text/html')
-        .code(componentData.code || 200)
+        .code(code)
+
     }
   })
 }
