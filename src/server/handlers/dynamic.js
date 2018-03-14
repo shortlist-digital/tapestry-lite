@@ -36,7 +36,7 @@ export default ({ server, config }) => {
     path: '/{path*}',
     handler: async function(request, h) {
       // Set a cache key
-      const cacheKey = request.url.pathname
+      const cacheKey = request.url.pathname || '/'
       // Is there cached HTML?
       const cachedHTML = await cache.get(cacheKey) 
       // If there's a cache response, return the response straight away
