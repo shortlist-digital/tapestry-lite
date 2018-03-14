@@ -70,10 +70,7 @@ module.exports = () => {
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
       new webpack.DefinePlugin({
-        __DEV__: true,
-        'process.env': {
-          BUILD_TARGET: JSON.stringify('server')
-        }
+        __DEV__: true
       })
     ],
     output: {
