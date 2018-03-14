@@ -15,7 +15,7 @@ const mainBabelOptions = {
 
 module.exports = () => {
   let config = {
-    devtool: 'cheap-module-source-map',
+    devtool: (process.env.NODE_ENV == 'test') ? false : 'cheap-module-source-map',
     mode: process.env.ENV || 'development',
     resolve: {
       modules: [paths.appNodeModules, paths.ownNodeModules],
