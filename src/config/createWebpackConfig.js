@@ -69,8 +69,7 @@ module.exports = () => {
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
       new webpack.DefinePlugin({
-        __DEV__: true,
-        __CSS_PLUGIN__: JSON.stringify(process.env.CSS_PLUGIN)
+        __DEV__: true
       })
     ],
     output: {
