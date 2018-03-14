@@ -70,9 +70,7 @@ module.exports = () => {
       new webpack.NoEmitOnErrorsPlugin(),
       new webpack.DefinePlugin({
         __DEV__: true,
-        'process.env': {
-          BUILD_TARGET: JSON.stringify('server')
-        }
+        __CSS_PLUGIN__: JSON.stringify(process.env.CSS_PLUGIN)
       })
     ],
     output: {
