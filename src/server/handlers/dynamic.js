@@ -18,10 +18,10 @@ import fetchFromEndpointConfig from '../data-fetching/fetch-from-endpoint-config
 import buildErrorView from '../render/error-view'
 import renderTreeToHTML from '../render/tree-to-html'
 
-let cacheManager = new CacheManager()
-const cache = cacheManager.createCache('html')
 
 export default ({ server, config }) => {
+  let cacheManager = new CacheManager()
+  const cache = cacheManager.createCache('html')
   const routes = prepareAppRoutes(config)
 
   server.route({
@@ -39,10 +39,12 @@ export default ({ server, config }) => {
       const cacheKey = request.url.pathname
       // Is there cached HTML?
       const cachedHTML = await cache.get(cacheKey) 
-      // Return the response straight away
-      //return h.response(cachedHTML)
-      //.type('text/html')
-      //.code(200)
+      // If there's a cache response, return the response straight away
+      if (cachedHTML) {
+        return h.response(cachedHTML)
+          .type('text/html')
+          .code(200)
+      }
 
       // Don't even import react-router any more, but backwards compatible
       // With the exception of optional params: (:thing) becomes :thing?
@@ -118,14 +120,14 @@ export default ({ server, config }) => {
 
       // Set status code
       const code = componentData.code || 200
-      // Respond with new Hapi 17 api
-      h.response(responseString)
-        .type('text/html')
-        .code()
-
       if (code == 200) {
-        cache.set(cacheKey, responsString)      
+        cache.set(cacheKey, responseString)      
       }
+      // Respond with new Hapi 17 api
+      return h.response(responseString)
+        .type('text/html')
+        .code(code)
+
     }
   })
 }
