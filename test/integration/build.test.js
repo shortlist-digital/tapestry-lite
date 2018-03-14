@@ -15,8 +15,7 @@ describe('tapestry build', () => {
   it('should compile files into a build directory', () => {
     shell.exec('node ../bin/build.js')
     expect(shell.test('-f', '.tapestry/server.js')).to.equal(true)
-    expect(shell.test('-f', '.tapestry/server.js.map')).to.equal(true)
-  })
+  }).timeout(5000)
 
   after(() => {
     fixture.teardownStage(stageName)
