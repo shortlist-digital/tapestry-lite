@@ -15,7 +15,7 @@ describe('tapestry build', () => {
   it('should compile files into a build directory', () => {
     shell.exec('node ../bin/build.js')
     expect(shell.test('-f', '.tapestry/server.js')).to.equal(true)
-    expect(shell.ls('.tapestry/*.cs').code).to.equal(0)
+    expect(shell.ls('.tapestry/*.css').code).to.equal(0)
   }).timeout(5000)
 
   after(() => {
