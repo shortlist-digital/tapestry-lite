@@ -36,7 +36,7 @@ module.exports = () => {
         {
           test: /\.(js|jsx|mjs)$/,
           loader: require.resolve('babel-loader'),
-          exclude: /node_modules/,
+          exclude: /node_modules(?!\/tapestry-lite)/,
           options: mainBabelOptions
         },
         {

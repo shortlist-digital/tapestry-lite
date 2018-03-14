@@ -17,7 +17,9 @@ export default ({ server }) => {
       },
       handler: {
         directory: {
-          path: path
+          path,
+          redirectToSlash: true,
+          index: true
         }
       }
     })
