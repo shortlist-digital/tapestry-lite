@@ -28,6 +28,15 @@ class Server {
           .rewritable(false)
       }
     })
+    
+    const data = {
+      config,
+      server: this.server
+    }
+    
+    PurgeHandler(data)
+    RedirectHandler(data)
+    DynamicRouteHandler(data)
 
     return this.server
   }
@@ -36,12 +45,8 @@ class Server {
 export const registerPlugins = async data => {
   // gotta register the plugins before using em
   await data.server.register([h2o2, Inert])
-
   StaticHandler(data)
   ProxyHandler(data)
-  PurgeHandler(data)
-  RedirectHandler(data)
-  DynamicRouteHandler(data)
 }
 
 export default Server
