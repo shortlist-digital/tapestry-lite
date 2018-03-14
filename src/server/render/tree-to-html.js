@@ -10,7 +10,7 @@ export default ({ route, match, componentData }) => {
   // { html, css, ids }
   let styleData = {}
   // extract CSS from either Glamor or Emotion
-  if (__CSS_PLUGIN__ === 'emotion') {
+  if (process.env.CSS_PLUGIN === 'emotion') {
     styleData = require('emotion-server').extractCritical(htmlString)
   } else {
     styleData = require('glamor/server').renderStaticOptimized(() => htmlString)

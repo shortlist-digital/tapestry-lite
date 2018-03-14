@@ -4,6 +4,7 @@ import { expect } from 'chai'
 import request from 'request'
 import nock from 'nock'
 import { css } from 'glamor'
+import styled from 'react-emotion'
 import dataPosts from '../mocks/posts.json'
 import Server from '../../src/server'
 
@@ -16,6 +17,14 @@ describe('Document contents', () => {
         path: '/',
         endpoint: () => 'posts',
         component: () => <p className={css({ color: '#639' })}>Hello</p>
+      },
+      {
+        path: '/emotion',
+        endpoint: () => 'posts',
+        component: () => {
+          const Paragraph = styled('p')` color: #369; `
+          return <Paragraph>Hello</Paragraph>
+        }
       },
       {
         path: '/custom-document',
@@ -87,6 +96,17 @@ describe('Document contents', () => {
   it('Contains Glamor styles', done => {
     request.get(uri, (err, res, body) => {
       expect(body).to.contain('{color:#639;}')
+      done()
+    })
+  })
+
+  it('Contains Emotion styles if selected', done => {
+    // set emotion env variable
+    process.env.CSS_PLUGIN = 'emotion'
+    request.get(`${uri}/emotion`, (err, res, body) => {
+      expect(body).to.contain('{color:#369;}')
+      // reset
+      process.env.CSS_PLUGIN = undefined
       done()
     })
   })
