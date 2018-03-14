@@ -19,6 +19,6 @@ export default ({route, match, componentData}) => {
     bootstrapData: componentData
   }
   let Document = idx(route, _ => _.options.customDocument) || require('../render/default-document').default
-  return renderToStaticMarkup(<Document {...renderData} />)
+  return `<!doctype html>${renderToStaticMarkup(<Document {...renderData} />)}`
 }
 

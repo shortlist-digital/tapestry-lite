@@ -40,9 +40,9 @@ export default ({ server, config }) => {
       // Is there cached HTML?
       const cachedHTML = await cache.get(cacheKey) 
       // Return the response straight away
-      return h.response(cachedHTML)
-        .type('text/html')
-        .code(200)
+      //return h.response(cachedHTML)
+      //.type('text/html')
+      //.code(200)
 
       // Don't even import react-router any more, but backwards compatible
       // With the exception of optional params: (:thing) becomes :thing?

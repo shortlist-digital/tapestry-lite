@@ -94,6 +94,9 @@ describe('Document contents', () => {
   it('Uses default document if no custom document used', done => {
     request.get(uri, (err, res, body) => {
       expect(body).to.contain(
+        '<!doctype html>'
+      )
+      expect(body).to.contain(
         '<link rel="shortcut icon" href="/public/favicon.ico"/>'
       )
       done()
