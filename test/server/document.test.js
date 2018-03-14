@@ -106,6 +106,7 @@ describe('Document contents', () => {
   it('Uses custom document if available', done => {
     request.get(`${uri}/custom-document`, (err, res, body) => {
       expect(body).to.contain('testing-document')
+      expect(body).to.contain('<!doctype html>')
       done()
     })
   })
