@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "tapestry": "./bin/tapestry-lite.js"
+  },
   "scripts": {
     "test": "PORT=4321 NODE_ENV=test LOG_LEVEL=silent mocha ./src/**/*.test.js ./test/**/*.test.js --require test/babel-register --bail"
   },
