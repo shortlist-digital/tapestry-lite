@@ -13,7 +13,61 @@ const mainBabelOptions = {
   plugins: [require('react-hot-loader/babel')]
 }
 
-module.exports = () => {
+const nodeDevEntry = [
+  'webpack/hot/poll?1000',
+  paths.ownDevServer
+]
+
+const nodeDevOutput = {
+   path: paths.appBuild,
+  filename: 'server.js'
+}
+
+const nodeDevPlugins = [
+  new FriendlyErrorsPlugin({
+    target: 'node',
+    onSuccessMessage: 'Tapestry Lite is Running',
+    verbose: process.env.NODE_ENV === 'test'
+  }),
+  new StartServerPlugin({
+    name: 'server.js',
+    signal: false
+  }),
+  new webpack.NamedModulesPlugin(),
+  new webpack.HotModuleReplacementPlugin(),
+  new webpack.NoEmitOnErrorsPlugin(),
+  new webpack.DefinePlugin({
+    __DEV__: true
+  })
+]
+
+
+module.exports = (target = 'node', options) => {
+
+  const nodeProdPlugins = {}
+  const nodeProdOutput = {}
+  const nodeProdEntry = {}
+  const webDevEntry = {}
+  const webDevPlugins = {}
+  const webProdPlugins = {}
+  const webProdEntry = {}
+  const webProdOutput = {}
+  const webDevOutput = {}
+
+  const IS_NODE = target === 'node'
+  const IS_WEB = target === 'web'
+  const IS_DEV = process.env.NODE_ENV === 'development'
+  const IS_PROD = process.env.NODE_ENV === 'production'
+
+  const NODE_DEV = IS_NODE && IS_DEV
+  const NODE_PROD = IS_NODE && IS_PROD
+  const WEB_DEV = IS_WEB && IS_DEV
+  const WEB_PROD = IS_WEB && IS_PROD
+
+  const whenEnvIs = (condition, config) => {
+    return condition ? config : [] 
+  }
+
   let config = {
     devtool: (process.env.NODE_ENV == 'test') ? false : 'cheap-module-source-map',
     mode: process.env.ENV || 'development',
@@ -48,36 +102,36 @@ module.exports = () => {
         }
       ]
     },
-    entry: ['webpack/hot/poll?1000', paths.ownDevServer],
-    watch: true,
-    target: 'node',
+    entry: [
+      // Sweet jesus
+      ...whenEnvIs(NODE_DEV, nodeDevEntry),
+      ...whenEnvIs(NODE_PROD, nodeProdEntry),
+      ...whenEnvIs(WEB_DEV, webDevEntry),
+      ...whenEnvIs(WEB_PROD, webProdEntry)
+    ],
+    watch: IS_NODE && IS_DEV,
+    target: target,
     externals: [
       nodeExternals({
         whitelist: ['webpack/hot/poll?1000', 'tapestry-lite']
       })
     ],
     plugins: [
-      new FriendlyErrorsPlugin({
-        target: 'node',
-        onSuccessMessage: 'Tapestry Lite is Running',
-        verbose: process.env.NODE_ENV === 'test'
-      }),
-      new StartServerPlugin({
-        name: 'server.js',
-        signal: false
-      }),
-      new webpack.NamedModulesPlugin(),
-      new webpack.HotModuleReplacementPlugin(),
-      new webpack.NoEmitOnErrorsPlugin(),
-      new webpack.DefinePlugin({
-        __DEV__: true
-      })
+      // Sweet jesus
+      ...whenEnvIs(NODE_DEV, nodeDevPlugins),
+      ...whenEnvIs(NODE_PROD, nodeProdPlugins),
+      ...whenEnvIs(WEB_DEV, webDevPlugins),
+      ...whenEnvIs(WEB_PROD, webProdPlugins)
     ],
     output: {
-      path: paths.appBuild,
-      filename: 'server.js'
+      // Sweet jesus
+      ...whenEnvIs(NODE_DEV, nodeDevOutput),
+      ...whenEnvIs(NODE_PROD, nodeProdOutput),
+      ...whenEnvIs(WEB_DEV, webDevOutput),
+      ...whenEnvIs(WEB_PROD, webProdOutput)
     }
   }
+  // Sweet jesus
   if (fs.existsSync(paths.appWebpackConfig)) {
     const appWebpackConfig = require(paths.appWebpackConfig)
     config = appWebpackConfig(config, {}, webpack)
