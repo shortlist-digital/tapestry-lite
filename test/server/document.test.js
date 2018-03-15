@@ -3,12 +3,16 @@ import Helmet from 'react-helmet'
 import { expect } from 'chai'
 import request from 'request'
 import nock from 'nock'
+import fs from 'fs'
+import path from 'path'
+import Inert from 'inert'
 import { css } from 'glamor'
 import styled from 'react-emotion'
 import dataPosts from '../mocks/posts.json'
-import Server from '../../src/server'
+import Server, { registerPlugins } from '../../src/server'
 
 describe('Document contents', () => {
+  const publicFilePath = path.resolve(process.cwd(), 'public', 'test.txt')
   let server = null
   let uri = null
   let config = {
@@ -22,7 +26,9 @@ describe('Document contents', () => {
         path: '/emotion',
         endpoint: () => 'posts',
         component: () => {
-          const Paragraph = styled('p')` color: #369; `
+          const Paragraph = styled('p')`
+            color: #369;
+          `
           return <Paragraph>Hello</Paragraph>
         }
       },
@@ -45,7 +51,7 @@ describe('Document contents', () => {
           </div>
         ),
         options: {
-          customDocument: ({ html, css, head, bootstrapData}) => (
+          customDocument: ({ html, css, head, bootstrapData }) => (
             <html>
               <head>
                 {head.title.toComponent()}
@@ -68,18 +74,32 @@ describe('Document contents', () => {
   }
 
   beforeEach(async () => {
+    // create redirects file sync to prevent race condition
+    if (!fs.existsSync(path.dirname(publicFilePath))) {
+      fs.mkdirSync(path.dirname(publicFilePath))
+    }
+    fs.writeFileSync(
+      publicFilePath, // file name
+      'Hello World', // create dummy file
+      'utf8' // encoding
+    )
     // mock api response
     nock('http://dummy.api')
       .get('/wp-json/wp/v2/posts')
       .times(5)
       .reply(200, dataPosts.data)
     // boot tapestry server
-    server = new Server({config})
+    
+    server = new Server({ config })
+    await registerPlugins({ config, server })
     await server.start()
     uri = server.info.uri
   })
 
-  afterEach(async () => await server.stop())
+  afterEach(async () => {
+    fs.unlink(publicFilePath, () => {})
+    await server.stop()
+  })
 
   it('Contains correct Bootstrap data', done => {
     request.get(uri, (err, res, body) => {
@@ -113,9 +133,7 @@ describe('Document contents', () => {
 
   it('Uses default document if no custom document used', done => {
     request.get(uri, (err, res, body) => {
-      expect(body).to.contain(
-        '<!doctype html>'
-      )
+      expect(body).to.contain('<!doctype html>')
       expect(body).to.contain(
         '<link rel="shortcut icon" href="/public/favicon.ico"/>'
       )
@@ -139,6 +157,14 @@ describe('Document contents', () => {
         `const test = {"data":${JSON.stringify(dataPosts.data)}}`
       )
       expect(body).to.contain('{font-size:13px;}')
+      done()
+    })
+  })
+
+  it('Handles static files', done => {
+    request.get(`${uri}/public/test.txt`, (err, res, body) => {
+      expect(res.statusCode).to.equal(200)
+      expect(body).to.contain('Hello World')
       done()
     })
   })
