@@ -1,3 +1,4 @@
+const AssetsPlugin = require('assets-webpack-plugin')
 const webpack = require('webpack')
 const path = require('path')
 const fs = require('fs-extra')
@@ -41,18 +42,46 @@ const nodeDevPlugins = [
   })
 ]
 
+const webDevEntry = {
+  client: [
+    require.resolve('razzle-dev-utils/webpackHotDevClient'),
+    paths.appClientIndexJs
+  ]
+}
+
+const webDevOutput = {
+  path: paths.appBuildPublic,
+  publicPath: 'http://locahost:4001',
+  pathinfo: true,
+  filename: 'static/js/bundle.js',
+  chunkFilename: 'static/js/[name].chunk.js',
+  devtoolModuleFilenameTemplate: info => {
+    return path.resolve(info.resourcePath).replace(/\\/g, '/')
+  }
+}
+
+const webDevPlugins = [
+  new webpack.NamedModulesPlugin(),
+  new AssetsPlugin({
+    path: paths.appBuild,
+    filename: 'assets.json',
+  }),
+  new webpack.HotModuleReplacementPlugin(),
+  new webpack.NoEmitOnErrorsPlugin(),
+  new webpack.DefinePlugin({
+    __DEV__: true
+  })
+]
+
+const nodeProdPlugins = {}
+const nodeProdOutput = {}
+const nodeProdEntry = {}
+const webProdPlugins = {}
+const webProdEntry = {}
+const webProdOutput = {}
 
 module.exports = (target = 'node', options) => {
 
-  const nodeProdPlugins = {}
-  const nodeProdOutput = {}
-  const nodeProdEntry = {}
-  const webDevEntry = {}
-  const webDevPlugins = {}
-  const webProdPlugins = {}
-  const webProdEntry = {}
-  const webProdOutput = {}
-  const webDevOutput = {}
 
   const IS_NODE = target === 'node'
   const IS_WEB = target === 'web'
@@ -64,8 +93,13 @@ module.exports = (target = 'node', options) => {
   const WEB_DEV = IS_WEB && IS_DEV
   const WEB_PROD = IS_WEB && IS_PROD
 
+  const ensureArray = (config) => config && (Array.isArray(config) ? config : [config]) || []
+
   const whenEnvIs = (condition, config) => {
-    return condition ? config : [] 
+    if (!Array.isArray(config)) {
+      return condition ? {...config} : []
+    }
+    return condition ? ensureArray(config) : []
   }
 
   let config = {
@@ -102,20 +136,20 @@ module.exports = (target = 'node', options) => {
         }
       ]
     },
-    entry: [
+    entry: {
       // Sweet jesus
       ...whenEnvIs(NODE_DEV, nodeDevEntry),
       ...whenEnvIs(NODE_PROD, nodeProdEntry),
       ...whenEnvIs(WEB_DEV, webDevEntry),
       ...whenEnvIs(WEB_PROD, webProdEntry)
-    ],
+    },
     watch: IS_NODE && IS_DEV,
     target: target,
     externals: [
-      nodeExternals({
+      IS_NODE && nodeExternals({
         whitelist: ['webpack/hot/poll?1000', 'tapestry-lite']
-      })
-    ],
+      }) 
+    ].filter(Boolean),
     plugins: [
       // Sweet jesus
       ...whenEnvIs(NODE_DEV, nodeDevPlugins),
@@ -136,5 +170,6 @@ module.exports = (target = 'node', options) => {
     const appWebpackConfig = require(paths.appWebpackConfig)
     config = appWebpackConfig(config, {}, webpack)
   }
+  console.log(config)
   return config
 }

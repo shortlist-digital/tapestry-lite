@@ -1,10 +1,10 @@
 const webpack = require('webpack')
 const createWebpackConfig = require('./createWebpackConfig')
 
-module.exports = config => {
+module.exports = target => {
   let compiler
   try {
-    compiler = webpack(createWebpackConfig('node', config))
+    compiler = webpack(createWebpackConfig(target))
   } catch (e) {
     console.error(e)
     process.exit(1)
