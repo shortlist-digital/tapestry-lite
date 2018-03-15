@@ -1,15 +1,4 @@
-import joi from 'joi'
-const log = require('./logger').log
-
-const options = {
-  abortEarly: false, // we want all the errors, not just the first
-  language: {
-    any: {
-      unknown:
-        'has been deprecated, refer to tapestry-wp.js.org for config options'
-    }
-  }
-}
+const joi = require('joi')
 
 // define valid config schema
 const schema = joi.object({
@@ -66,26 +55,28 @@ const schema = joi.object({
   })
 })
 
-const logErrors = err => {
-  // for each error message, output to console
-  log.error(
-    `There are some issues with your tapestry.config.js\n ${err.details.reduce(
-      (prev, item) => `${prev}\n  ${item.message}`,
-      ''
-    )}`
-  )
-  log.debug('tapestry.config.js error', err.details)
-}
-
-const validator = (config, cb) => {
+module.exports = (config, cb) => {
+  // joi options
+  const options = {
+    abortEarly: false, // we want all the errors, not just the first
+    language: {
+      any: {
+        unknown:
+          'has been deprecated, refer to tapestry-wp.js.org for config options'
+      }
+    }
+  }
   // run the users config object through joi.validate
   // joi will parse the config and match the defined schema
   joi.validate(config, schema, options, (err, value) => {
     // handle validation errors
-    if (err) return logErrors(err)
-    // run tapestry server
-    cb(value)
+    if (err) {
+      console.error(
+        `There are some issues with your tapestry.config.js\n ${err.details.reduce(
+          (prev, item) => `${prev}\n  ${item.message}`,
+          ''
+        )}\n`
+      )
+    }
   })
 }
-
-export default validator
