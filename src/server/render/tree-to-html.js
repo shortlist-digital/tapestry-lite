@@ -3,10 +3,14 @@ import { renderToString, renderToStaticMarkup } from 'react-dom/server'
 import Helmet from 'react-helmet'
 import idx from 'idx'
 
-export default ({ route, match, componentData }) => {
-  const htmlString = renderToString(
-    <route.component {...match} {...componentData} />
-  )
+export default async ({ route, match, componentData }) => {
+  // go fetch getComponent: () => import()
+  let Component = route.component
+  if (route.getComponent) {
+    const module = await route.getComponent()
+    Component = module.default || module
+  }
+  const htmlString = renderToString(<Component {...match} {...componentData} />)
   // { html, css, ids }
   let styleData = {}
   // extract CSS from either Glamor or Emotion

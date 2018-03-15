@@ -112,7 +112,7 @@ export default ({ server, config }) => {
 
 
       // Render the route with componentData, the route
-      const responseString = renderTreeToHTML({
+      const responseString = await renderTreeToHTML({
         route,
         match,
         componentData
