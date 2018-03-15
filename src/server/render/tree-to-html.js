@@ -6,7 +6,7 @@ import idx from 'idx'
 export default async ({ route, match, componentData }) => {
   // go fetch getComponent: () => import()
   let Component = route.component
-  if (route.getComponent) {
+  if (typeof route.getComponent === 'function') {
     const module = await route.getComponent()
     Component = module.default || module
   }
