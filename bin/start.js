@@ -1,25 +1,7 @@
-const webpack = require('webpack')
-const createWebpackConfig = require('../src/config/createWebpackConfig')
+const createWebpackCompiler = require('../src/config/createWebpackCompiler')
 
-function compile(config) {
-  let compiler
-  try {
-    compiler = webpack(config)
-  } catch (e) {
-    console.error(e)
-    process.exit(1)
-  }
-  return compiler
-}
-
-const serverConfig = createWebpackConfig()
-
-const serverCompiler = compile(serverConfig)
-// Start our server webpack instance in watch mode.
 console.log('Starting server')
 
-serverCompiler.watch({
-    quiet: false
-  },
-  (stats) => {}
-)
+const serverCompiler = createWebpackCompiler({ env: 'node', args: process.argv.slice(2) })
+
+serverCompiler.watch({ quiet: false }, () => {})
