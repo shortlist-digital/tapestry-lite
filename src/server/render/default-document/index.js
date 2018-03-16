@@ -26,7 +26,6 @@ const DefaultDocument = ({ html, css, head, bootstrapData }) => {
         {head.meta.toComponent()}
         {head.link.toComponent()}
         {head.script.toComponent()}
-        <script async defer src="http://localhost:4001/static/js/bundle.js"></script>
         <style dangerouslySetInnerHTML={{ __html: css }} />
         <link rel="shortcut icon" href="/public/favicon.ico" />
       </head>
@@ -41,6 +40,7 @@ const DefaultDocument = ({ html, css, head, bootstrapData }) => {
           />
         )}
       </body>
+      <script defer src="http://localhost:4001/static/js/bundle.js"></script>
     </html>
   )
 }
