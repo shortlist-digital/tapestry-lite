@@ -8,10 +8,12 @@ const renderApp = config => {
   // define routes/history for react-router
   const routes = prepareAppRoutes(config)
   const targetNode = document.getElementById('root')
-  
-  const branch = matchRoutes(routes, request.url.pathname)
-  const route = branch[0].routes
-  const match = branch[0].match
+  console.log(targetNode)
+
+  const { route, match } = matchRoutes(routes, window.location.pathname)[0]
+
+  console.log({ route, match })
+
   hydrate(
     <route.component {...match} {...window.__BOOTSTRAP__INIT__} />,
     targetNode
@@ -26,4 +28,3 @@ if (module.hot) {
     renderApp(newConfig)
   })
 }
-
