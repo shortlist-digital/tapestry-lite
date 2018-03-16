@@ -14,10 +14,7 @@ const mainBabelOptions = {
   plugins: [require('react-hot-loader/babel')]
 }
 
-const nodeDevEntry = [
-  'webpack/hot/poll?1000',
-  paths.ownDevServer
-]
+const nodeDevEntry = ['webpack/hot/poll?1000', paths.ownDevServer]
 
 const nodeDevOutput = {
   path: paths.appBuild,
@@ -28,7 +25,7 @@ const nodeDevPlugins = [
   new FriendlyErrorsPlugin({
     target: 'node',
     onSuccessMessage: 'Tapestry Lite is Running',
-    verbose: process.env.NODE_ENV === 'test'
+    verbose: true//process.env.NODE_ENV === 'test'
   }),
   new StartServerPlugin({
     name: 'server.js',
@@ -44,14 +41,15 @@ const nodeDevPlugins = [
 
 const webDevEntry = {
   client: [
-    require.resolve('razzle-dev-utils/webpackHotDevClient'),
+    'webpack-dev-server/client?http://localhost:4001/',
+    'webpack/hot/only-dev-server',
     paths.ownClientIndex
   ]
 }
 
 const webDevOutput = {
   path: paths.appBuildPublic,
-  publicPath: 'http://locahost:4001/',
+  publicPath: 'http://localhost:4001/',
   pathinfo: true,
   filename: 'static/js/bundle.js',
   chunkFilename: 'static/js/[name].chunk.js',
@@ -64,7 +62,7 @@ const webDevPlugins = [
   new webpack.NamedModulesPlugin(),
   new AssetsPlugin({
     path: paths.appBuild,
-    filename: 'assets.json',
+    filename: 'assets.json'
   }),
   new webpack.HotModuleReplacementPlugin(),
   new webpack.NoEmitOnErrorsPlugin(),
@@ -81,8 +79,6 @@ const webProdEntry = {}
 const webProdOutput = {}
 
 module.exports = (target = 'node', options) => {
-
-
   const IS_NODE = target === 'node'
   const IS_WEB = target === 'web'
   const IS_DEV = process.env.NODE_ENV === 'development'
@@ -93,17 +89,10 @@ module.exports = (target = 'node', options) => {
   const WEB_DEV = IS_WEB && IS_DEV
   const WEB_PROD = IS_WEB && IS_PROD
 
-  const ensureArray = (config) => config && (Array.isArray(config) ? config : [config]) || []
-
-  const whenEnvIs = (condition, config) => {
-    if (!Array.isArray(config)) {
-      return condition ? {...config} : []
-    }
-    return condition ? ensureArray(config) : []
-  }
+  const whenEnvIs = (condition, config) => (condition ? config : null)
 
   let config = {
-    devtool: (process.env.NODE_ENV == 'test') ? false : 'cheap-module-source-map',
+    devtool: process.env.NODE_ENV == 'test' ? false : 'cheap-module-source-map',
     mode: process.env.ENV || 'development',
     resolve: {
       modules: [paths.appNodeModules, paths.ownNodeModules],
@@ -136,33 +125,55 @@ module.exports = (target = 'node', options) => {
         }
       ]
     },
-    entry: {
+    entry:
       // Sweet jesus
-      ...whenEnvIs(NODE_DEV, nodeDevEntry),
-      ...whenEnvIs(NODE_PROD, nodeProdEntry),
-      ...whenEnvIs(WEB_DEV, webDevEntry),
-      ...whenEnvIs(WEB_PROD, webProdEntry)
-    },
+      whenEnvIs(NODE_DEV, nodeDevEntry) ||
+      whenEnvIs(NODE_PROD, nodeProdEntry) ||
+      whenEnvIs(WEB_DEV, webDevEntry) ||
+      whenEnvIs(WEB_PROD, webProdEntry),
     watch: IS_NODE && IS_DEV,
     target: target,
     externals: [
-      IS_NODE && nodeExternals({
-        whitelist: ['webpack/hot/poll?1000', 'tapestry-lite']
-      }) 
+      IS_NODE &&
+        nodeExternals({
+          whitelist: ['webpack/hot/poll?1000', 'tapestry-lite']
+        })
     ].filter(Boolean),
-    plugins: [
+    plugins:
       // Sweet jesus
-      ...whenEnvIs(NODE_DEV, nodeDevPlugins),
-      ...whenEnvIs(NODE_PROD, nodeProdPlugins),
-      ...whenEnvIs(WEB_DEV, webDevPlugins),
-      ...whenEnvIs(WEB_PROD, webProdPlugins)
-    ],
-    output: {
+      whenEnvIs(NODE_DEV, nodeDevPlugins) ||
+      whenEnvIs(NODE_PROD, nodeProdPlugins) ||
+      whenEnvIs(WEB_DEV, webDevPlugins) ||
+      whenEnvIs(WEB_PROD, webProdPlugins),
+    output:
       // Sweet jesus
-      ...whenEnvIs(NODE_DEV, nodeDevOutput),
-      ...whenEnvIs(NODE_PROD, nodeProdOutput),
-      ...whenEnvIs(WEB_DEV, webDevOutput),
-      ...whenEnvIs(WEB_PROD, webProdOutput)
+      whenEnvIs(NODE_DEV, nodeDevOutput) ||
+      whenEnvIs(NODE_PROD, nodeProdOutput) ||
+      whenEnvIs(WEB_DEV, webDevOutput) ||
+      whenEnvIs(WEB_PROD, webProdOutput)
+  }
+  if (WEB_DEV) {
+    config.devServer = {
+      disableHostCheck: true,
+      clientLogLevel: 'none',
+      // Enable gzip compression of generated files.
+      compress: true,
+      // watchContentBase: true,
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      },
+      host: 'localhost',
+      hot: true,
+      noInfo: true,
+      overlay: false,
+      port: 8080,
+      quiet: true,
+      // By default files from `contentBase` will not trigger a page reload.
+      // Reportedly, this avoids CPU overload on some systems.
+      // https://github.com/facebookincubator/create-react-app/issues/293
+      watchOptions: {
+        ignored: /node_modules/
+      }
     }
   }
   // Sweet jesus
