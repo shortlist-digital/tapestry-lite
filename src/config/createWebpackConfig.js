@@ -20,7 +20,7 @@ const nodeDevEntry = [
 ]
 
 const nodeDevOutput = {
-   path: paths.appBuild,
+  path: paths.appBuild,
   filename: 'server.js'
 }
 
@@ -45,13 +45,13 @@ const nodeDevPlugins = [
 const webDevEntry = {
   client: [
     require.resolve('razzle-dev-utils/webpackHotDevClient'),
-    paths.appClientIndexJs
+    paths.ownClientIndex
   ]
 }
 
 const webDevOutput = {
   path: paths.appBuildPublic,
-  publicPath: 'http://locahost:4001',
+  publicPath: 'http://locahost:4001/',
   pathinfo: true,
   filename: 'static/js/bundle.js',
   chunkFilename: 'static/js/[name].chunk.js',
@@ -170,6 +170,5 @@ module.exports = (target = 'node', options) => {
     const appWebpackConfig = require(paths.appWebpackConfig)
     config = appWebpackConfig(config, {}, webpack)
   }
-  console.log(config)
   return config
 }

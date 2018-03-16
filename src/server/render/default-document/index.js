@@ -26,6 +26,7 @@ const DefaultDocument = ({ html, css, head, bootstrapData }) => {
         {head.meta.toComponent()}
         {head.link.toComponent()}
         {head.script.toComponent()}
+        <script src="http://locahost:4001/static/js/bundle.js"></script>
         <style dangerouslySetInnerHTML={{ __html: css }} />
         <link rel="shortcut icon" href="/public/favicon.ico" />
       </head>
