@@ -22,18 +22,18 @@ describe('tapestry build', () => {
   })
 })
 
-describe('tapestry build dynamic import', () => {
-  before(() => {
-    fixture.setupStageWithFixture('stage-build-dynamic', 'build-with-dynamic-import')
-  })
-
-  it('should compile files into a build directory', () => {
-    shell.exec('node ../bin/tapestry-lite.js build')
-    expect(shell.test('-f', '.tapestry/server.js')).to.equal(true)
-    expect(shell.test('-f', '.tapestry/0.server.js')).to.equal(true)
-  }).timeout(10000)
-
-  after(() => {
-    fixture.teardownStage('stage-build-dynamic')
-  })
-})
+// describe('tapestry build dynamic import', () => {
+//   before(() => {
+//     fixture.setupStageWithFixture('stage-build-dynamic', 'build-with-dynamic-import')
+//   })
+// 
+//   it('should compile files into a build directory', () => {
+//     shell.exec('node ../bin/tapestry-lite.js build')
+//     expect(shell.test('-f', '.tapestry/server.js')).to.equal(true)
+//     expect(shell.test('-f', '.tapestry/0.server.js')).to.equal(true)
+//   }).timeout(10000)
+// 
+//   after(() => {
+//     fixture.teardownStage('stage-build-dynamic')
+//   })
+// })

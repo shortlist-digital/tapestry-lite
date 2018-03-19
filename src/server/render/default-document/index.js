@@ -40,6 +40,7 @@ const DefaultDocument = ({ html, css, head, bootstrapData }) => {
           />
         )}
       </body>
+      <script defer src="http://localhost:4001/static/js/bundle.js"></script>
     </html>
   )
 }
