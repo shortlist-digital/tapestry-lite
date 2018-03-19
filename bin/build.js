@@ -1,10 +1,15 @@
-const createWebpackCompiler = require('../src/config/createWebpackCompiler')
+const webpack = require('webpack')
+const createWebpackConfig = require('../src/config/createWebpackConfig')
 
-console.log('Building server')
+const serverConfig = createWebpackConfig('node')
+const serverCompiler = webpack(serverConfig)
 
-const serverCompiler = createWebpackCompiler({ env: 'node', args: process.argv.slice(2) })
+const clientConfig = createWebpackConfig('web')
+const clientCompiler = webpack(clientConfig)
 
 serverCompiler.run(() => {
-  console.log('Built server')
-  process.exit(0)
+  clientCompiler.run(() => {
+    console.log('Built server')
+    process.exit(0)
+  })
 })

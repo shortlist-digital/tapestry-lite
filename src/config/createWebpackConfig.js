@@ -25,7 +25,7 @@ const nodeDevPlugins = [
   new FriendlyErrorsPlugin({
     target: 'node',
     onSuccessMessage: 'Tapestry Lite is Running',
-    verbose: true//process.env.NODE_ENV === 'test'
+    verbose: process.env.NODE_ENV === 'test'
   }),
   new StartServerPlugin({
     name: 'server.js',
