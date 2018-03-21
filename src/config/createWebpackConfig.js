@@ -81,7 +81,7 @@ const webProdOutput = {}
 module.exports = (target = 'node', options) => {
   const IS_NODE = target === 'node'
   const IS_WEB = target === 'web'
-  const IS_DEV = process.env.NODE_ENV === 'development'
+  const IS_DEV = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test'
   const IS_PROD = process.env.NODE_ENV === 'production'
 
   const NODE_DEV = IS_NODE && IS_DEV
@@ -131,7 +131,7 @@ module.exports = (target = 'node', options) => {
       whenEnvIs(NODE_PROD, nodeProdEntry) ||
       whenEnvIs(WEB_DEV, webDevEntry) ||
       whenEnvIs(WEB_PROD, webProdEntry),
-    watch: IS_NODE && IS_DEV,
+    watch: (IS_NODE && IS_DEV) || false,
     target: target,
     externals: [
       IS_NODE &&

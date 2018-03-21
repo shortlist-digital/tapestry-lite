@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+require('dotenv').config()
 'use strict'
 
 const spawn = require('react-dev-utils/crossSpawn')
