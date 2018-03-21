@@ -12,13 +12,13 @@ describe('tapestry build', () => {
   })
 
   it('should compile files into a build directory', () => {
-    shell.exec('node ../bin/tapestry-lite.js build')
+    const child = shell.exec('node ../bin/tapestry-lite.js build')
     expect(shell.test('-f', '.tapestry/server.js')).to.equal(true)
     expect(shell.ls('.tapestry/*.css').code).to.equal(0)
   }).timeout(5000)
 
   after(() => {
-    fixture.teardownStage('stage-build')
+    //fixture.teardownStage('stage-build')
   })
 })
 
