@@ -2,7 +2,6 @@ const webpack = require('webpack')
 const createWebpackConfig = require('../src/config/createWebpackConfig')
 
 const serverConfig = createWebpackConfig('node')
-console.log({serverConfig})
 const serverCompiler = webpack(serverConfig)
 
 const clientConfig = createWebpackConfig('web')

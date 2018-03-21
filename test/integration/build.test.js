@@ -18,7 +18,7 @@ describe('tapestry build', () => {
   }).timeout(5000)
 
   after(() => {
-    //fixture.teardownStage('stage-build')
+    fixture.teardownStage('stage-build')
   })
 })
 
