@@ -1,3 +1,4 @@
+require('dotenv').config()
 #!/usr/bin/env node
 'use strict'
 
