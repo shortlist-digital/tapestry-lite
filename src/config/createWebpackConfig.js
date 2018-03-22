@@ -125,7 +125,8 @@ module.exports = (target = 'node', options) => {
       alias: {
         // This is required so symlinks work during development.
         'webpack/hot/poll': require.resolve('webpack/hot/poll'),
-        'tapestry.config.js': paths.appTapestryConfig
+        'tapestry.config.js': paths.appTapestryConfig,
+        'hiredis': path.join(__dirname, 'src/config/aliases/hiredis')
       }
     },
     resolveLoader: {
@@ -161,6 +162,7 @@ module.exports = (target = 'node', options) => {
     externals: [
       IS_NODE &&
         nodeExternals({
+          modulesDirs: [paths.ownNodeModules, paths.appNodeModules],
           whitelist: ['webpack/hot/poll?1000']
         })
     ].filter(Boolean),
