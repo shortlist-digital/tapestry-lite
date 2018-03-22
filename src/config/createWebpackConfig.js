@@ -118,7 +118,7 @@ module.exports = (target = 'node', options) => {
 
   let config = {
     devtool: process.env.NODE_ENV == 'test' ? false : 'cheap-module-source-map',
-    mode: process.env.NODE_ENV || 'development',
+    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     resolve: {
       modules: [paths.appNodeModules, paths.ownNodeModules],
       extensions: ['.js', '.json', '.jsx', '.mjs'],
