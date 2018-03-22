@@ -1,5 +1,7 @@
 import React from 'react'
 import propTypes from './prop-types'
+import paths from '../../../config/paths'
+import fs from 'fs-extra'
 
 // Add a stringify template helper for outputting JSON with forward
 // slashes escaped to prevent '</script>' tag output in JSON within
@@ -17,6 +19,7 @@ const escapeScriptTags = data => {
 }
 
 const DefaultDocument = ({ html, css, head, bootstrapData }) => {
+  const assets = fs.readJsonSync(paths.appManifest, { throws: false })
   const attr = head.htmlAttributes.toComponent()
   return (
     <html lang="en" {...attr}>
@@ -26,6 +29,7 @@ const DefaultDocument = ({ html, css, head, bootstrapData }) => {
         {head.meta.toComponent()}
         {head.link.toComponent()}
         {head.script.toComponent()}
+         {assets.client && <script defer src={assets.client.js} />}
         <style dangerouslySetInnerHTML={{ __html: css }} />
         <link rel="shortcut icon" href="/public/favicon.ico" />
       </head>

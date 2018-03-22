@@ -10,6 +10,7 @@ const clientCompiler = webpack(clientConfig)
 const clientDevServer = new devServer(clientCompiler, clientConfig.devServer)
 
 console.log('Starting server')
-
 serverCompiler.watch({ quiet: false }, () => {})
+
+console.log('Staring dev server for client')
 clientDevServer.listen(4001, err => console.error(err))

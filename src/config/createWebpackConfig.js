@@ -7,18 +7,18 @@ const StartServerPlugin = require('start-server-webpack-plugin')
 const FriendlyErrorsPlugin = require('razzle-dev-utils/FriendlyErrorsPlugin')
 const paths = require('./paths')
 
-const mainBabelOptions = {
-  babelrc: true,
-  cacheDirectory: true,
-  presets: [require('babel-preset-razzle')],
-  plugins: [require('react-hot-loader/babel')]
-}
 
 const nodeDevEntry = ['webpack/hot/poll?1000', paths.ownDevServer]
+const nodeProdEntry = [paths.ownProdServer]
 
 const nodeDevOutput = {
   path: paths.appBuild,
   filename: 'server.js'
+}
+
+const nodeProdOutput = {
+  path: paths.appBuild,
+  filename: 'server.production.js'
 }
 
 const nodeDevPlugins = [
@@ -39,10 +39,19 @@ const nodeDevPlugins = [
   })
 ]
 
+const nodeProdPlugins = [
+]
+
 const webDevEntry = {
   client: [
     'webpack-dev-server/client?http://localhost:4001/',
     'webpack/hot/only-dev-server',
+    paths.ownClientIndex
+  ]
+}
+
+const webProdEntry = {
+  client: [
     paths.ownClientIndex
   ]
 }
@@ -58,6 +67,13 @@ const webDevOutput = {
   }
 }
 
+const webProdOutput = {
+  path: paths.appBuildPublic,
+  sourceMapFilename: '[name].[chunkhash].map',
+  filename: '[name].[chunkhash].js',
+  publicPath: '/public/'
+}
+
 const webDevPlugins = [
   new webpack.NamedModulesPlugin(),
   new AssetsPlugin({
@@ -71,12 +87,12 @@ const webDevPlugins = [
   })
 ]
 
-const nodeProdPlugins = {}
-const nodeProdOutput = {}
-const nodeProdEntry = {}
-const webProdPlugins = {}
-const webProdEntry = {}
-const webProdOutput = {}
+const webProdPlugins = [
+  new AssetsPlugin({
+    path: paths.appBuild,
+    filename: 'assets.json'
+  })
+]
 
 module.exports = (target = 'node', options) => {
   const IS_NODE = target === 'node'
@@ -88,12 +104,21 @@ module.exports = (target = 'node', options) => {
   const NODE_PROD = IS_NODE && IS_PROD
   const WEB_DEV = IS_WEB && IS_DEV
   const WEB_PROD = IS_WEB && IS_PROD
+  
+  console.log({IS_NODE}, {IS_WEB}, {IS_DEV}, {IS_PROD})
+
+  const mainBabelOptions = {
+    babelrc: true,
+    cacheDirectory: true,
+    presets: [require('babel-preset-razzle')],
+    plugins: WEB_DEV && [require('react-hot-loader/babel')]
+  }
 
   const whenEnvIs = (condition, config) => (condition ? config : null)
 
   let config = {
     devtool: process.env.NODE_ENV == 'test' ? false : 'cheap-module-source-map',
-    mode: process.env.ENV || 'development',
+    mode: process.env.NODE_ENV || 'development',
     resolve: {
       modules: [paths.appNodeModules, paths.ownNodeModules],
       extensions: ['.js', '.json', '.jsx', '.mjs'],
@@ -136,7 +161,7 @@ module.exports = (target = 'node', options) => {
     externals: [
       IS_NODE &&
         nodeExternals({
-          whitelist: ['webpack/hot/poll?1000', 'tapestry-lite']
+          whitelist: ['webpack/hot/poll?1000']
         })
     ].filter(Boolean),
     plugins:

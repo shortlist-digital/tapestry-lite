@@ -61,6 +61,7 @@ module.exports = {
   ownPath: resolveOwn('.'),
   ownNodeModules: resolveOwn('node_modules'),
   ownDevServer: resolveOwn('src/config/hot'),
+  ownProdServer: resolveOwn('src/config/production-server'),
   ownClientIndex: resolveOwn('src/client'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
