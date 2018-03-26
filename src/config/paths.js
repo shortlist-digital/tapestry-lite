@@ -44,6 +44,7 @@ const nodePaths = (process.env.NODE_PATH || '')
 module.exports = {
   dotenv: resolveApp('.env'),
   appPath: resolveApp('.'),
+  ownPath: resolveOwn('.'),
   appBuild: resolveApp('.tapestry'),
   appBuildPublic: resolveApp('.tapestry/public'),
   appBuildServer: resolveApp('.tapestry/server.js'),

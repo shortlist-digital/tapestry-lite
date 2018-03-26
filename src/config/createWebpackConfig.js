@@ -8,7 +8,11 @@ const FriendlyErrorsPlugin = require('razzle-dev-utils/FriendlyErrorsPlugin')
 const paths = require('./paths')
 
 
-const nodeDevEntry = ['webpack/hot/poll?1000', paths.ownDevServer]
+const nodeDevEntry = [
+  'webpack/hot/poll?1000',
+  paths.ownDevServer
+]
+
 const nodeProdEntry = [paths.ownProdServer]
 
 const nodeDevOutput = {
@@ -22,11 +26,6 @@ const nodeProdOutput = {
 }
 
 const nodeDevPlugins = [
-  new FriendlyErrorsPlugin({
-    target: 'node',
-    onSuccessMessage: 'Tapestry Lite is Running',
-    verbose: process.env.NODE_ENV === 'test'
-  }),
   new StartServerPlugin({
     name: 'server.js',
     signal: false
@@ -34,6 +33,11 @@ const nodeDevPlugins = [
   new webpack.NamedModulesPlugin(),
   new webpack.HotModuleReplacementPlugin(),
   new webpack.NoEmitOnErrorsPlugin(),
+  new FriendlyErrorsPlugin({
+    target: 'node',
+    onSuccessMessage: 'Tapestry Lite is Running',
+    verbose: true
+  }),
   new webpack.DefinePlugin({
     __DEV__: true
   })
@@ -125,8 +129,7 @@ module.exports = (target = 'node', options) => {
       alias: {
         // This is required so symlinks work during development.
         'webpack/hot/poll': require.resolve('webpack/hot/poll'),
-        'tapestry.config.js': paths.appTapestryConfig,
-        'hiredis': path.join(__dirname, 'src/config/aliases/hiredis')
+        'tapestry.config.js': paths.appTapestryConfig
       }
     },
     resolveLoader: {
@@ -157,12 +160,15 @@ module.exports = (target = 'node', options) => {
       whenEnvIs(NODE_PROD, nodeProdEntry) ||
       whenEnvIs(WEB_DEV, webDevEntry) ||
       whenEnvIs(WEB_PROD, webProdEntry),
-    watch: (IS_NODE && IS_DEV) || false,
+    watch: (IS_NODE && IS_DEV),
     target: target,
     externals: [
       IS_NODE &&
         nodeExternals({
-          modulesDirs: [paths.ownNodeModules, paths.appNodeModules],
+          whitelist: ['webpack/hot/poll?1000']
+        }),
+      IS_NODE && nodeExternals({
+          modulesDirs: [paths.appNodeModules],
           whitelist: ['webpack/hot/poll?1000']
         })
     ].filter(Boolean),
