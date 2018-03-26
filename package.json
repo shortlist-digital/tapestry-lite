@@ -57,6 +57,7 @@
     "react-inspector": "^2.2.2",
     "react-router": "^4.2.0",
     "react-router-config": "^1.0.0-beta.4",
+    "redis-parser": "^3.0.0",
     "source-map-support": "^0.5.4",
     "start-server-webpack-plugin": "^2.2.1",
     "webpack": "^4.1.0",
