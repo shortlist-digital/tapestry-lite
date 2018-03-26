@@ -75,7 +75,7 @@ const webProdOutput = {
   path: paths.appBuildPublic,
   sourceMapFilename: '[name].[chunkhash].map',
   filename: '[name].[chunkhash].js',
-  publicPath: '/public/'
+  publicPath: '/_assets/'
 }
 
 const webDevPlugins = [

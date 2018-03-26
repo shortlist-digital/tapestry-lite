@@ -46,7 +46,7 @@ module.exports = {
   appPath: resolveApp('.'),
   ownPath: resolveOwn('.'),
   appBuild: resolveApp('.tapestry'),
-  appBuildPublic: resolveApp('.tapestry/public'),
+  appBuildPublic: resolveApp('.tapestry/_assets'),
   appBuildServer: resolveApp('.tapestry/server.js'),
   appManifest: resolveApp('.tapestry/assets.json'),
   appPublic: resolveApp('public'),
