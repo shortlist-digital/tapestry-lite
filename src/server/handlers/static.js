@@ -1,9 +1,4 @@
 export default ({ server }) => {
-  const cacheConfig = {
-    // cache static assets for 1 year
-    privacy: 'public',
-    expiresIn: parseInt(process.env.STATIC_CACHE_CONTROL_MAX_AGE, 10) || 0
-  }
 
   // Static assets from parent project
   server.route({
@@ -23,7 +18,11 @@ export default ({ server }) => {
     method: 'GET',
     path: '/_assets/{param*}',
     config: {
-      cache: cacheConfig
+      cache: {
+        // cache static assets for 1 year
+        privacy: 'public',
+        expiresIn: parseInt(process.env.STATIC_CACHE_CONTROL_MAX_AGE, 10) || 0
+      }
     },
     handler: {
       directory: {

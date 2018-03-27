@@ -1,18 +1,15 @@
 import fetch from 'isomorphic-fetch'
 
 const fetcher = url => {
-// node only
-  const http = require('http')
-  const https = require('https')
-  const startsWith = require('lodash.startswith')
-  const Agent = startsWith(url, 'https') ? https.Agent : http.Agent
+  const Agent = url.startsWith('https')
+    ? require('https').Agent
+    : require('http').Agent
   return fetch(url, {
     agent: new Agent({
       keepAlive: true,
       keepAliveMsecs: 20000
     })
   })
-  return fetch(url)
 }
 
 export default fetcher

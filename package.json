@@ -7,7 +7,9 @@
     "tapestry": "./bin/tapestry-lite.js"
   },
   "scripts": {
-    "test": "PORT=4321 NODE_ENV=test LOG_LEVEL=silent mocha ./src/**/*.test.js ./test/**/*.test.js --require test/babel-register --bail"
+    "test": "npm run test:server && npm run test:integration",
+    "test:server": "PORT=4321 NODE_ENV=test LOG_LEVEL=silent mocha ./src/**/*.test.js ./test/server/*.test.js --require test/babel-register --bail",
+    "test:integration": "PORT=4321 NODE_ENV=test LOG_LEVEL=silent mocha ./test/integration/*.test.js --require test/babel-register --bail"
   },
   "author": "",
   "license": "ISC",
@@ -39,6 +41,7 @@
     "glamor": "^2.20.40",
     "h2o2": "^8.0.0",
     "hapi": "^17.2.1",
+    "hapi-require-https": "^3.0.0",
     "history": "^4.7.2",
     "http-status": "^1.0.1",
     "idx": "^2.2.0",
@@ -48,6 +51,7 @@
     "lodash.isfunction": "^3.0.9",
     "lodash.isplainobject": "^4.0.6",
     "lodash.startswith": "^4.2.1",
+    "make-promises-safe": "^1.1.0",
     "ps-tree": "^1.1.0",
     "razzle-dev-utils": "^0.8.10",
     "react-dev-utils": "5.0.0",

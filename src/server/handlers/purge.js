@@ -1,11 +1,8 @@
 import chalk from 'chalk'
-import { match } from 'react-router'
 import HTTPStatus from 'http-status'
 
 import { log } from '../utilities/logger'
 import CacheManager from '../utilities/cache-manager'
-import resolvePaths from '../utilities/resolve-paths'
-
 
 const clearCacheItem = ({ path, cache }) => {
   log.debug(
@@ -13,7 +10,7 @@ const clearCacheItem = ({ path, cache }) => {
   )
 }
 
-export default ({ server, config }) => {
+export default ({ server }) => {
   const cacheManager = new CacheManager()
   const purgePath = process.env.SECRET_PURGE_PATH || 'purge'
   server.route({
@@ -23,9 +20,7 @@ export default ({ server, config }) => {
       // as hapi strips the trailing slash
       const path = request.params.path || '/'
       cacheManager.clearCache('html', path)
-      return h.response({
-        status: `Purged ${path}`
-      }).code(HTTPStatus.OK)
+      return h.response({ status: `Purged ${path}` }).code(HTTPStatus.OK)
     }
   })
 }

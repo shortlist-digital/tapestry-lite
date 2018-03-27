@@ -25,7 +25,7 @@ export default ({ server, config }) => {
   const routes = prepareAppRoutes(config)
 
   server.route({
-    config: {
+    options: {
       cache: {
         expiresIn:
           (parseInt(process.env.CACHE_CONTROL_MAX_AGE, 10) || 0) * 1000, // 1 Minute
@@ -78,7 +78,7 @@ export default ({ server, config }) => {
           try {
             const multidata = await fetchFromEndpointConfig({
               endpointConfig: route.endpoint,
-              baseUrl: baseUrlResolver(config),
+              baseUrl: baseUrlResolver(config, request.url),
               requestUrlObject: request.url,
               params: match.params,
               allowEmptyResponse
