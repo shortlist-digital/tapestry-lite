@@ -21,7 +21,7 @@ const escapeScriptTags = data => {
 const getProductionBundle = () => {
   const assetsPath = path.resolve(process.cwd(), '.tapestry', 'assets.json')
   const assets = fs.readJsonSync(assetsPath)
-  return assets.client.js
+  return Object.values(assets).map(({ js })=> (<script src={js} />))
 }
 
 //const assets = fs.readJsonSync(paths.appManifest, { throws: false })
@@ -52,7 +52,7 @@ const DefaultDocument = ({ html, css, head, bootstrapData }) => {
           />
         )}
         {process.env.NODE_ENV === 'production' ? (
-          <script src={getProductionBundle()} />
+          getProductionBundle()
         ) : (
           <script src={'http://localhost:4001/static/js/bundle.js'} />
         )}
