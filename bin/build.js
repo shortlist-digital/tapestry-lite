@@ -18,17 +18,18 @@ serverCompiler.run((err, stats) => {
     chunks: false,  // Makes the build much quieter
     colors: true    // Shows colors in the console
   }))
+  clientCompiler.run((err, stats) => {
+    if (err || stats.hasErrors()) {
+      console.log('Client Compiler:')
+      console.error(err || stats.hasErrors())
+    }
+    console.log('Built Client')
+    console.log(stats.toString({
+      chunks: false,  // Makes the build much quieter
+      colors: true    // Shows colors in the console
+    }))
+    process.exit(1)
+  })
 })
 
-clientCompiler.run((err, stats) => {
-  if (err || stats.hasErrors()) {
-    console.log('Client Compiler:')
-    console.error(err || stats.hasErrors())
-  }
-  console.log('Built Client')
-  console.log(stats.toString({
-    chunks: false,  // Makes the build much quieter
-    colors: true    // Shows colors in the console
-  }))
-})
 

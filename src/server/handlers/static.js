@@ -6,7 +6,7 @@ export default ({ server }) => {
   }
 
   // Static folders
-  const staticPaths = ['_assets', 'public']
+  const staticPaths = ['.tapestry/_assets', 'public']
 
   staticPaths.map(path => {
     server.route({
@@ -17,7 +17,7 @@ export default ({ server }) => {
       },
       handler: {
         directory: {
-          path: `.tapestry/${path}`,
+          path,
           redirectToSlash: true,
           index: true
         }
