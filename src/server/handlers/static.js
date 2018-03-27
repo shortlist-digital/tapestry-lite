@@ -12,7 +12,7 @@ export default ({ server }) => {
     server.route({
       method: 'GET',
       path: `/${path}/{param*}`,
-      config: {
+      options: {
         cache: path === '_assets' && cacheConfig
       },
       handler: {

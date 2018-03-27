@@ -22,6 +22,18 @@ const setRedirects = (server, redirects) => {
 }
 
 export default ({ server, config }) => {
+  
+  // Handle default browser favicon lookup
+  server.route({
+    method: 'GET',
+    path: '/favicon.ico',
+    handler: (request, h) => {
+      return h
+        .redirect('/public/favicon.ico')
+        .permanent()
+        .rewritable(false)
+    }
+  })
   // Handle legacy redirects
   let redirects = config.redirectPaths || {}
 

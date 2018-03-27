@@ -2613,6 +2613,10 @@ handle-thing@^1.2.5:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/handle-thing/-/handle-thing-1.2.5.tgz#fd7aad726bf1a5fd16dfc29b2f7a6601d27139c4"
 
+hapi-require-https@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/hapi-require-https/-/hapi-require-https-3.0.0.tgz#a3f7bcfae0224044db44ffcfd27c1b84e330cd2a"
+
 hapi@^17.2.1:
   version "17.2.2"
   resolved "https://registry.npmjs.org/hapi/-/hapi-17.2.2.tgz#c6c882d698a1a2a2a20e74a0b9f604cf10aac5a5"
