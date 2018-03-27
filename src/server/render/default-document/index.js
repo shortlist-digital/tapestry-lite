@@ -30,7 +30,6 @@ const getProductionBundle = () => {
 //const assets = fs.readJsonSync(paths.appManifest, { throws: false })
 
 const DefaultDocument = ({ html, css, head, bootstrapData }) => {
-  console.log('default document')
   const attr = head.htmlAttributes.toComponent()
   return (
     <html lang="en" {...attr}>

@@ -3,6 +3,7 @@ const path = require('path')
 const fs = require('fs-extra')
 
 const AssetsPlugin = require('assets-webpack-plugin')
+const CleanPlugin = require('clean-webpack-plugin')
 const FriendlyErrorsPlugin = require('razzle-dev-utils/FriendlyErrorsPlugin')
 const nodeExternals = require('webpack-node-externals')
 const StartServerPlugin = require('start-server-webpack-plugin')
@@ -217,6 +218,12 @@ module.exports = (target = 'node', options) => {
       }
     }
   }
+  config.plugins.push(
+    new CleanPlugin(['.tapestry'], {
+        root: process.cwd(),
+        verbose: false
+    })
+  )
   // Sweet jesus
   if (fs.existsSync(paths.appWebpackConfig)) {
     const appWebpackConfig = require(paths.appWebpackConfig)
