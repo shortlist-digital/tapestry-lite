@@ -5,10 +5,10 @@ import PropTypes from 'prop-types'
 
 import stringifyEscapeScript from '../../utilities/stringify-escape-script'
 
-const getProductionBundle = () => {
+const getProductionBundles = () => {
   const assetsPath = path.resolve(process.cwd(), '.tapestry', 'assets.json')
   const assets = fs.readJsonSync(assetsPath)
-  return assets.client.js
+  return Object.values(assets).map(({ js })=> (<script src={js} />))
 }
 
 const DefaultDocument = ({ html, css, head, bootstrapData }) => (
@@ -36,7 +36,7 @@ const DefaultDocument = ({ html, css, head, bootstrapData }) => (
       )}
     </body>
     {process.env.NODE_ENV === 'production' ? (
-      <script src={getProductionBundle()} />
+      getProductionBundles()
     ) : (
       <script src={'http://localhost:4001/static/js/bundle.js'} />
     )}
