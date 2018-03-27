@@ -18,12 +18,15 @@ const escapeScriptTags = data => {
   )
 }
 
+const getProductionBundle = () => {
+  const assetsPath = path.resolve(process.cwd(), '.tapestry', 'assets.json')
+  const assets = fs.readJsonSync(assetsPath)
+  return assets.client.js
+}
+
 //const assets = fs.readJsonSync(paths.appManifest, { throws: false })
 
 const DefaultDocument = ({ html, css, head, bootstrapData }) => {
-  const assetsPath = path.resolve(process.cwd(), '.tapestry', 'assets.json')
-  const assets = fs.readJsonSync(assetsPath)
-  console.log({assets})
   const attr = head.htmlAttributes.toComponent()
   return (
     <html lang="en" {...attr}>
@@ -42,15 +45,17 @@ const DefaultDocument = ({ html, css, head, bootstrapData }) => {
           <script
             type="text/javascript"
             dangerouslySetInnerHTML={{
-              __html: `window.__BOOTSTRAP_DATA__ = ${escapeScriptTags(bootstrapData)}`
+              __html: `window.__BOOTSTRAP_DATA__ = ${escapeScriptTags(
+                bootstrapData
+              )}`
             }}
           />
         )}
-        {(process.env.NODE_ENV === 'production') ? 
-        <script src={assets.client.js} /> 
-        :
-        <script src={'http://localhost:4001/static/js/bundle.js'} /> 
-      }
+        {process.env.NODE_ENV === 'production' ? (
+          <script src={getProductionBundle()} />
+        ) : (
+          <script src={'http://localhost:4001/static/js/bundle.js'} />
+        )}
       </body>
     </html>
   )
