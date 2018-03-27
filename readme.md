@@ -1,20 +1,47 @@
 # Tapestry Lite
 
-* Remove client side navigation
-* Backwards compatible with existing `tapestry.config.js`
-* Borrows heavily from `jaredpalmer/razzle` - using some of the presets and utils
-* Upgrades Hapi to version `17`, should be able to port over most of the existing Tapestry server
-* Webpack 4, includes hot server reloading and amazing speeds once cached
-* WIP: Better error reporting
+## Installation
+
+`yarn add react react-dom tapestry-lite`
+
+## `tapestry.config.js`
+
+### Component config for default WordPress
+
+### Custom Route Configuration
+
+## CSS: Glamor or Emotion
+
+## Loading Data From Wordpress
+
+* Endpoint object on config
+
+## Custom `webpack.config.js`
+
+## React Helmet
+
+## Production Build
+
+* Building for production
+* Running in production
+
+## Caching
+
+* Redis option
+
+## Use of Env Variables
+
+* `.env` files
+
+## `public` folder
+
+## Advanced Server Configuration
 
 ## Wishlist
 
 * React Loadable included with server side reconciliation
-* Swappable CSS solution - Potentially choosing Emotion/Styled as peer deps
 * Efficient bundling spitting
-* Streaming
-* Super fast Hot Loading on the client
 
-## Testing
+## Testing during development
 
-Run `yarn test` to run the test
+Run `yarn test` to run the tests
