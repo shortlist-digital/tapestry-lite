@@ -1,3 +1,4 @@
+import 'make-promises-safe'
 import Hapi from 'hapi'
 
 import DynamicRouteHandler from './handlers/dynamic'

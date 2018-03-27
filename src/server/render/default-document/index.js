@@ -1,5 +1,5 @@
 import React from 'react'
-import propTypes from './prop-types'
+import PropTypes from 'prop-types'
 
 // Add a stringify template helper for outputting JSON with forward
 // slashes escaped to prevent '</script>' tag output in JSON within
@@ -45,6 +45,11 @@ const DefaultDocument = ({ html, css, head, bootstrapData }) => {
   )
 }
 
-DefaultDocument.propTypes = propTypes
+DefaultDocument.propTypes = {
+  html: PropTypes.string.isRequired,
+  ids: PropTypes.array.isRequired,
+  css: PropTypes.string.isRequired,
+  head: PropTypes.object.isRequired
+}
 
 export default DefaultDocument
