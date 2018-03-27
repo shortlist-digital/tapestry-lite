@@ -8,6 +8,7 @@ import ProxyHandler from './handlers/proxy'
 import PurgeHandler from './handlers/purge'
 import StaticHandler from './handlers/static'
 import CacheManager from './utilities/cache-manager'
+import { log } from './utilities/logger'
 
 // Create CacheManager Singleton
 new CacheManager()
@@ -28,12 +29,21 @@ class Server {
           .rewritable(false)
       }
     })
-    
+
+    this.server.ext('onPreResponse', ({ response }, h) => {
+      // isServer indicates status code >= 500
+      //  if error, pass it through server.log
+      if (response && response.isBoom && response.isServer) {
+        console.error(response.error || response.message)
+      }
+      return h.continue
+    })
+
     const data = {
       config,
       server: this.server
     }
-    
+
     PurgeHandler(data)
     RedirectHandler(data)
     DynamicRouteHandler(data)

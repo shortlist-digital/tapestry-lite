@@ -1,5 +1,7 @@
 import React from 'react'
 import propTypes from './prop-types'
+import path from 'path'
+import fs from 'fs-extra'
 
 // Add a stringify template helper for outputting JSON with forward
 // slashes escaped to prevent '</script>' tag output in JSON within
@@ -15,6 +17,14 @@ const escapeScriptTags = data => {
       .replace(/\u2029/g, '\\u2029')
   )
 }
+
+const getProductionBundle = () => {
+  const assetsPath = path.resolve(process.cwd(), '.tapestry', 'assets.json')
+  const assets = fs.readJsonSync(assetsPath)
+  return assets.client.js
+}
+
+//const assets = fs.readJsonSync(paths.appManifest, { throws: false })
 
 const DefaultDocument = ({ html, css, head, bootstrapData }) => {
   const attr = head.htmlAttributes.toComponent()
@@ -35,12 +45,18 @@ const DefaultDocument = ({ html, css, head, bootstrapData }) => {
           <script
             type="text/javascript"
             dangerouslySetInnerHTML={{
-              __html: `window.__BOOTSTRAP_DATA__ = ${escapeScriptTags(bootstrapData)}`
+              __html: `window.__BOOTSTRAP_DATA__ = ${escapeScriptTags(
+                bootstrapData
+              )}`
             }}
           />
         )}
+        {process.env.NODE_ENV === 'production' ? (
+          <script src={getProductionBundle()} />
+        ) : (
+          <script src={'http://localhost:4001/static/js/bundle.js'} />
+        )}
       </body>
-      <script defer src="http://localhost:4001/static/js/bundle.js"></script>
     </html>
   )
 }

@@ -44,8 +44,9 @@ const nodePaths = (process.env.NODE_PATH || '')
 module.exports = {
   dotenv: resolveApp('.env'),
   appPath: resolveApp('.'),
+  ownPath: resolveOwn('.'),
   appBuild: resolveApp('.tapestry'),
-  appBuildPublic: resolveApp('.tapestry/public'),
+  appBuildPublic: resolveApp('.tapestry/_assets'),
   appBuildServer: resolveApp('.tapestry/server.js'),
   appManifest: resolveApp('.tapestry/assets.json'),
   appPublic: resolveApp('public'),
@@ -61,6 +62,7 @@ module.exports = {
   ownPath: resolveOwn('.'),
   ownNodeModules: resolveOwn('node_modules'),
   ownDevServer: resolveOwn('src/config/hot'),
+  ownProdServer: resolveOwn('src/config/production-server'),
   ownClientIndex: resolveOwn('src/client'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),

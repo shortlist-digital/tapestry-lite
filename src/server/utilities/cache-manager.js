@@ -1,6 +1,5 @@
 import chalk from 'chalk'
 import NCM from 'cache-manager'
-import redisStore from 'cache-manager-redis-store'
 import { log } from './logger'
 
 let internalCaches = []
@@ -25,6 +24,7 @@ export default class CacheManager {
     }
 
     if (process.env.REDIS_URL) {
+      const redisStore = require('cache-manager-redis-store')
       cacheConfig = {
         store: redisStore,
         url: process.env.REDIS_URL

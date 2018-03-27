@@ -1,32 +1,30 @@
-const AssetsPlugin = require('assets-webpack-plugin')
 const webpack = require('webpack')
 const path = require('path')
 const fs = require('fs-extra')
+
+const AssetsPlugin = require('assets-webpack-plugin')
+const FriendlyErrorsPlugin = require('razzle-dev-utils/FriendlyErrorsPlugin')
 const nodeExternals = require('webpack-node-externals')
 const StartServerPlugin = require('start-server-webpack-plugin')
-const FriendlyErrorsPlugin = require('razzle-dev-utils/FriendlyErrorsPlugin')
+const StatsPlugin = require('stats-webpack-plugin')
+
 const paths = require('./paths')
 
-const mainBabelOptions = {
-  babelrc: true,
-  cacheDirectory: true,
-  presets: [require('babel-preset-razzle')],
-  plugins: [require('react-hot-loader/babel')]
-}
-
 const nodeDevEntry = ['webpack/hot/poll?1000', paths.ownDevServer]
+
+const nodeProdEntry = [paths.ownProdServer]
 
 const nodeDevOutput = {
   path: paths.appBuild,
   filename: 'server.js'
 }
 
+const nodeProdOutput = {
+  path: paths.appBuild,
+  filename: 'server.production.js'
+}
+
 const nodeDevPlugins = [
-  new FriendlyErrorsPlugin({
-    target: 'node',
-    onSuccessMessage: 'Tapestry Lite is Running',
-    verbose: process.env.NODE_ENV === 'test'
-  }),
   new StartServerPlugin({
     name: 'server.js',
     signal: false
@@ -34,10 +32,17 @@ const nodeDevPlugins = [
   new webpack.NamedModulesPlugin(),
   new webpack.HotModuleReplacementPlugin(),
   new webpack.NoEmitOnErrorsPlugin(),
+  new FriendlyErrorsPlugin({
+    target: 'node',
+    onSuccessMessage: 'Tapestry Lite is Running',
+    verbose: true
+  }),
   new webpack.DefinePlugin({
     __DEV__: true
   })
 ]
+
+const nodeProdPlugins = []
 
 const webDevEntry = {
   client: [
@@ -45,6 +50,10 @@ const webDevEntry = {
     'webpack/hot/only-dev-server',
     paths.ownClientIndex
   ]
+}
+
+const webProdEntry = {
+  client: [paths.ownClientIndex]
 }
 
 const webDevOutput = {
@@ -58,30 +67,32 @@ const webDevOutput = {
   }
 }
 
+const webProdOutput = {
+  path: paths.appBuildPublic,
+  sourceMapFilename: '[name].[chunkhash].map',
+  filename: '[name].[chunkhash].js',
+  publicPath: '/_assets/'
+}
+
 const webDevPlugins = [
   new webpack.NamedModulesPlugin(),
+  new webpack.HotModuleReplacementPlugin(),
+  new webpack.NoEmitOnErrorsPlugin()
+]
+
+const webProdPlugins = [
+  new StatsPlugin('../stats.json'),
   new AssetsPlugin({
     path: paths.appBuild,
     filename: 'assets.json'
-  }),
-  new webpack.HotModuleReplacementPlugin(),
-  new webpack.NoEmitOnErrorsPlugin(),
-  new webpack.DefinePlugin({
-    __DEV__: true
   })
 ]
-
-const nodeProdPlugins = {}
-const nodeProdOutput = {}
-const nodeProdEntry = {}
-const webProdPlugins = {}
-const webProdEntry = {}
-const webProdOutput = {}
 
 module.exports = (target = 'node', options) => {
   const IS_NODE = target === 'node'
   const IS_WEB = target === 'web'
-  const IS_DEV = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test'
+  const IS_DEV =
+    process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test'
   const IS_PROD = process.env.NODE_ENV === 'production'
 
   const NODE_DEV = IS_NODE && IS_DEV
@@ -89,11 +100,20 @@ module.exports = (target = 'node', options) => {
   const WEB_DEV = IS_WEB && IS_DEV
   const WEB_PROD = IS_WEB && IS_PROD
 
+  console.log({ IS_NODE }, { IS_WEB }, { IS_DEV }, { IS_PROD })
+
+  const mainBabelOptions = {
+    babelrc: true,
+    cacheDirectory: true,
+    presets: [require('babel-preset-razzle')],
+    plugins: WEB_DEV && [require('react-hot-loader/babel')]
+  }
+
   const whenEnvIs = (condition, config) => (condition ? config : null)
 
   let config = {
     devtool: process.env.NODE_ENV == 'test' ? false : 'cheap-module-source-map',
-    mode: process.env.ENV || 'development',
+    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     resolve: {
       modules: [paths.appNodeModules, paths.ownNodeModules],
       extensions: ['.js', '.json', '.jsx', '.mjs'],
@@ -131,12 +151,17 @@ module.exports = (target = 'node', options) => {
       whenEnvIs(NODE_PROD, nodeProdEntry) ||
       whenEnvIs(WEB_DEV, webDevEntry) ||
       whenEnvIs(WEB_PROD, webProdEntry),
-    watch: (IS_NODE && IS_DEV) || false,
+    watch: IS_NODE && IS_DEV,
     target: target,
     externals: [
       IS_NODE &&
         nodeExternals({
-          whitelist: ['webpack/hot/poll?1000', 'tapestry-lite']
+          whitelist: ['webpack/hot/poll?1000']
+        }),
+      IS_NODE &&
+        nodeExternals({
+          modulesDirs: [paths.appNodeModules],
+          whitelist: ['webpack/hot/poll?1000']
         })
     ].filter(Boolean),
     plugins:
@@ -173,6 +198,14 @@ module.exports = (target = 'node', options) => {
       // https://github.com/facebookincubator/create-react-app/issues/293
       watchOptions: {
         ignored: /node_modules/
+      }
+    }
+  }
+  if (WEB_PROD) {
+    config.optimization = {
+      splitChunks: {
+        chunks: 'all',
+        name: false
       }
     }
   }
