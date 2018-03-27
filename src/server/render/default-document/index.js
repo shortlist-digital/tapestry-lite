@@ -8,7 +8,9 @@ import stringifyEscapeScript from '../../utilities/stringify-escape-script'
 const getProductionBundles = () => {
   const assetsPath = path.resolve(process.cwd(), '.tapestry', 'assets.json')
   const assets = fs.readJsonSync(assetsPath)
-  return Object.values(assets).map(({ js })=> (<script src={js} />))
+  return Object.values(assets).map(({ js }, index) => (
+    <script key={index} src={js} />
+  ))
 }
 
 const DefaultDocument = ({ html, css, head, bootstrapData }) => (
