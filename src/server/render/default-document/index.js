@@ -2,7 +2,6 @@ import React from 'react'
 import propTypes from './prop-types'
 import path from 'path'
 import fs from 'fs-extra'
-import map from 'lodash.map'
 
 // Add a stringify template helper for outputting JSON with forward
 // slashes escaped to prevent '</script>' tag output in JSON within
@@ -22,9 +21,7 @@ const escapeScriptTags = data => {
 const getProductionBundle = () => {
   const assetsPath = path.resolve(process.cwd(), '.tapestry', 'assets.json')
   const assets = fs.readJsonSync(assetsPath)
-  return map(assets, asset => (
-    <script src={asset.js} />
-  ))
+  return Object.values(assets).map(({ js })=> (<script src={js} />))
 }
 
 //const assets = fs.readJsonSync(paths.appManifest, { throws: false })
