@@ -60,6 +60,7 @@
     "redis-parser": "^3.0.0",
     "source-map-support": "^0.5.4",
     "start-server-webpack-plugin": "^2.2.1",
+    "stats-webpack-plugin": "^0.6.2",
     "webpack": "^4.1.0",
     "webpack-dev-server": "^3.1.1",
     "webpack-node-externals": "^1.6.0",

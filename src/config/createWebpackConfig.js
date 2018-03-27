@@ -1,17 +1,16 @@
-const AssetsPlugin = require('assets-webpack-plugin')
 const webpack = require('webpack')
 const path = require('path')
 const fs = require('fs-extra')
+
+const AssetsPlugin = require('assets-webpack-plugin')
+const FriendlyErrorsPlugin = require('razzle-dev-utils/FriendlyErrorsPlugin')
 const nodeExternals = require('webpack-node-externals')
 const StartServerPlugin = require('start-server-webpack-plugin')
-const FriendlyErrorsPlugin = require('razzle-dev-utils/FriendlyErrorsPlugin')
+const StatsPlugin = require('stats-webpack-plugin')
+
 const paths = require('./paths')
 
-
-const nodeDevEntry = [
-  'webpack/hot/poll?1000',
-  paths.ownDevServer
-]
+const nodeDevEntry = ['webpack/hot/poll?1000', paths.ownDevServer]
 
 const nodeProdEntry = [paths.ownProdServer]
 
@@ -43,8 +42,7 @@ const nodeDevPlugins = [
   })
 ]
 
-const nodeProdPlugins = [
-]
+const nodeProdPlugins = []
 
 const webDevEntry = {
   client: [
@@ -55,9 +53,7 @@ const webDevEntry = {
 }
 
 const webProdEntry = {
-  client: [
-    paths.ownClientIndex
-  ]
+  client: [paths.ownClientIndex]
 }
 
 const webDevOutput = {
@@ -80,18 +76,12 @@ const webProdOutput = {
 
 const webDevPlugins = [
   new webpack.NamedModulesPlugin(),
-  new AssetsPlugin({
-    path: paths.appBuild,
-    filename: 'assets.json'
-  }),
   new webpack.HotModuleReplacementPlugin(),
-  new webpack.NoEmitOnErrorsPlugin(),
-  new webpack.DefinePlugin({
-    __DEV__: true
-  })
+  new webpack.NoEmitOnErrorsPlugin()
 ]
 
 const webProdPlugins = [
+  new StatsPlugin('../stats.json'),
   new AssetsPlugin({
     path: paths.appBuild,
     filename: 'assets.json'
@@ -101,15 +91,16 @@ const webProdPlugins = [
 module.exports = (target = 'node', options) => {
   const IS_NODE = target === 'node'
   const IS_WEB = target === 'web'
-  const IS_DEV = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test'
+  const IS_DEV =
+    process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test'
   const IS_PROD = process.env.NODE_ENV === 'production'
 
   const NODE_DEV = IS_NODE && IS_DEV
   const NODE_PROD = IS_NODE && IS_PROD
   const WEB_DEV = IS_WEB && IS_DEV
   const WEB_PROD = IS_WEB && IS_PROD
-  
-  console.log({IS_NODE}, {IS_WEB}, {IS_DEV}, {IS_PROD})
+
+  console.log({ IS_NODE }, { IS_WEB }, { IS_DEV }, { IS_PROD })
 
   const mainBabelOptions = {
     babelrc: true,
@@ -160,14 +151,15 @@ module.exports = (target = 'node', options) => {
       whenEnvIs(NODE_PROD, nodeProdEntry) ||
       whenEnvIs(WEB_DEV, webDevEntry) ||
       whenEnvIs(WEB_PROD, webProdEntry),
-    watch: (IS_NODE && IS_DEV),
+    watch: IS_NODE && IS_DEV,
     target: target,
     externals: [
       IS_NODE &&
         nodeExternals({
           whitelist: ['webpack/hot/poll?1000']
         }),
-      IS_NODE && nodeExternals({
+      IS_NODE &&
+        nodeExternals({
           modulesDirs: [paths.appNodeModules],
           whitelist: ['webpack/hot/poll?1000']
         })
@@ -206,6 +198,14 @@ module.exports = (target = 'node', options) => {
       // https://github.com/facebookincubator/create-react-app/issues/293
       watchOptions: {
         ignored: /node_modules/
+      }
+    }
+  }
+  if (WEB_PROD) {
+    config.optimization = {
+      splitChunks: {
+        chunks: 'all',
+        name: false
       }
     }
   }
