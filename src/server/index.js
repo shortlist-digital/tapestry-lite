@@ -8,6 +8,7 @@ import RedirectHandler from './handlers/redirect'
 import StaticHandler from './handlers/static'
 
 import CacheManager from './utilities/cache-manager'
+import { log } from './utilities/logger'
 
 // Create CacheManager Singleton
 new CacheManager()
@@ -32,10 +33,15 @@ class Server {
         }
       }
     })
-    // Add Tapestry header
-    server.ext('onPreResponse', (request, h) => {
-      if (request.response.headers)
-        request.response.headers['X-Powered-By'] = 'Tapestry'
+
+    server.ext('onPreResponse', ({ response }, h) => {
+      // isServer indicates status code >= 500
+      // if error, pass it through server.log
+      if (response && response.isBoom && response.isServer) {
+        console.error(response.error || response.message)
+      }
+      // The important bit
+      if (response.headers) response.headers['X-Powered-By'] = 'Tapestry'
       return h.continue
     })
     // Handle server routes

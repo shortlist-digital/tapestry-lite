@@ -1,6 +1,15 @@
 import React from 'react'
+import fs from 'fs-extra'
+import path from 'path'
 import PropTypes from 'prop-types'
+
 import stringifyEscapeScript from '../../utilities/stringify-escape-script'
+
+const getProductionBundle = () => {
+  const assetsPath = path.resolve(process.cwd(), '.tapestry', 'assets.json')
+  const assets = fs.readJsonSync(assetsPath)
+  return assets.client.js
+}
 
 const DefaultDocument = ({ html, css, head, bootstrapData }) => (
   <html lang="en" {...head.htmlAttributes.toComponent()}>
@@ -26,7 +35,11 @@ const DefaultDocument = ({ html, css, head, bootstrapData }) => (
         />
       )}
     </body>
-    <script src="http://localhost:4001/static/js/bundle.js" />
+    {process.env.NODE_ENV === 'production' ? (
+      <script src={getProductionBundle()} />
+    ) : (
+      <script src={'http://localhost:4001/static/js/bundle.js'} />
+    )}
   </html>
 )
 
