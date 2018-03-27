@@ -5,23 +5,32 @@ export default ({ server }) => {
     expiresIn: parseInt(process.env.STATIC_CACHE_CONTROL_MAX_AGE, 10) || 0
   }
 
-  // Static folders
-  const staticPaths = ['.tapestry/_assets', 'public']
-
-  staticPaths.map(path => {
-    server.route({
-      method: 'GET',
-      path: `/${path}/{param*}`,
-      config: {
-        cache: path === '_assets' && cacheConfig
-      },
-      handler: {
-        directory: {
-          path,
-          redirectToSlash: true,
-          index: true
-        }
+  // Static assets from parent project
+  server.route({
+    method: 'GET',
+    path: '/public/{param*}',
+    handler: {
+      directory: {
+        path: 'public/',
+        redirectToSlash: true,
+        index: true
       }
-    })
+    }
+  })
+
+  // Compiled Assets from Tapestry
+  server.route({
+    method: 'GET',
+    path: '/_assets/{param*}',
+    config: {
+      cache: cacheConfig
+    },
+    handler: {
+      directory: {
+        path: '.tapestry/_assets',
+        redirectToSlash: true,
+        index: true
+      }
+    }
   })
 }
