@@ -203,7 +203,15 @@ module.exports = (target = 'node', options) => {
   }
   if (WEB_PROD) {
     config.optimization = {
+      runtimeChunk: true,
       splitChunks: {
+        cacheGroups: {
+          commons: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendor',
+            chunks: 'all'
+          }
+        },
         chunks: 'all',
         name: false
       }

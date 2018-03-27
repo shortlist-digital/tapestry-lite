@@ -17,7 +17,7 @@ export default ({ server }) => {
       },
       handler: {
         directory: {
-          path,
+          path: `.tapestry/${path}`,
           redirectToSlash: true,
           index: true
         }
