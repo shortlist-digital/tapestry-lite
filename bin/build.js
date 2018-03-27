@@ -28,7 +28,7 @@ serverCompiler.run((err, stats) => {
       chunks: false,  // Makes the build much quieter
       colors: true    // Shows colors in the console
     }))
-    process.exit(1)
+    process.exit(0)
   })
 })
 
