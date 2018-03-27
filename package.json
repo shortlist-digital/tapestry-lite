@@ -9,7 +9,7 @@
   "scripts": {
     "test": "npm run test:server && npm run test:integration",
     "test:server": "PORT=4321 NODE_ENV=test LOG_LEVEL=silent mocha ./src/**/*.test.js ./test/server/*.test.js --require test/babel-register --bail",
-    "test:integration": "PORT=4321 NODE_ENV=test LOG_LEVEL=silent mocha ./src/**/*.test.js ./test/integration/*.test.js --require test/babel-register --bail"
+    "test:integration": "PORT=4321 NODE_ENV=test LOG_LEVEL=silent mocha ./test/integration/*.test.js --require test/babel-register --bail"
   },
   "author": "",
   "license": "ISC",
