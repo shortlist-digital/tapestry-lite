@@ -3,8 +3,8 @@ import { expect } from 'chai'
 import request from 'request'
 import nock from 'nock'
 
-import CacheManager from '../../src/utilities/cache-manager'
-import { bootServer } from '../utils'
+import CacheManager from '../../src/server/utilities/cache-manager'
+import Server from '../../src/server'
 import dataPost from '../mocks/post.json'
 
 const prepareJson = data =>
@@ -14,50 +14,44 @@ const prepareJson = data =>
     .replace(/\u2029/g, '\\u2029')
 
 describe('Handling preview requests', () => {
-  let tapestry = null
+  let server = null
   let uri = null
   let config = {
     routes: [
       {
-        path: 'dynamic-string-endpoint/:custom',
-        endpoint: params => `posts?slug=${params.custom}`,
+        path: '/dynamic-string-endpoint/:slug',
+        endpoint: ({ slug }) => `posts?slug=${slug}`,
         component: () => <p>Custom endpoint</p>
       }
     ],
-    siteUrl: 'http://dummy.api'
+    siteUrl: 'http://preview-dummy.api'
   }
 
   const cacheManager = new CacheManager()
 
-  before(done => {
-    process.env.CACHE_MAX_AGE = 60 * 1000
+  before(async () => {
     // mock api response
-    nock('http://dummy.api')
+    nock('http://preview-dummy.api')
       .get(
         '/wp-json/revision/v1/posts?slug=preview-test&tapestry_hash=hash&p=10'
       )
       .reply(200, dataPost)
     // boot tapestry server
-    tapestry = bootServer(config)
-    tapestry.server.on('start', () => {
-      uri = tapestry.server.info.uri
-      done()
-    })
+    process.env.CACHE_MAX_AGE = 60 * 1000
+    server = new Server({ config })
+    await server.start()
+    uri = server.info.uri
   })
 
-  after(() => {
-    delete process.env.CACHE_MAX_AGE
-    tapestry.server.stop()
+  after(async () => {
+    await server.stop()
+    delete process.env.CACHE_CONTROL_MAX_AGE
   })
 
-  it('Preview route renders and is not cached', done => {
-    const cacheApi = cacheManager.getCache('api')
-    cacheApi.reset()
+  it('Preview route renders', done => {
     request.get(
       `${uri}/dynamic-string-endpoint/preview-test?tapestry_hash=hash&p=10`,
-      async (err, res, body) => {
-        const keys = await cacheApi.keys()
-        expect(keys).to.be.empty
+      (err, res, body) => {
         expect(body).to.contain(prepareJson(dataPost))
         done()
       }

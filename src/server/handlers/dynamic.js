@@ -78,7 +78,7 @@ export default ({ server, config }) => {
           try {
             const multidata = await fetchFromEndpointConfig({
               endpointConfig: route.endpoint,
-              baseUrl: baseUrlResolver(config),
+              baseUrl: baseUrlResolver(config, request.url),
               requestUrlObject: request.url,
               params: match.params,
               allowEmptyResponse
