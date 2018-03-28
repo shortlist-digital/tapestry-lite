@@ -7,7 +7,7 @@ const Root = (config) => {
   const routes = prepareAppRoutes(config)
   const { route, match } = matchRoutes(routes, window.location.pathname)[0]
   const Component = route.component
-  return <Component {...match} {...window.__BOOTSTRAP_DATA__} />
+  return <Component {...match} {...window.__data.appData} />
 }
 
 export default hot(module)(Root)

@@ -3,14 +3,8 @@ import { hydrate } from 'react-dom'
 import config from '../config/config-proxy'
 import Root from './root'
 
-const renderApp = config => {
-  // define routes/history for react-router
-  const targetNode = document.getElementById('root')
-
-  hydrate(
-    <Root {...config} />,
-    targetNode
-  )
+if (__CSS_PLUGIN__ === 'emotion') {
+  require('emotion').hydrate(window.__data.ids)
 }
 
-renderApp(config)
+hydrate(<Root {...config} />, document.getElementById('root'))

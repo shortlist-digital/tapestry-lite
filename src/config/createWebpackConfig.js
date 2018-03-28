@@ -78,7 +78,10 @@ const webProdOutput = {
 const webDevPlugins = [
   new webpack.NamedModulesPlugin(),
   new webpack.HotModuleReplacementPlugin(),
-  new webpack.NoEmitOnErrorsPlugin()
+  new webpack.NoEmitOnErrorsPlugin(),
+  new webpack.DefinePlugin({
+    __CSS_PLUGIN__: JSON.stringify(process.env.CSS_PLUGIN)
+  })
 ]
 
 const webProdPlugins = [
@@ -107,7 +110,10 @@ module.exports = (target = 'node', options) => {
     babelrc: true,
     cacheDirectory: true,
     presets: [require('babel-preset-razzle')],
-    plugins: WEB_DEV && [require('react-hot-loader/babel')]
+    plugins: [
+      require('babel-plugin-emotion'),
+      WEB_DEV && require('react-hot-loader/babel')
+    ].filter(Boolean)
   }
 
   const whenEnvIs = (condition, config) => (condition ? config : null)
@@ -220,8 +226,8 @@ module.exports = (target = 'node', options) => {
   }
   config.plugins.push(
     new CleanPlugin(['.tapestry'], {
-        root: process.cwd(),
-        verbose: false
+      root: process.cwd(),
+      verbose: false
     })
   )
   // Sweet jesus

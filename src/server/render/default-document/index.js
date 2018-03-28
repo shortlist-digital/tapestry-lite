@@ -13,7 +13,7 @@ const getProductionBundles = () => {
   ))
 }
 
-const DefaultDocument = ({ html, css, head, bootstrapData }) => (
+const DefaultDocument = ({ html, css, ids, head, bootstrapData }) => (
   <html lang="en" {...head.htmlAttributes.toComponent()}>
     <head>
       {head.title.toComponent()}
@@ -26,16 +26,14 @@ const DefaultDocument = ({ html, css, head, bootstrapData }) => (
     </head>
     <body>
       <div id="root" dangerouslySetInnerHTML={{ __html: html }} />
-      {bootstrapData && (
-        <script
-          type="text/javascript"
-          dangerouslySetInnerHTML={{
-            __html: `window.__BOOTSTRAP_DATA__ = ${stringifyEscapeScript(
-              bootstrapData
-            )}`
-          }}
-        />
-      )}
+      <script
+        type="text/javascript"
+        dangerouslySetInnerHTML={{
+          __html: `window.__data = { appData: ${stringifyEscapeScript(
+            bootstrapData
+          )}, ids: ${JSON.stringify(ids)} }`
+        }}
+      />
     </body>
     {process.env.NODE_ENV === 'production' ? (
       getProductionBundles()
