@@ -111,7 +111,7 @@ module.exports = (target = 'node', options) => {
     cacheDirectory: true,
     presets: [require('babel-preset-razzle')],
     plugins: [
-      require('babel-plugin-emotion'),
+      process.env.CSS_PLUGIN === 'emotion' && require('babel-plugin-emotion'),
       WEB_DEV && require('react-hot-loader/babel')
     ].filter(Boolean)
   }
