@@ -6,7 +6,7 @@ const spawn = require('react-dev-utils/crossSpawn')
 const command = process.argv[2]
 const args = process.argv.slice(3)
 
-const validCommands = ['start', 'build']
+const validCommands = ['start', 'build', 'dev']
 
 if (command && !validCommands.includes(command)) {
   console.log(`\n${command} is not a valid command.\n`)
@@ -15,6 +15,6 @@ if (command && !validCommands.includes(command)) {
 
 spawn.sync(
   'node',
-  [require.resolve(`./${command || 'start'}`)].concat(args),
+  [require.resolve(`./${command || 'dev'}`)].concat(args),
   { stdio: 'inherit' }
 )
