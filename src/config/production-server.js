@@ -4,7 +4,7 @@ if (process.env.SERVER_SOURCE_MAPS) {
 import Server, { registerPlugins } from '../server'
 import appConfig from './config-proxy'
 
-const run = async function() {
+export default async function() {
   let currentApp
   console.log('Run was called')
   try {
@@ -18,5 +18,3 @@ const run = async function() {
     console.error(e)
   }
 }
-
-run()
