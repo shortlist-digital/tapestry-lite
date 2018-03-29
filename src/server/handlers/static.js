@@ -1,25 +1,35 @@
 export default ({ server }) => {
-  const cacheConfig = {
-    // cache static assets for 1 year
-    privacy: 'public',
-    expiresIn: parseInt(process.env.STATIC_CACHE_CONTROL_MAX_AGE, 10) || 0
-  }
 
-  // Static folders
-  const staticPaths = ['_assets', 'public']
-
-  staticPaths.map(path => {
-    server.route({
-      method: 'GET',
-      path: `/${path}/{param*}`,
-      config: {
-        cache: path === '_assets' && cacheConfig
-      },
-      handler: {
-        directory: {
-          path: path
-        }
+  // Static assets from parent project
+  server.route({
+    method: 'GET',
+    path: '/public/{param*}',
+    handler: {
+      directory: {
+        path: 'public/',
+        redirectToSlash: true,
+        index: true
       }
-    })
+    }
+  })
+
+  // Compiled Assets from Tapestry
+  server.route({
+    method: 'GET',
+    path: '/_assets/{param*}',
+    config: {
+      cache: {
+        // cache static assets for 1 year
+        privacy: 'public',
+        expiresIn: parseInt(process.env.STATIC_CACHE_CONTROL_MAX_AGE, 10) || 0
+      }
+    },
+    handler: {
+      directory: {
+        path: '.tapestry/_assets',
+        redirectToSlash: true,
+        index: true
+      }
+    }
   })
 }

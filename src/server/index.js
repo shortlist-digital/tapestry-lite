@@ -1,35 +1,72 @@
-import server from './server'
-import Inert from 'inert'
+import 'make-promises-safe'
+import Hapi from 'hapi'
 
-let currentApp
-const timeLabel = 'Hot Reload Restart'
+import DynamicRouteHandler from './handlers/dynamic'
+import ProxyHandler from './handlers/proxy'
+import PurgeHandler from './handlers/purge'
+import RedirectHandler from './handlers/redirect'
+import StaticHandler from './handlers/static'
 
-const serverPlugins = [
-  Inert
-]
+import CacheManager from './utilities/cache-manager'
+import { log } from './utilities/logger'
 
-const run = async function() {
-  try {
-    currentApp = server
-    // Register plugins
-    await server.register(serverPlugins)
-    // Start server
-    await currentApp.start()
-    if (module.hot) {
-      module.hot.accept('./server', async function() {
-        console.time(timeLabel)
-        await currentApp.stop({ timeout: 0 })
-        currentApp = server
-        // Re-register plugins
-        await server.register(serverPlugins)
-        await currentApp.start()
-        console.timeEnd(timeLabel)
-      })
-    } 
-    console.log('Server started at: ' + server.info.uri)
-  } catch (e) {
-    console.error(e)
+// Create CacheManager Singleton
+new CacheManager()
+
+class Server {
+  constructor({ config }) {
+    // Create Hapi server instance
+    const server = Hapi.server({
+      host: process.env.HOST || 'localhost',
+      port: parseInt(process.env.PORT, 10) || 3000,
+      router: {
+        isCaseSensitive: false,
+        stripTrailingSlash: true
+      },
+      routes: {
+        security: {
+          hsts: true,
+          noOpen: true,
+          noSniff: true,
+          xframe: false,
+          xss: true
+        }
+      }
+    })
+
+    server.ext('onPreResponse', ({ response }, h) => {
+      // isServer indicates status code >= 500
+      // if error, pass it through server.log
+      if (response && response.isBoom && response.isServer) {
+        console.error(response.error || response.message)
+      }
+      // The important bit
+      if (response.headers) response.headers['X-Powered-By'] = 'Tapestry'
+      return h.continue
+    })
+    // Handle server routes
+    PurgeHandler({ server })
+    RedirectHandler({ config, server })
+    DynamicRouteHandler({ config, server })
+    // return server instance (not class)
+    return server
   }
 }
 
-run()
+export const registerPlugins = async ({ server, config }) => {
+  // Handles static files and proxying
+  const plugins = [require('inert'), require('h2o2')]
+  // Redirects all internal requests to https
+  if (config.forceHttps) {
+    plugins.push({
+      register: require('hapi-require-https'),
+      options: { proxy: false }
+    })
+  }
+  // Register all required plugins before use
+  await server.register(plugins)
+  StaticHandler({ server })
+  ProxyHandler({ server, config })
+}
+
+export default Server

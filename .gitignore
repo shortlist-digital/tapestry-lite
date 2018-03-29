@@ -1,4 +1,6 @@
 # Created by https://www.gitignore.io/api/sublimetext,vim,osx,node
+## Project Specific
+stage-start
 
 ### SublimeText ###
 # cache files for sublime text

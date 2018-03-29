@@ -32,7 +32,7 @@ function getServedPath(appPackageJson) {
   return ensureSlash(servedUrl, true)
 }
 
-const resolveOwn = relativePath => path.resolve(__dirname, '..', relativePath)
+const resolveOwn = relativePath => path.resolve(__dirname, '../../', relativePath)
 
 // Windows compatability
 const nodePaths = (process.env.NODE_PATH || '')
@@ -44,22 +44,27 @@ const nodePaths = (process.env.NODE_PATH || '')
 module.exports = {
   dotenv: resolveApp('.env'),
   appPath: resolveApp('.'),
-  appBuild: resolveApp('build'),
-  appBuildPublic: resolveApp('build/public'),
-  appManifest: resolveApp('build/assets.json'),
+  ownPath: resolveOwn('.'),
+  appBuild: resolveApp('.tapestry'),
+  appBuildPublic: resolveApp('.tapestry/_assets'),
+  appBuildServer: resolveApp('.tapestry/server.js'),
+  appBuildServerProduction: resolveApp('.tapestry/server.production.js'),
+  appManifest: resolveApp('.tapestry/assets.json'),
   appPublic: resolveApp('public'),
   appNodeModules: resolveApp('node_modules'),
   appSrc: resolveApp('src'),
   appPackageJson: resolveApp('package.json'),
-  appServerIndexJs: resolveApp('src'),
-  appClientIndexJs: resolveApp('src/client'),
   testsSetup: resolveApp('src/setupTests.js'),
   appBabelRc: resolveApp('.babelrc'),
   appEslintRc: resolveApp('.eslintrc'),
   appTapestryConfig: resolveApp('tapestry.config.js'),
+  appWebpackConfig: resolveApp('webpack.config.js'),
   nodePaths: nodePaths,
   ownPath: resolveOwn('.'),
   ownNodeModules: resolveOwn('node_modules'),
+  ownDevServer: resolveOwn('src/config/hot'),
+  ownProdServer: resolveOwn('src/config/production-server'),
+  ownClientIndex: resolveOwn('src/client'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
 }

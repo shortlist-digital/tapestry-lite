@@ -1,25 +1,7 @@
-const webpack = require('webpack')
-const createWebpackConfig = require('../config/createWebpackConfig')
+const spawn = require('react-dev-utils/crossSpawn')
+const paths = require('../src/config/paths')
+const args = process.argv.slice(3)
 
-function compile(config) {
-  let compiler
-  try {
-    compiler = webpack(config)
-  } catch (e) {
-    printErrors('Failed to compile.', [e])
-    process.exit(1)
-  }
-  return compiler
-}
-
-const serverConfig = createWebpackConfig()
-
-const serverCompiler = compile(serverConfig)
-// Start our server webpack instance in watch mode.
-console.log('Starting server')
-
-serverCompiler.watch({
-    quiet: false
-  },
-  (stats) => {}
-)
+spawn.sync('node', [paths.appBuildServerProduction].concat(args), {
+  stdio: 'inherit'
+})
