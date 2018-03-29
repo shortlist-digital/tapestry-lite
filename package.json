@@ -1,19 +1,29 @@
 {
   "name": "tapestry-lite",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "1.0.0-0",
+  "description": "Universal React & Wordpress Renderer",
+  "main": "./src/server/index.js",
   "bin": {
     "tapestry": "./bin/tapestry-lite.js"
   },
+  "files": ["src/", "bin/"],
+  "repository": "shortlist-digital/tapestry-lite",
   "scripts": {
+    "precommit": "lint-staged",
+    "prepublish": "npm run lint && npm run test",
+    "lint": "eslint . --fix --cache",
     "test": "npm run test:server && npm run test:integration",
-    "test:server": "PORT=4321 NODE_ENV=test LOG_LEVEL=silent mocha ./src/**/*.test.js ./test/server/*.test.js --require test/babel-register --bail",
-    "test:integration": "PORT=4321 NODE_ENV=test LOG_LEVEL=silent mocha ./test/integration/*.test.js --require test/babel-register --bail"
+    "test:server":
+      "NODE_ENV=test LOG_LEVEL=silent mocha ./src/**/*.test.js ./test/server/*.test.js --require test/babel-register --bail",
+    "test:integration":
+      "PORT=4321 NODE_ENV=test LOG_LEVEL=silent mocha ./test/integration/*.test.js --require test/babel-register --bail"
   },
-  "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@shortlist-studio/eslint-config-standard": "^0.1.0",
+    "prettier": "^1.10.2",
+    "husky": "^0.14.3",
+    "lint-staged": "^6.1.0",
     "chai": "^4.0.2",
     "mocha": "^5.0.0",
     "nock": "^9.0.11",

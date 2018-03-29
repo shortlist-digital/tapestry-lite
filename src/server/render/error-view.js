@@ -8,10 +8,9 @@ export default ({ config, missing }) => {
     ? config.components.CustomError
     : DefaultError
   // render missing component only in DEV
-  if ((['test', 'development'].includes(process.env.NODE_ENV)) && missing) {
+  if (['test', 'development'].includes(process.env.NODE_ENV) && missing) {
     ErrorView = MissingView
   }
   // return one of the error views
   return ErrorView
 }
-

@@ -3,9 +3,9 @@ import appConfig from './config-proxy'
 
 let currentApp
 const serverLabel = 'Server Restart:'
-const hotReloadLabel = 'Hot Reload:'
+// const hotReloadLabel = 'Hot Reload:'
 
-const run = async function() {
+const run = async () => {
   console.log('Run was called')
   try {
     currentApp = new Server({ config: appConfig })
@@ -14,7 +14,7 @@ const run = async function() {
     // Start server
     await currentApp.start()
     if (module.hot) {
-      module.hot.addStatusHandler(async function(status) {
+      module.hot.addStatusHandler(async status => {
         if (status === 'ready') {
           console.log('Hot callback was called')
           console.time(serverLabel)

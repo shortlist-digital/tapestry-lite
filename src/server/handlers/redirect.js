@@ -5,7 +5,7 @@ import fetcher from '../data-fetching/fetcher'
 import { log } from '../utilities/logger'
 
 const setRedirects = (server, redirects) => {
-  server.ext('onPreHandler', async (request, h, err) => {
+  server.ext('onPreHandler', async (request, h) => {
     if (typeof redirects[request.url.pathname.toLowerCase()] !== 'undefined') {
       log.debug(
         `Redirect handled for ${chalk.green(
@@ -13,7 +13,11 @@ const setRedirects = (server, redirects) => {
         )} to ${chalk.green(redirects[request.url.pathname])}`
       )
       return h
-        .redirect(`${redirects[request.url.pathname]}${request.url.search ? request.url.search : ''}`)
+        .redirect(
+          `${redirects[request.url.pathname]}${
+            request.url.search ? request.url.search : ''
+          }`
+        )
         .permanent()
         .takeover()
     }
@@ -22,7 +26,6 @@ const setRedirects = (server, redirects) => {
 }
 
 export default ({ server, config }) => {
-  
   // Handle default browser favicon lookup
   server.route({
     method: 'GET',

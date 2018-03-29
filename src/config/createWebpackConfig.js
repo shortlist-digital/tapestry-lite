@@ -38,12 +38,10 @@ const nodeDevPlugins = [
     onSuccessMessage: 'Tapestry Lite is Running',
     verbose: true
   }),
-  new webpack.DefinePlugin({
-    __DEV__: true
-  })
+  new webpack.DefinePlugin({ __DEV__: true })
 ]
 
-const nodeProdPlugins = []
+const nodeProdPlugins = [new webpack.DefinePlugin({ __DEV__: false })]
 
 const webDevEntry = {
   client: [
@@ -80,7 +78,8 @@ const webDevPlugins = [
   new webpack.HotModuleReplacementPlugin(),
   new webpack.NoEmitOnErrorsPlugin(),
   new webpack.DefinePlugin({
-    __CSS_PLUGIN__: JSON.stringify(process.env.CSS_PLUGIN)
+    __CSS_PLUGIN__: JSON.stringify(process.env.CSS_PLUGIN),
+    __DEV__: true
   })
 ]
 
@@ -89,10 +88,14 @@ const webProdPlugins = [
   new AssetsPlugin({
     path: paths.appBuild,
     filename: 'assets.json'
+  }),
+  new webpack.DefinePlugin({
+    __CSS_PLUGIN__: JSON.stringify(process.env.CSS_PLUGIN),
+    __DEV__: false
   })
 ]
 
-module.exports = (target = 'node', options) => {
+module.exports = (target = 'node') => {
   const IS_NODE = target === 'node'
   const IS_WEB = target === 'web'
   const IS_DEV =
@@ -106,17 +109,20 @@ module.exports = (target = 'node', options) => {
 
   console.log({ IS_NODE }, { IS_WEB }, { IS_DEV }, { IS_PROD })
 
+  const hasBabelRc = fs.existsSync(paths.appBabelRc)
   const mainBabelOptions = {
     babelrc: true,
     cacheDirectory: true,
-    presets: [require('babel-preset-razzle')],
-    plugins: [
-      process.env.CSS_PLUGIN === 'emotion' && require('babel-plugin-emotion'),
-      WEB_DEV && require('react-hot-loader/babel')
-    ].filter(Boolean)
+    presets: []
   }
 
   const whenEnvIs = (condition, config) => (condition ? config : null)
+
+  if (hasBabelRc) {
+    console.log('Using .babelrc defined in your app root')
+  } else {
+    mainBabelOptions.presets.push(require.resolve('../babel'))
+  }
 
   let config = {
     devtool: process.env.NODE_ENV == 'test' ? false : 'cheap-module-source-map',

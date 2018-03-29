@@ -1,9 +1,4 @@
-import React from 'react'
-import { renderToStaticMarkup, renderToString } from 'react-dom/server'
-import Helmet from 'react-helmet'
 import { matchRoutes } from 'react-router-config'
-
-import { renderStaticOptimized } from 'glamor/server'
 import idx from 'idx'
 
 import baseUrlResolver from '../utilities/base-url-resolver'
@@ -17,7 +12,6 @@ import fetchFromEndpointConfig from '../data-fetching/fetch-from-endpoint-config
 
 import buildErrorView from '../render/error-view'
 import renderTreeToHTML from '../render/tree-to-html'
-
 
 export default ({ server, config }) => {
   let cacheManager = new CacheManager()
@@ -38,10 +32,11 @@ export default ({ server, config }) => {
       // Set a cache key
       const cacheKey = request.url.pathname || '/'
       // Is there cached HTML?
-      const cachedHTML = await cache.get(cacheKey) 
+      const cachedHTML = await cache.get(cacheKey)
       // If there's a cache response, return the response straight away
       if (cachedHTML) {
-        return h.response(cachedHTML)
+        return h
+          .response(cachedHTML)
           .type('text/html')
           .code(200)
       }
@@ -68,13 +63,13 @@ export default ({ server, config }) => {
         // https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/api/match.md
         match = branch[0].match
         // Set a flag for whether we have a missing component later on
-        const routeComponentUndefined  = (typeof route.component === 'undefined')
+        const routeComponentUndefined = typeof route.component === 'undefined'
         // Does the fetch we are about to perform allow an empty response from WordPress?
         // If it doesn't, then we will override WP's 200 with a 404
         const allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
         // If we have an endpoint
         if (route.endpoint) {
-          // Start to try and fetch data 
+          // Start to try and fetch data
           try {
             const multidata = await fetchFromEndpointConfig({
               endpointConfig: route.endpoint,
@@ -97,8 +92,14 @@ export default ({ server, config }) => {
         // If there's no component, and have a 4xx or 5xx error - and
         // an empty response is not allowed, we replace the route component
         // with our error view component
-        if (routeComponentUndefined || (fetchRequestHasErrored && !allowEmptyResponse)) {
-          route.component = buildErrorView({config, missing: routeComponentUndefined})
+        if (
+          routeComponentUndefined ||
+          (fetchRequestHasErrored && !allowEmptyResponse)
+        ) {
+          route.component = buildErrorView({
+            config,
+            missing: routeComponentUndefined
+          })
         }
       }
       // If our route is the not found route
@@ -110,7 +111,6 @@ export default ({ server, config }) => {
         }
       }
 
-
       // Render the route with componentData, the route
       const responseString = await renderTreeToHTML({
         route,
@@ -121,13 +121,13 @@ export default ({ server, config }) => {
       // Set status code
       const code = componentData.code || 200
       if (code == 200) {
-        cache.set(cacheKey, responseString)      
+        cache.set(cacheKey, responseString)
       }
       // Respond with new Hapi 17 api
-      return h.response(responseString)
+      return h
+        .response(responseString)
         .type('text/html')
         .code(code)
-
     }
   })
 }

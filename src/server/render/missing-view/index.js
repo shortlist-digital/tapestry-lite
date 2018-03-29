@@ -6,9 +6,7 @@ import DefaultError from '../default-error'
 const MissingView = response => (
   <DefaultError {...response}>
     <h1>Missing component</h1>
-    {response && (
-      <ObjectInspector data={response} expandLevel={1} />
-    )}
+    {response && <ObjectInspector data={response} expandLevel={1} />}
   </DefaultError>
 )
 
