@@ -12,7 +12,7 @@ describe('tapestry build', () => {
   })
 
   it('should compile files into a build directory', () => {
-    const child = shell.exec('node ../bin/tapestry-lite.js build')
+    const child = shell.exec('node ../bin/index.js build')
     expect(shell.test('-f', '.tapestry/server.js')).to.equal(true)
     expect(shell.ls('.tapestry/*.css').code).to.equal(0)
   }).timeout(10000)
@@ -26,13 +26,13 @@ describe('tapestry build', () => {
 //   before(() => {
 //     fixture.setupStageWithFixture('stage-build-dynamic', 'build-with-dynamic-import')
 //   })
-// 
+//
 //   it('should compile files into a build directory', () => {
 //     shell.exec('node ../bin/tapestry-lite.js build')
 //     expect(shell.test('-f', '.tapestry/server.js')).to.equal(true)
 //     expect(shell.test('-f', '.tapestry/0.server.js')).to.equal(true)
 //   }).timeout(10000)
-// 
+//
 //   after(() => {
 //     fixture.teardownStage('stage-build-dynamic')
 //   })

@@ -49,6 +49,7 @@ module.exports = {
   appBuild: resolveApp('.tapestry'),
   appBuildPublic: resolveApp('.tapestry/_assets'),
   appBuildServer: resolveApp('.tapestry/server.js'),
+  appBuildServerProduction: resolveApp('.tapestry/server.production.js'),
   appManifest: resolveApp('.tapestry/assets.json'),
   appPublic: resolveApp('public'),
   appNodeModules: resolveApp('node_modules'),

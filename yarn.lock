@@ -268,6 +268,13 @@ are-we-there-yet@~1.1.2:
     delegates "^1.0.0"
     readable-stream "^2.0.6"
 
+argparse@^0.1.15:
+  version "0.1.16"
+  resolved "https://registry.npmjs.org/argparse/-/argparse-0.1.16.tgz#cfd01e0fbba3d6caed049fbd758d40f65196f57c"
+  dependencies:
+    underscore "~1.7.0"
+    underscore.string "~2.4.0"
+
 argparse@^1.0.7:
   version "1.0.10"
   resolved "https://registry.npmjs.org/argparse/-/argparse-1.0.10.tgz#bcd6791ea5ae09725e17e5ad988134cd40b3d911"
@@ -1180,6 +1187,10 @@ block-stream@*:
   dependencies:
     inherits "~2.0.0"
 
+bluebird@^2.3.6:
+  version "2.11.0"
+  resolved "https://registry.npmjs.org/bluebird/-/bluebird-2.11.0.tgz#534b9033c022c9579c56ba3b3e5a5caafbb650e1"
+
 bluebird@^3.5.1:
   version "3.5.1"
   resolved "https://registry.npmjs.org/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
@@ -1682,6 +1693,12 @@ commander@^2.11.0, commander@^2.9.0:
   version "2.15.1"
   resolved "https://registry.npmjs.org/commander/-/commander-2.15.1.tgz#df46e867d0fc2aec66a34662b406a9ccafff5b0f"
 
+commander@~1.1.1:
+  version "1.1.1"
+  resolved "https://registry.npmjs.org/commander/-/commander-1.1.1.tgz#50d1651868ae60eccff0a2d9f34595376bc6b041"
+  dependencies:
+    keypress "0.1.x"
+
 commander@~2.13.0:
   version "2.13.0"
   resolved "https://registry.npmjs.org/commander/-/commander-2.13.0.tgz#6964bca67685df7c1f1430c584f07d7597885b9c"
@@ -2069,6 +2086,10 @@ destroy@^1.0.0, destroy@^1.0.3, destroy@~1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/destroy/-/destroy-1.0.4.tgz#978857442c44749e4206613e37946205826abd80"
 
+detect-indent@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.npmjs.org/detect-indent/-/detect-indent-0.1.4.tgz#c28e1303c1c4ad5ce0549902b884043afc5906b0"
+
 detect-indent@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/detect-indent/-/detect-indent-4.0.0.tgz#f76d064352cdf43a1cb6ce619c4ee3a9475de208"
@@ -2179,6 +2200,28 @@ ecc-jsbn@~0.1.1:
   resolved "https://registry.npmjs.org/ecc-jsbn/-/ecc-jsbn-0.1.1.tgz#0fc73a9ed5f0d53c38193398523ef7e543777505"
   dependencies:
     jsbn "~0.1.0"
+
+editorconfig-tools@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.npmjs.org/editorconfig-tools/-/editorconfig-tools-0.1.1.tgz#6c38af1a3e56efe10a4adf56613fed742801888b"
+  dependencies:
+    argparse "^0.1.15"
+    detect-indent "^0.1.4"
+    editorconfig "^0.12.1"
+    fobject "0.0.3"
+    graceful-fs "^3.0.4"
+    lodash "^2.4.1"
+    require-tree "^0.3.3"
+    when "^3.1.0"
+
+editorconfig@^0.12.1:
+  version "0.12.2"
+  resolved "https://registry.npmjs.org/editorconfig/-/editorconfig-0.12.2.tgz#f67bd4e482fbae0c24f1278572f43ff85dc2ae8f"
+  dependencies:
+    bluebird "^2.3.6"
+    commander "~1.1.1"
+    lru-cache "~2.0.0"
+    sigmund "~1.0.0"
 
 ee-first@1.1.1:
   version "1.1.1"
@@ -2790,6 +2833,14 @@ flush-write-stream@^1.0.0:
     inherits "^2.0.1"
     readable-stream "^2.0.4"
 
+fobject@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.npmjs.org/fobject/-/fobject-0.0.3.tgz#9d13eb03d86bf09bdd3d143171caca88b3f3830c"
+  dependencies:
+    graceful-fs "^3.0.2"
+    semver "^4.1.0"
+    when "^3.0.1"
+
 for-in@^1.0.1, for-in@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/for-in/-/for-in-1.0.2.tgz#81068d295a8142ec0ac726c6e2200c30fb6d5e80"
@@ -3052,6 +3103,12 @@ globby@^6.1.0:
     object-assign "^4.0.1"
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
+
+graceful-fs@^3.0.2, graceful-fs@^3.0.4:
+  version "3.0.11"
+  resolved "https://registry.npmjs.org/graceful-fs/-/graceful-fs-3.0.11.tgz#7613c778a1afea62f25c630a086d7f3acbbdd818"
+  dependencies:
+    natives "^1.1.0"
 
 graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6:
   version "4.1.11"
@@ -3932,6 +3989,10 @@ jsx-ast-utils@^2.0.0, jsx-ast-utils@^2.0.1:
   dependencies:
     array-includes "^3.0.3"
 
+keypress@0.1.x:
+  version "0.1.0"
+  resolved "https://registry.npmjs.org/keypress/-/keypress-0.1.0.tgz#4a3188d4291b66b4f65edb99f806aa9ae293592a"
+
 killable@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/killable/-/killable-1.0.0.tgz#da8b84bd47de5395878f95d64d02f2449fe05e6b"
@@ -4208,16 +4269,16 @@ lodash.restparam@^3.0.0:
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/lodash.restparam/-/lodash.restparam-3.6.1.tgz#936a4e309ef330a7645ed4145986c85ae5b20805"
 
-lodash.startswith@^4.2.1:
-  version "4.2.1"
-  resolved "https://registry.npmjs.org/lodash.startswith/-/lodash.startswith-4.2.1.tgz#c598c4adce188a27e53145731cdc6c0e7177600c"
-
 lodash.toplainobject@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/lodash.toplainobject/-/lodash.toplainobject-3.0.0.tgz#28790ad942d293d78aa663a07ecf7f52ca04198d"
   dependencies:
     lodash._basecopy "^3.0.0"
     lodash.keysin "^3.0.0"
+
+lodash@^2.4.1:
+  version "2.4.2"
+  resolved "https://registry.npmjs.org/lodash/-/lodash-2.4.2.tgz#fadd834b9683073da179b3eae6d9c0d15053f73e"
 
 lodash@^4.14.0, lodash@^4.17.2, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.0, lodash@^4.3.0:
   version "4.17.5"
@@ -4276,6 +4337,10 @@ lru-cache@4.1.x, lru-cache@^4.0.1, lru-cache@^4.1.1:
   dependencies:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
+
+lru-cache@~2.0.0:
+  version "2.0.4"
+  resolved "https://registry.npmjs.org/lru-cache/-/lru-cache-2.0.4.tgz#b8b61ae09848385ec6768760e39c123e7e39568a"
 
 make-dir@^1.0.0:
   version "1.2.0"
@@ -4587,6 +4652,10 @@ nanomatch@^1.2.9:
     regex-not "^1.0.0"
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
+
+natives@^1.1.0:
+  version "1.1.2"
+  resolved "https://registry.npmjs.org/natives/-/natives-1.1.2.tgz#4437ca1ed8a7f047531ccdfaf2792853df4efa1c"
 
 natural-compare@^1.4.0:
   version "1.4.0"
@@ -5699,6 +5768,10 @@ require-main-filename@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/require-main-filename/-/require-main-filename-1.0.1.tgz#97f717b69d48784f5f526a6c5aa8ffdda055a4d1"
 
+require-tree@^0.3.3:
+  version "0.3.3"
+  resolved "https://registry.npmjs.org/require-tree/-/require-tree-0.3.3.tgz#82a26655c3b632cd5ecdb57a7e95f4d07c38a44a"
+
 require-uncached@^1.0.3:
   version "1.0.3"
   resolved "https://registry.npmjs.org/require-uncached/-/require-uncached-1.0.3.tgz#4e0d56d6c9662fd31e43011c4b95aa49955421d3"
@@ -5869,6 +5942,10 @@ selfsigned@^1.9.1:
   version "5.5.0"
   resolved "https://registry.npmjs.org/semver/-/semver-5.5.0.tgz#dc4bbc7a6ca9d916dee5d43516f0092b58f7b8ab"
 
+semver@^4.1.0:
+  version "4.3.6"
+  resolved "https://registry.npmjs.org/semver/-/semver-4.3.6.tgz#300bc6e0e86374f7ba61068b5b1ecd57fc6532da"
+
 send@0.16.2:
   version "0.16.2"
   resolved "https://registry.yarnpkg.com/send/-/send-0.16.2.tgz#6ecca1e0f8c156d141597559848df64730a6bbc1"
@@ -6004,6 +6081,10 @@ shot@4.x.x:
   dependencies:
     hoek "5.x.x"
     joi "13.x.x"
+
+sigmund@~1.0.0:
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/sigmund/-/sigmund-1.0.1.tgz#3ff21f198cad2175f9f3b781853fd94d0d19b590"
 
 signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.2"
@@ -6631,6 +6712,14 @@ uid-number@^0.0.6:
   version "0.0.6"
   resolved "https://registry.npmjs.org/uid-number/-/uid-number-0.0.6.tgz#0ea10e8035e8eb5b8e4449f06da1c730663baa81"
 
+underscore.string@~2.4.0:
+  version "2.4.0"
+  resolved "https://registry.npmjs.org/underscore.string/-/underscore.string-2.4.0.tgz#8cdd8fbac4e2d2ea1e7e2e8097c42f442280f85b"
+
+underscore@~1.7.0:
+  version "1.7.0"
+  resolved "https://registry.npmjs.org/underscore/-/underscore-1.7.0.tgz#6bbaf0877500d36be34ecaa584e0db9fef035209"
+
 union-value@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/union-value/-/union-value-1.0.0.tgz#5c71c34cb5bad5dcebe3ea0cd08207ba5aa1aea4"
@@ -6884,6 +6973,10 @@ websocket-extensions@>=0.1.1:
 whatwg-fetch@>=0.10.0:
   version "2.0.3"
   resolved "https://registry.npmjs.org/whatwg-fetch/-/whatwg-fetch-2.0.3.tgz#9c84ec2dcf68187ff00bc64e1274b442176e1c84"
+
+when@^3.0.1, when@^3.1.0:
+  version "3.7.8"
+  resolved "https://registry.npmjs.org/when/-/when-3.7.8.tgz#c7130b6a7ea04693e842cdc9e7a1f2aa39a39f82"
 
 which-module@^2.0.0:
   version "2.0.0"
