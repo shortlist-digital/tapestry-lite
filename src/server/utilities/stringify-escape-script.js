@@ -1,4 +1,3 @@
-
 // Add a stringify template helper for outputting JSON with forward
 // slashes escaped to prevent '</script>' tag output in JSON within
 // script tags. See http://stackoverflow.com/questions/66837/when-is-a-cdata-section-necessary-within-a-script-tag/1450633#1450633

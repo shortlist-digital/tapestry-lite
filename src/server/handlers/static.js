@@ -1,5 +1,4 @@
 export default ({ server }) => {
-
   // Static assets from parent project
   server.route({
     method: 'GET',

@@ -1,6 +1,5 @@
 if (process.env.SERVER_SOURCE_MAPS) {
   require('source-map-support').install()
-
 }
 import Server, { registerPlugins } from '../server'
 import appConfig from './config-proxy'

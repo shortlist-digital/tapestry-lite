@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-require('dotenv').config()
 'use strict'
+
+require('dotenv').config()
 
 const spawn = require('react-dev-utils/crossSpawn')
 const command = process.argv[2]
@@ -13,8 +14,6 @@ if (command && !validCommands.includes(command)) {
   process.exit(0)
 }
 
-spawn.sync(
-  'node',
-  [require.resolve(`./${command || 'dev'}`)].concat(args),
-  { stdio: 'inherit' }
-)
+spawn.sync('node', [require.resolve(`./${command || 'dev'}`)].concat(args), {
+  stdio: 'inherit'
+})

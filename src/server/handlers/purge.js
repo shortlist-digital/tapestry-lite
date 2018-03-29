@@ -1,14 +1,14 @@
-import chalk from 'chalk'
+// import chalk from 'chalk'
 import HTTPStatus from 'http-status'
 
-import { log } from '../utilities/logger'
+// import { log } from '../utilities/logger'
 import CacheManager from '../utilities/cache-manager'
 
-const clearCacheItem = ({ path, cache }) => {
-  log.debug(
-    `Purged path ${chalk.green(path)} from ${chalk.green(cache.toUpperCase())}`
-  )
-}
+// const clearCacheItem = ({ path, cache }) => {
+//   log.debug(
+//     `Purged path ${chalk.green(path)} from ${chalk.green(cache.toUpperCase())}`
+//   )
+// }
 
 export default ({ server }) => {
   const cacheManager = new CacheManager()
