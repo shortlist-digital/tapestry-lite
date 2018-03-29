@@ -8,7 +8,6 @@ import RedirectHandler from './handlers/redirect'
 import StaticHandler from './handlers/static'
 
 import CacheManager from './utilities/cache-manager'
-import { log } from './utilities/logger'
 
 // Create CacheManager Singleton
 new CacheManager()

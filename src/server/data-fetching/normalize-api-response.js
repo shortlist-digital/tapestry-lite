@@ -35,5 +35,5 @@ export default (response, route) => {
   }
   // to avoid React mangling the array to {'0':{},'1':{}}
   // wrap in an object
-  return (objectOnPurpose || arrayResp) ? { data: response } : response
+  return objectOnPurpose || arrayResp ? { data: response } : response
 }

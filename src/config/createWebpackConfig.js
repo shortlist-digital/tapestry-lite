@@ -95,7 +95,7 @@ const webProdPlugins = [
   })
 ]
 
-module.exports = (target = 'node', options) => {
+module.exports = (target = 'node') => {
   const IS_NODE = target === 'node'
   const IS_WEB = target === 'web'
   const IS_DEV =

@@ -3,7 +3,7 @@ import appConfig from './config-proxy'
 
 let currentApp
 const serverLabel = 'Server Restart:'
-const hotReloadLabel = 'Hot Reload:'
+// const hotReloadLabel = 'Hot Reload:'
 
 const run = async () => {
   console.log('Run was called')

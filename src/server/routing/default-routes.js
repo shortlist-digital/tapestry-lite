@@ -18,7 +18,7 @@ export default ({ FrontPage, Post, Page, Category }) => [
   {
     path: '/:page/:subpage?',
     component: Page,
-    endpoint: params => `pages?slug=${params.subpage || params.page}&_embed`,
+    endpoint: params => `pages?slug=${params.subpage || params.page}&_embed`
   },
   {
     path: '/:category/:year/:monthnum/:postname',

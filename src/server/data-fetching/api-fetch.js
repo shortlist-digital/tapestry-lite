@@ -1,7 +1,5 @@
 import fetcher from './fetcher'
-import { log } from '../utilities/logger'
 import timing from '../utilities/timing'
-import chalk from 'chalk'
 
 const apiFetch = (url, allowEmptyResponse = false) => {
   timing.start(`fetch: ${url}`)
@@ -26,12 +24,13 @@ const apiFetch = (url, allowEmptyResponse = false) => {
     .then(resp => resp.json())
     .then(apiData => {
       timing.end(`fetch: ${url}`)
-      if ((apiData.length == false) && (allowEmptyResponse !== true)) {
+      if (apiData.length == false && allowEmptyResponse !== true) {
         throw {
           name: 'FetchError',
           type: 'http-error',
           statusText: 'WP-API returned no results',
-          message: 'WP-API returned no results and empty results are not allowed on this route',
+          message:
+            'WP-API returned no results and empty results are not allowed on this route',
           code: 404
         }
       } else {

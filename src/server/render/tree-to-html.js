@@ -4,7 +4,9 @@ import Helmet from 'react-helmet'
 import idx from 'idx'
 
 export default async ({ route, match, componentData }) => {
-  const htmlString = renderToString(<route.component {...match} {...componentData} />)
+  const htmlString = renderToString(
+    <route.component {...match} {...componentData} />
+  )
   // { html, css, ids }
   let styleData = {}
   // extract CSS from either Glamor or Emotion

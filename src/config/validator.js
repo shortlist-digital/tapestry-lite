@@ -55,7 +55,7 @@ const schema = joi.object({
   })
 })
 
-module.exports = (config, cb) => {
+module.exports = config => {
   // joi options
   const options = {
     abortEarly: false, // we want all the errors, not just the first
@@ -68,7 +68,7 @@ module.exports = (config, cb) => {
   }
   // run the users config object through joi.validate
   // joi will parse the config and match the defined schema
-  joi.validate(config, schema, options, (err, value) => {
+  joi.validate(config, schema, options, err => {
     // handle validation errors
     if (err) {
       console.error(

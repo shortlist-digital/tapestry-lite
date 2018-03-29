@@ -1,9 +1,7 @@
 import isFunction from 'lodash.isfunction'
 import isPlainObject from 'lodash.isplainobject'
 
-
 export default ({ paths, params, generatePromise }) => {
-
   // resolve function if required
   if (isFunction(paths)) {
     paths = paths(params)

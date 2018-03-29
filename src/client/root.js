@@ -5,7 +5,7 @@ import { matchRoutes } from 'react-router-config'
 import prepareAppRoutes from '../server/routing/prepare-app-routes'
 import buildErrorView from '../server/render/error-view'
 
-const Root = (config) => {
+const Root = config => {
   if (window.__data.appData.code === 404) {
     const Component = buildErrorView({ config, missing: false })
     return <Component {...window.__data.appData} />
@@ -16,5 +16,3 @@ const Root = (config) => {
 }
 
 export default hot(module)(Root)
-
-
