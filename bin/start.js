@@ -1,7 +1,21 @@
-const spawn = require('react-dev-utils/crossSpawn')
+const fs = require('fs-extra')
+const throng = require('throng')
+const log = require('../src/server/utilities/logger').log
 const paths = require('../src/config/paths')
-const args = process.argv.slice(3)
 
-spawn.sync('node', [paths.appBuildServerProduction].concat(args), {
-  stdio: 'inherit'
-})
+// detect scripts have been created before running server
+if (!fs.existsSync(paths.appBuildServerProduction)) {
+  log.error(
+    'Tapestry scripts missing, make sure to run tapestry build before running'
+  )
+  process.exit(0)
+}
+// require server and boot
+const server = require(paths.appBuildServerProduction).default
+if (process.env.ENABLE_CONCURRENCY) {
+  const WORKERS =
+    process.env.WEB_CONCURRENCY || require('os').cpus().length || 1
+  throng(WORKERS, () => server())
+} else {
+  server()
+}

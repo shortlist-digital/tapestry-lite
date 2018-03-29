@@ -22,7 +22,8 @@ const nodeDevOutput = {
 
 const nodeProdOutput = {
   path: paths.appBuild,
-  filename: 'server.production.js'
+  filename: 'server.production.js',
+  libraryTarget: 'commonjs2'
 }
 
 const nodeDevPlugins = [
@@ -107,7 +108,7 @@ module.exports = (target = 'node') => {
   const WEB_DEV = IS_WEB && IS_DEV
   const WEB_PROD = IS_WEB && IS_PROD
 
-  console.log({ IS_NODE }, { IS_WEB }, { IS_DEV }, { IS_PROD })
+  // console.log({ IS_NODE }, { IS_WEB }, { IS_DEV }, { IS_PROD })
 
   const mainBabelOptions = {
     babelrc: true,
