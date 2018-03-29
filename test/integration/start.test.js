@@ -14,7 +14,7 @@ describe('tapestry start', () => {
   it('Should start a dev server', () => {
     let outputTest
     const run = new Promise(resolve => {
-      const child = shell.exec('node ../bin/start.js', () =>
+      const child = shell.exec('node ../bin/dev.js', () =>
         resolve(outputTest)
       )
       child.stdout.on('data', data => {
@@ -40,7 +40,7 @@ describe('tapestry start with custom webpack', () => {
   it('Should pick up webpack config updates', () => {
     let outputTest
     const run = new Promise(resolve => {
-      const child = shell.exec('node ../bin/start.js', () =>
+      const child = shell.exec('node ../bin/dev.js', () =>
         resolve(outputTest)
       )
       child.stdout.on('data', data => {
