@@ -1,10 +1,10 @@
 {
   "name": "tapestry-lite",
-  "version": "1.0.0",
+  "version": "1.0.0-0",
   "description": "",
   "main": "index.js",
   "bin": {
-    "tapestry": "./bin/tapestry-lite.js"
+    "tapestry": "./bin/index.js"
   },
   "scripts": {
     "test": "npm run test:server && npm run test:integration",
@@ -50,7 +50,6 @@
     "lodash.isempty": "^4.4.0",
     "lodash.isfunction": "^3.0.9",
     "lodash.isplainobject": "^4.0.6",
-    "lodash.startswith": "^4.2.1",
     "make-promises-safe": "^1.1.0",
     "ps-tree": "^1.1.0",
     "razzle-dev-utils": "^0.8.10",

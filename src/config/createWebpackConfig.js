@@ -38,12 +38,10 @@ const nodeDevPlugins = [
     onSuccessMessage: 'Tapestry Lite is Running',
     verbose: true
   }),
-  new webpack.DefinePlugin({
-    __DEV__: true
-  })
+  new webpack.DefinePlugin({ __DEV__: true })
 ]
 
-const nodeProdPlugins = []
+const nodeProdPlugins = [new webpack.DefinePlugin({ __DEV__: false })]
 
 const webDevEntry = {
   client: [
@@ -80,7 +78,8 @@ const webDevPlugins = [
   new webpack.HotModuleReplacementPlugin(),
   new webpack.NoEmitOnErrorsPlugin(),
   new webpack.DefinePlugin({
-    __CSS_PLUGIN__: JSON.stringify(process.env.CSS_PLUGIN)
+    __CSS_PLUGIN__: JSON.stringify(process.env.CSS_PLUGIN),
+    __DEV__: true
   })
 ]
 
@@ -89,6 +88,10 @@ const webProdPlugins = [
   new AssetsPlugin({
     path: paths.appBuild,
     filename: 'assets.json'
+  }),
+  new webpack.DefinePlugin({
+    __CSS_PLUGIN__: JSON.stringify(process.env.CSS_PLUGIN),
+    __DEV__: false
   })
 ]
 
