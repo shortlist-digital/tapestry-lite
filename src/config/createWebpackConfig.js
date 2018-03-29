@@ -109,20 +109,17 @@ module.exports = (target = 'node') => {
 
   console.log({ IS_NODE }, { IS_WEB }, { IS_DEV }, { IS_PROD })
 
-  const hasBabelRc = fs.existsSync(paths.appBabelRc)
   const mainBabelOptions = {
     babelrc: true,
     cacheDirectory: true,
-    presets: []
+    presets: [require('babel-preset-razzle')],
+    plugins: [
+      process.env.CSS_PLUGIN === 'emotion' && require('babel-plugin-emotion'),
+      WEB_DEV && require('react-hot-loader/babel')
+    ].filter(Boolean)
   }
 
   const whenEnvIs = (condition, config) => (condition ? config : null)
-
-  if (hasBabelRc) {
-    console.log('Using .babelrc defined in your app root')
-  } else {
-    mainBabelOptions.presets.push(require.resolve('../babel'))
-  }
 
   let config = {
     devtool: process.env.NODE_ENV == 'test' ? false : 'cheap-module-source-map',
