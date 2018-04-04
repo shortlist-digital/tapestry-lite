@@ -1,6 +1,6 @@
 {
   "name": "tapestry-lite",
-  "version": "1.0.0-0",
+  "version": "1.0.0-2",
   "description": "Universal React & Wordpress Renderer",
   "main": "./src/server/index.js",
   "bin": {
@@ -13,7 +13,7 @@
   "repository": "shortlist-digital/tapestry-lite",
   "scripts": {
     "precommit": "lint-staged",
-    "prepublish": "npm run lint && npm run test",
+    "prepublishOnly": "npm run lint && npm run test",
     "lint": "eslint . --fix --cache",
     "test": "npm run test:server && npm run test:integration",
     "test:server": "NODE_ENV=test LOG_LEVEL=silent mocha ./src/**/*.test.js ./test/server/*.test.js --require test/babel-register --bail",
@@ -77,6 +77,7 @@
     "source-map-support": "^0.5.4",
     "start-server-webpack-plugin": "^2.2.1",
     "stats-webpack-plugin": "^0.6.2",
+    "throng": "^4.0.0",
     "webpack": "^4.1.0",
     "webpack-dev-server": "^3.1.1",
     "webpack-node-externals": "^1.6.0",
