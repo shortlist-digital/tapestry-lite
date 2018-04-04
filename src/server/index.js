@@ -16,7 +16,7 @@ class Server {
   constructor({ config }) {
     // Create Hapi server instance
     const server = Hapi.server({
-      host: process.env.HOST || 'localhost',
+      host: process.env.HOST || '0.0.0.0',
       port: process.env.PORT || 3000,
       router: {
         isCaseSensitive: false,
