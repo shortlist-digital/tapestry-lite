@@ -216,15 +216,7 @@ module.exports = (target = 'node') => {
     config.optimization = {
       runtimeChunk: true,
       splitChunks: {
-        cacheGroups: {
-          commons: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendor',
-            chunks: 'all'
-          }
-        },
-        chunks: 'all',
-        name: false
+        chunks: 'all'
       }
     }
   }
