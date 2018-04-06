@@ -27,8 +27,8 @@ describe('Handling redirects', () => {
       '/redirect/with/query': '/page',
       '/test()what£]cool': '/page'
     },
-    redirectsEndpoint: 'http://dummy.api/web/app/uploads/redirects.json',
-    siteUrl: 'http://dummy.api'
+    redirectsEndpoint: 'http://dummredirects.api/web/app/uploads/redirects.json',
+    siteUrl: 'http://dummredirects.api'
   }
 
   before(async () => {
@@ -39,7 +39,7 @@ describe('Handling redirects', () => {
       'utf8' // encoding
     )
 
-    nock('http://dummy.api')
+    nock('http://dummredirects.api')
       .get('/web/app/uploads/redirects.json')
       .query(true)
       .times(1)
@@ -106,14 +106,14 @@ describe('Handling endpoint redirects', () => {
         component: () => <p>Redirected component</p>
       }
     ],
-    redirectsEndpoint: 'http://dummy.api/web/app/uploads/redirects.json',
-    siteUrl: 'http://dummy.api'
+    redirectsEndpoint: 'http://dummredirects.api/web/app/uploads/redirects.json',
+    siteUrl: 'http://dummredirects.api'
   }
 
   afterEach(async () => await server.stop())
 
   it('Redirect path loaded from redirects endpoint', async () => {
-    nock('http://dummy.api')
+    nock('http://dummredirects.api')
       .get('/web/app/uploads/redirects.json')
       .query(true)
       .times(1)
@@ -130,7 +130,7 @@ describe('Handling endpoint redirects', () => {
   })
 
   it('Server handles 404 gracefully', async () => {
-    nock('http://dummy.api')
+    nock('http://dummredirects.api')
       .get('/web/app/uploads/redirects.json')
       .query(true)
       .reply(404)
@@ -146,7 +146,7 @@ describe('Handling endpoint redirects', () => {
   })
 
   it('Server handles invalid data gracefully', async () => {
-    nock('http://dummy.api')
+    nock('http://dummredirects.api')
       .get('/web/app/uploads/redirects.json')
       .query(true)
       .reply(200, 'Error: <p>Something went wrong')
