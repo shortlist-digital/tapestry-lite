@@ -1,9 +1,9 @@
 import React from 'react'
 import { hot } from 'react-hot-loader'
+import { matchRoutes } from 'react-router-config'
 
 import prepareAppRoutes from '../server/routing/prepare-app-routes'
 import buildErrorView from '../server/render/error-view'
-import matchRoutes from '../server/utilities/match-routes'
 
 const Root = config => {
   if (window.__data.appData.code === 404) {
