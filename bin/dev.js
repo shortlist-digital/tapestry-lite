@@ -9,14 +9,12 @@ const clientConfig = createWebpackConfig('web')
 const clientCompiler = webpack(clientConfig)
 const clientDevServer = new devServer(clientCompiler, clientConfig.devServer)
 
-console.log('Starting compiler for server')
+console.log('\nCreating Tapestry Lite development compilers\n')
 
 serverCompiler.watch({ quiet: false }, (err, stats) => {
   if (err || stats.hasErrors()) {
-    console.log('Server Watch callback called')
     console.error(err || stats.hasErrors())
   }
 })
 
-console.log('Starting dev server for client')
 clientDevServer.listen(4001, err => console.error(err))

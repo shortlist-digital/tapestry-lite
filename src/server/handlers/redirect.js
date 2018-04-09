@@ -52,16 +52,16 @@ export default ({ server, config }) => {
   if (config.redirectsEndpoint) {
     fetcher(`${config.redirectsEndpoint}?cacheBust=${Date.now()}`)
       .then(resp => {
-        if (resp.status === 200) {
-          return resp.json()
-        } else {
+        if (!resp.ok) {
           // Mimic fetch error API
           throw {
+            code: resp.status,
             name: 'FetchError',
-            message: `Non 200 response ${resp.status}`,
+            statusText: resp.statusText,
             type: 'http-error'
           }
         }
+        return resp.json()
       })
       .then(data => {
         setRedirects(server, data)
