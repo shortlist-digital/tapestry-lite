@@ -12,7 +12,6 @@ export default config => {
   })
   // Add the a default 404 route
   preparedRoutes.push({
-    path: '/*',
     notFoundRoute: true,
     component: buildErrorView({
       config,
