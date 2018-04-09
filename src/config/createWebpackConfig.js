@@ -11,6 +11,14 @@ const StatsPlugin = require('stats-webpack-plugin')
 
 const paths = require('./paths')
 
+const env = {
+  'process.env': {
+    CSS_PLUGIN:
+      JSON.stringify(process.env.CSS_PLUGIN) || JSON.stringify('glamor'),
+    NODE_ENV: JSON.stringify(process.env.NODE_ENV)
+  }
+}
+
 const nodeDevEntry = ['webpack/hot/poll?1000', paths.ownDevServer]
 
 const nodeProdEntry = [paths.ownProdServer]
@@ -39,10 +47,10 @@ const nodeDevPlugins = [
     onSuccessMessage: 'Tapestry Lite is Running',
     verbose: process.env.NODE_ENV === 'test'
   }),
-  new webpack.DefinePlugin({ __DEV__: true })
+  new webpack.DefinePlugin(env)
 ]
 
-const nodeProdPlugins = [new webpack.DefinePlugin({ __DEV__: false })]
+const nodeProdPlugins = [new webpack.DefinePlugin(env)]
 
 const webDevEntry = {
   client: [
@@ -78,10 +86,7 @@ const webDevPlugins = [
   new webpack.NamedModulesPlugin(),
   new webpack.HotModuleReplacementPlugin(),
   new webpack.NoEmitOnErrorsPlugin(),
-  new webpack.DefinePlugin({
-    __CSS_PLUGIN__: JSON.stringify(process.env.CSS_PLUGIN),
-    __DEV__: true
-  })
+  new webpack.DefinePlugin(env)
 ]
 
 const webProdPlugins = [
@@ -90,10 +95,7 @@ const webProdPlugins = [
     path: paths.appBuild,
     filename: 'assets.json'
   }),
-  new webpack.DefinePlugin({
-    __CSS_PLUGIN__: JSON.stringify(process.env.CSS_PLUGIN),
-    __DEV__: false
-  })
+  new webpack.DefinePlugin(env)
 ]
 
 module.exports = (target = 'node') => {
@@ -123,8 +125,8 @@ module.exports = (target = 'node') => {
   const whenEnvIs = (condition, config) => (condition ? config : null)
 
   let config = {
-    devtool: process.env.NODE_ENV == 'test' ? false : 'cheap-module-source-map',
-    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+    devtool: IS_DEV ? 'cheap-module-source-map' : false,
+    mode: IS_DEV ? 'development' : 'production',
     resolve: {
       modules: [paths.appNodeModules, paths.ownNodeModules],
       extensions: ['.js', '.json', '.jsx', '.mjs'],
