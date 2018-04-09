@@ -12,7 +12,6 @@ const Root = config => {
   }
   const routes = prepareAppRoutes(config)
   const { route, match } = matchRoutes(routes, window.location.pathname)[0]
-  console.log({ route, match })
   return <route.component {...match} {...window.__data.appData} />
 }
 
