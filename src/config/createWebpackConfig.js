@@ -11,14 +11,6 @@ const StatsPlugin = require('stats-webpack-plugin')
 
 const paths = require('./paths')
 
-const env = {
-  'process.env': {
-    CSS_PLUGIN:
-      JSON.stringify(process.env.CSS_PLUGIN) || JSON.stringify('glamor'),
-    NODE_ENV: JSON.stringify(process.env.NODE_ENV)
-  }
-}
-
 const nodeDevEntry = ['webpack/hot/poll?1000', paths.ownDevServer]
 
 const nodeProdEntry = [paths.ownProdServer]
@@ -47,10 +39,10 @@ const nodeDevPlugins = [
     onSuccessMessage: 'Tapestry Lite is Running',
     verbose: process.env.NODE_ENV === 'test'
   }),
-  new webpack.DefinePlugin(env)
+  new webpack.DefinePlugin({ __DEV__: true })
 ]
 
-const nodeProdPlugins = [new webpack.DefinePlugin(env)]
+const nodeProdPlugins = [new webpack.DefinePlugin({ __DEV__: false })]
 
 const webDevEntry = {
   client: [
@@ -86,7 +78,11 @@ const webDevPlugins = [
   new webpack.NamedModulesPlugin(),
   new webpack.HotModuleReplacementPlugin(),
   new webpack.NoEmitOnErrorsPlugin(),
-  new webpack.DefinePlugin(env)
+  new webpack.DefinePlugin({
+    __CSS_PLUGIN__:
+      JSON.stringify(process.env.CSS_PLUGIN) || JSON.stringify('glamor'),
+    __DEV__: true
+  })
 ]
 
 const webProdPlugins = [
@@ -95,7 +91,11 @@ const webProdPlugins = [
     path: paths.appBuild,
     filename: 'assets.json'
   }),
-  new webpack.DefinePlugin(env)
+  new webpack.DefinePlugin({
+    __CSS_PLUGIN__:
+      JSON.stringify(process.env.CSS_PLUGIN) || JSON.stringify('glamor'),
+    __DEV__: false
+  })
 ]
 
 module.exports = (target = 'node') => {

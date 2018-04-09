@@ -1,3 +1,7 @@
 {
-  "extends": ["@shortlist-studio/eslint-config-standard"]
+  "extends": ["@shortlist-studio/eslint-config-standard"],
+  "globals": {
+    "__DEV__": true,
+    "__CSS_PLUGIN__": true
+  }
 }
