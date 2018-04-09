@@ -1,12 +1,10 @@
 import Server, { registerPlugins } from '../server'
 import appConfig from './config-proxy'
+import { log, notify } from '../server/utilities/logger'
 
 let currentApp
-const serverLabel = 'Server Restart:'
-// const hotReloadLabel = 'Hot Reload:'
 
 const run = async () => {
-  console.log('Run was called')
   try {
     currentApp = new Server({ config: appConfig })
     // Register plugins
@@ -16,8 +14,6 @@ const run = async () => {
     if (module.hot) {
       module.hot.addStatusHandler(async status => {
         if (status === 'ready') {
-          console.log('Hot callback was called')
-          console.time(serverLabel)
           await currentApp.stop({ timeout: 0 })
           currentApp = new Server({ config: require('./config-proxy').default })
           // Re-register plugins
@@ -26,13 +22,12 @@ const run = async () => {
             server: currentApp
           })
           await currentApp.start()
-          console.timeEnd(serverLabel)
         }
       })
     }
-    console.log('Server started at: ' + currentApp.info.uri)
+    notify(`Server started at: ${currentApp.info.uri}\n`)
   } catch (e) {
-    console.error(e)
+    log.error(e)
   }
 }
 

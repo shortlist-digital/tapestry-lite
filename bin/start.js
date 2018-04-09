@@ -1,3 +1,4 @@
+const chalk = require('chalk')
 const fs = require('fs-extra')
 const throng = require('throng')
 const log = require('../src/server/utilities/logger').log
@@ -6,7 +7,9 @@ const paths = require('../src/config/paths')
 // detect scripts have been created before running server
 if (!fs.existsSync(paths.appBuildServerProduction)) {
   log.error(
-    'Tapestry scripts missing, make sure to run tapestry build before running'
+    `Tapestry scripts missing, make sure to run ${chalk.green(
+      'tapestry build'
+    )} before running`
   )
   process.exit(0)
 }
