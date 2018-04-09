@@ -1,9 +1,9 @@
-import { matchRoutes } from 'react-router-config'
 import idx from 'idx'
 
 import baseUrlResolver from '../utilities/base-url-resolver'
 import { log } from '../utilities/logger'
 import CacheManager from '../utilities/cache-manager'
+import matchRoutes from '../utilities/match-routes'
 
 import prepareAppRoutes from '../routing/prepare-app-routes'
 
