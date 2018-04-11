@@ -12,9 +12,10 @@ describe('tapestry build', () => {
   })
 
   it('should compile files into a build directory', () => {
-    const child = shell.exec('node ../bin/index.js build')
-    expect(shell.test('-f', '.tapestry/server.js')).to.equal(true)
-    expect(shell.ls('.tapestry/*.css').code).to.equal(0)
+    const child = shell.exec('NODE_ENV=production node ../bin/index.js build')
+    expect(shell.ls('.tapestry/server.production.js').code).to.equal(0)
+    expect(shell.ls('.tapestry/_assets/*.css').code).to.equal(0)
+    expect(child.code).to.equal(0)
   }).timeout(10000)
 
   after(() => {
