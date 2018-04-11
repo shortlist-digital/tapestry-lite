@@ -154,7 +154,7 @@ module.exports = (target = 'node') => {
           loader: require.resolve('file-loader'),
           options: {
             publicPath: '/_assets',
-            outputPath: '/_assets'
+            emitFile: IS_DEV || IS_WEB
           }
         }
       ]
