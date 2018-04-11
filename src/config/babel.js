@@ -1,7 +1,6 @@
 'use strict'
 
 const preset = {
-  cacheDirectory: true,
   presets: [
     [
       require.resolve('@babel/preset-env'),
@@ -15,15 +14,10 @@ const preset = {
   plugins: [
     // class { handleThing = () => { } }
     require.resolve('@babel/plugin-proposal-class-properties'),
-
-    // The following two plugins use Object.assign directly, instead of Babel's
-    // extends helper. Note that this assumes `Object.assign` is available.
     // { ...todo, completed: true }
     [
       require.resolve('@babel/plugin-syntax-object-rest-spread'),
-      {
-        useBuiltIns: true
-      }
+      { useBuiltIns: true }
     ],
     // Adds syntax support for import()
     require.resolve('@babel/plugin-syntax-dynamic-import'),
@@ -73,5 +67,7 @@ if (env === 'production') {
     require.resolve('babel-plugin-transform-react-remove-prop-types')
   ])
 }
+
+console.log({ preset })
 
 module.exports = preset

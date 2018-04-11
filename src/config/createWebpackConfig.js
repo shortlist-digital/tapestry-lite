@@ -9,7 +9,7 @@ const nodeExternals = require('webpack-node-externals')
 const StartServerPlugin = require('start-server-webpack-plugin')
 const StatsPlugin = require('stats-webpack-plugin')
 
-const babel = require('./babel')
+const babelDefaultPreset = require('./babel')
 const paths = require('./paths')
 
 const nodeDevEntry = ['webpack/hot/poll?1000', paths.ownDevServer]
@@ -113,6 +113,18 @@ module.exports = (target = 'node') => {
 
   const whenEnvIs = (condition, config) => (condition ? config : null)
 
+  const hasBabelRc = fs.existsSync(paths.appBabelRc)
+  let babelOptions = {
+    babelrc: hasBabelRc,
+    cacheDirectory: true
+  }
+
+  if (hasBabelRc) {
+    console.log('Using .babelrc defined in your app root')
+  } else {
+    babelOptions = { ...babelOptions, babelDefaultPreset }
+  }
+
   let config = {
     devtool: IS_DEV ? 'cheap-module-source-map' : false,
     mode: IS_DEV ? 'development' : 'production',
@@ -136,7 +148,7 @@ module.exports = (target = 'node') => {
           test: /\.(js|jsx|mjs)$/,
           loader: require.resolve('babel-loader'),
           exclude: /node_modules(?!\/tapestry-lite)/,
-          options: babel
+          options: babelOptions
         },
         {
           test: /\.(css|jpe?g|png|svg|ico|woff(2)?)$/,
