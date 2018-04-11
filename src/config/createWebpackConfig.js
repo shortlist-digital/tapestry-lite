@@ -58,7 +58,7 @@ const webProdEntry = {
 
 const webDevOutput = {
   path: paths.appBuildPublic,
-  publicPath: 'http://localhost:4001/',
+  publicPath: 'http://localhost:4001',
   pathinfo: true,
   filename: 'static/js/bundle.js',
   chunkFilename: 'static/js/[name].chunk.js',
@@ -153,7 +153,7 @@ module.exports = (target = 'node') => {
           test: /\.(css|jpe?g|png|svg|ico|woff(2)?)$/,
           loader: require.resolve('file-loader'),
           options: {
-            publicPath: '/_assets',
+            publicPath: IS_DEV ? 'http://localhost:4001' : '/_assets',
             emitFile: IS_DEV || IS_WEB
           }
         }
