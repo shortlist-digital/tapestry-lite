@@ -25,6 +25,7 @@ export default ({ server }) => {
     },
     handler: {
       directory: {
+        showHidden: true,
         path: '.tapestry/_assets',
         redirectToSlash: true,
         index: true

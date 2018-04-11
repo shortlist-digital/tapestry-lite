@@ -153,7 +153,8 @@ module.exports = (target = 'node') => {
           test: /\.(css|jpe?g|png|svg|ico|woff(2)?)$/,
           loader: require.resolve('file-loader'),
           options: {
-            publicPath: '/_assets/'
+            publicPath: '/_assets',
+            outputPath: '/_assets'
           }
         }
       ]
