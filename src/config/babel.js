@@ -16,7 +16,7 @@ const config = {
     require.resolve('@babel/plugin-proposal-class-properties'),
     // { ...todo, completed: true }
     [
-      require.resolve('@babel/plugin-syntax-object-rest-spread'),
+      require.resolve('@babel/plugin-proposal-object-rest-spread'),
       { useBuiltIns: true }
     ],
     // Adds syntax support for import()
