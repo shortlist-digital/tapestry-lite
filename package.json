@@ -22,6 +22,7 @@
   "license": "ISC",
   "devDependencies": {
     "@shortlist-studio/eslint-config-standard": "^0.1.0",
+    "@babel/register": "^7.0.0-beta.44",
     "chai": "^4.0.2",
     "editorconfig-tools": "^0.1.1",
     "husky": "^0.14.3",

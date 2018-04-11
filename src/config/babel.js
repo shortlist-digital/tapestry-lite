@@ -1,6 +1,6 @@
 'use strict'
 
-const preset = {
+const config = {
   presets: [
     [
       require.resolve('@babel/preset-env'),
@@ -37,7 +37,7 @@ if (env !== 'development' && env !== 'test' && env !== 'production') {
 }
 
 if (env === 'development' || env === 'test') {
-  preset.plugins.push.apply(preset.plugins, [
+  config.plugins.push.apply(config.plugins, [
     // Adds component stack to warning messages
     require.resolve('@babel/plugin-transform-react-jsx-source'),
     require.resolve('react-hot-loader/babel')
@@ -45,15 +45,13 @@ if (env === 'development' || env === 'test') {
 }
 
 if (process.env.CSS_PLUGIN === 'emotion') {
-  preset.plugins.push.apply(preset.plugins, [
+  config.plugins.push.apply(config.plugins, [
     require.resolve('babel-plugin-emotion')
   ])
 }
 
 if (env === 'test') {
-  preset.plugins.push.apply(preset.plugins, [
-    // Compiles import() to a deferred require()
-    require.resolve('@babel/plugin-syntax-dynamic-import'),
+  config.plugins.push.apply(config.plugins, [
     // Transform ES modules to commonjs for Jest support
     [
       require.resolve('@babel/plugin-transform-modules-commonjs'),
@@ -63,11 +61,9 @@ if (env === 'test') {
 }
 
 if (env === 'production') {
-  preset.plugins.push.apply(preset.plugins, [
+  config.plugins.push.apply(config.plugins, [
     require.resolve('babel-plugin-transform-react-remove-prop-types')
   ])
 }
 
-console.log({ preset })
-
-module.exports = preset
+module.exports = config

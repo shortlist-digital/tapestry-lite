@@ -9,7 +9,7 @@ const nodeExternals = require('webpack-node-externals')
 const StartServerPlugin = require('start-server-webpack-plugin')
 const StatsPlugin = require('stats-webpack-plugin')
 
-const babelDefaultPreset = require('./babel')
+const babelDefaultConfig = require('./babel')
 const paths = require('./paths')
 
 const nodeDevEntry = ['webpack/hot/poll?1000', paths.ownDevServer]
@@ -113,16 +113,10 @@ module.exports = (target = 'node') => {
 
   const whenEnvIs = (condition, config) => (condition ? config : null)
 
-  const hasBabelRc = fs.existsSync(paths.appBabelRc)
   let babelOptions = {
-    babelrc: hasBabelRc,
-    cacheDirectory: true
-  }
-
-  if (hasBabelRc) {
-    console.log('Using .babelrc defined in your app root')
-  } else {
-    babelOptions = { ...babelOptions, babelDefaultPreset }
+    babelrc: false,
+    cacheDirectory: true,
+    ...babelDefaultConfig
   }
 
   let config = {
