@@ -1,6 +1,7 @@
 const webpack = require('webpack')
 const path = require('path')
 const fs = require('fs-extra')
+const merge = require('babel-merge')
 
 const AssetsPlugin = require('assets-webpack-plugin')
 const CleanPlugin = require('clean-webpack-plugin')
@@ -113,10 +114,18 @@ module.exports = (target = 'node') => {
 
   const whenEnvIs = (condition, config) => (condition ? config : null)
 
+  let babelConfig = babelDefaultConfig
+
+  if (fs.existsSync(paths.appBabelRc)) {
+    console.log('Using .babelrc defined in your app root')
+    const babelAppConfig = fs.readJsonSync(paths.appBabelRc)
+    babelConfig = merge(babelDefaultConfig, babelAppConfig)
+  }
+
   let babelOptions = {
     babelrc: false,
     cacheDirectory: true,
-    ...babelDefaultConfig
+    ...babelConfig
   }
 
   let config = {
