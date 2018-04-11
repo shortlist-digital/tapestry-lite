@@ -9,6 +9,7 @@ const nodeExternals = require('webpack-node-externals')
 const StartServerPlugin = require('start-server-webpack-plugin')
 const StatsPlugin = require('stats-webpack-plugin')
 
+const babel = require('./babel')
 const paths = require('./paths')
 
 const nodeDevEntry = ['webpack/hot/poll?1000', paths.ownDevServer]
@@ -110,18 +111,6 @@ module.exports = (target = 'node') => {
   const WEB_DEV = IS_WEB && IS_DEV
   const WEB_PROD = IS_WEB && IS_PROD
 
-  // console.log({ IS_NODE }, { IS_WEB }, { IS_DEV }, { IS_PROD })
-
-  const mainBabelOptions = {
-    babelrc: true,
-    cacheDirectory: true,
-    presets: [require('babel-preset-razzle')],
-    plugins: [
-      process.env.CSS_PLUGIN === 'emotion' && require('babel-plugin-emotion'),
-      WEB_DEV && require('react-hot-loader/babel')
-    ].filter(Boolean)
-  }
-
   const whenEnvIs = (condition, config) => (condition ? config : null)
 
   let config = {
@@ -147,7 +136,7 @@ module.exports = (target = 'node') => {
           test: /\.(js|jsx|mjs)$/,
           loader: require.resolve('babel-loader'),
           exclude: /node_modules(?!\/tapestry-lite)/,
-          options: mainBabelOptions
+          options: babel
         },
         {
           test: /\.(css|jpe?g|png|svg|ico|woff(2)?)$/,
