@@ -1,4 +1,5 @@
 import idx from 'idx'
+import chalk from 'chalk'
 
 import prepareAppRoutes from '../routing/prepare-app-routes'
 import matchRoutes from '../routing/match-routes'
@@ -33,8 +34,13 @@ export default ({ server, config }) => {
       const cacheKey = request.url.pathname || '/'
       // Is there cached HTML?
       const cachedHTML = await cache.get(cacheKey)
+      log.silly(
+        `HTML: Cache contains ${chalk.green(cacheKey)}`,
+        Boolean(cachedHTML)
+      )
       // If there's a cache response, return the response straight away
       if (cachedHTML) {
+        log.silly('HTML: Cache returning html', cachedHTML)
         return h
           .response(cachedHTML)
           .type('text/html')
@@ -47,6 +53,8 @@ export default ({ server, config }) => {
       // this should only have one route as we force "exact" on each route
       // How would we error out if two routes match here? "Ambigous routes detected?" maybe earlier in app
       const { route, match } = matchRoutes(routes, request.url.pathname)
+
+      log.silly('HTML: Matched route', route)
       // This needs tidying
       // If there's a branch of the route config, we have a route
       // Optimistic default component data for static routes
@@ -63,6 +71,7 @@ export default ({ server, config }) => {
       const allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
       // If we have an endpoint
       if (route.endpoint) {
+        log.silly('HTML: Route has endpoint')
         // Start to try and fetch data
         try {
           const multidata = await fetchFromEndpointConfig({
@@ -72,6 +81,10 @@ export default ({ server, config }) => {
             params: match.params,
             allowEmptyResponse
           })
+          log.silly(
+            `HTML: Result from ${chalk.green('fetchFromEndpointConfig')}`,
+            multidata
+          )
           // If we received data without throwing - normalize it
           componentData = normalizeApiResponse(multidata, route)
         } catch (e) {
@@ -96,6 +109,8 @@ export default ({ server, config }) => {
         })
       }
 
+      log.silly(`HTML: Is notFoundRoute`, route.notFoundRoute)
+
       // If our route is the not found route
       // Overwrite the data
       if (route.notFoundRoute) {
@@ -104,6 +119,8 @@ export default ({ server, config }) => {
           code: 404
         }
       }
+
+      log.silly(`HTML: App data to render`, componentData)
 
       // Render the route with componentData, the route
       const responseString = await renderTreeToHTML({
@@ -115,8 +132,10 @@ export default ({ server, config }) => {
       // Set status code
       const code = componentData.code || 200
       if (code == 200) {
+        log.silly(`HTML: Cache set ${chalk.green(cacheKey)}`)
         cache.set(cacheKey, responseString)
       }
+      log.silly('HTML: Returning fresh response', responseString)
       // Respond with new Hapi 17 api
       return h
         .response(responseString)
