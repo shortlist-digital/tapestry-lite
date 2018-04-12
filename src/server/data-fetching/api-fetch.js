@@ -1,3 +1,4 @@
+import chalk from 'chalk'
 import fetcher from './fetcher'
 import timing from '../utilities/timing'
 import { log } from '../utilities/logger'
@@ -6,18 +7,23 @@ const apiFetch = (url, allowEmptyResponse = false) => {
   timing.start(`fetch: ${url}`)
   return fetcher(url)
     .then(resp => {
-      log.silly(`API Fetch: Response for ${url}`, resp)
-      if (!resp.ok) {
+      const { ok, status, statusText } = resp
+      log.debug(`API Fetch: Response for ${chalk.green(url)}`, {
+        ok,
+        status,
+        statusText
+      })
+      if (!ok) {
         throw {
           // Fetch library properties
           name: 'FetchError',
           type: 'http-error',
           // Traditional request properties
-          status: resp.status,
-          statusText: resp.statusText,
-          // Tapestry properties
-          message: resp.statusText,
-          code: resp.status
+          status,
+          statusText,
+          // Tapestry properties (we should remove these)
+          message: statusText,
+          code: status
         }
       } else {
         return resp
@@ -26,7 +32,7 @@ const apiFetch = (url, allowEmptyResponse = false) => {
     .then(resp => resp.json())
     .then(apiData => {
       timing.end(`fetch: ${url}`)
-      log.silly(`API Fetch: Data from ${url}`, apiData)
+      log.silly(`API Fetch: Data from ${chalk.green(url)}`, apiData)
       if (apiData.length == false && allowEmptyResponse !== true) {
         throw {
           name: 'FetchError',

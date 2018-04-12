@@ -34,13 +34,9 @@ export default ({ server, config }) => {
       const cacheKey = request.url.pathname || '/'
       // Is there cached HTML?
       const cachedHTML = await cache.get(cacheKey)
-      log.silly(
-        `HTML: Cache contains ${chalk.green(cacheKey)}`,
-        Boolean(cachedHTML)
-      )
       // If there's a cache response, return the response straight away
       if (cachedHTML) {
-        log.silly('HTML: Cache returning html', cachedHTML)
+        log.debug(`Rendering HTML from cache: ${chalk.green(cacheKey)}`)
         return h
           .response(cachedHTML)
           .type('text/html')
@@ -54,7 +50,7 @@ export default ({ server, config }) => {
       // How would we error out if two routes match here? "Ambigous routes detected?" maybe earlier in app
       const { route, match } = matchRoutes(routes, request.url.pathname)
 
-      log.silly('HTML: Matched route', route)
+      log.debug(`Matched route ${chalk.green(route.path)}`)
       // This needs tidying
       // If there's a branch of the route config, we have a route
       // Optimistic default component data for static routes
@@ -71,7 +67,6 @@ export default ({ server, config }) => {
       const allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
       // If we have an endpoint
       if (route.endpoint) {
-        log.silly('HTML: Route has endpoint')
         // Start to try and fetch data
         try {
           const multidata = await fetchFromEndpointConfig({
@@ -81,18 +76,25 @@ export default ({ server, config }) => {
             params: match.params,
             allowEmptyResponse
           })
-          log.silly(
-            `HTML: Result from ${chalk.green('fetchFromEndpointConfig')}`,
-            multidata
-          )
+          // log.silly(
+          //   `HTML: Result from ${chalk.green('fetchFromEndpointConfig')}`,
+          //   multidata
+          // )
           // If we received data without throwing - normalize it
           componentData = normalizeApiResponse(multidata, route)
+          log.silly(
+            `Endpoint (${route.endpoint}) fetched and normalized:`,
+            componentData
+          )
         } catch (e) {
           // There has eiter been a 'natural 404', or we've thrown one
           // due to an empty response from a WP endpoint
-          log.error(e)
           componentData = e
           fetchRequestHasErrored = true
+          log.error(
+            `Endpoint (${route.endpoint}) failed to fetch:`,
+            componentData
+          )
         } // End of fetching 'try' block
       } // End of 'if endpoint' block
       // We now have componentData
@@ -103,13 +105,16 @@ export default ({ server, config }) => {
         routeComponentUndefined ||
         (fetchRequestHasErrored && !allowEmptyResponse)
       ) {
+        log.debug(`Render Error component as`, {
+          routeComponentUndefined,
+          fetchRequestHasErrored,
+          allowEmptyResponse
+        })
         route.component = buildErrorView({
           config,
           missing: routeComponentUndefined
         })
       }
-
-      log.silly(`HTML: Is notFoundRoute`, route.notFoundRoute)
 
       // If our route is the not found route
       // Overwrite the data
@@ -119,8 +124,6 @@ export default ({ server, config }) => {
           code: 404
         }
       }
-
-      log.silly(`HTML: App data to render`, componentData)
 
       // Render the route with componentData, the route
       const responseString = await renderTreeToHTML({
@@ -132,10 +135,10 @@ export default ({ server, config }) => {
       // Set status code
       const code = componentData.code || 200
       if (code == 200) {
-        log.silly(`HTML: Cache set ${chalk.green(cacheKey)}`)
+        log.debug(`Set HTML in cache ${chalk.green(cacheKey)}`)
         cache.set(cacheKey, responseString)
       }
-      log.silly('HTML: Returning fresh response', responseString)
+      log.silly('Rendering HTML from scratch', responseString)
       // Respond with new Hapi 17 api
       return h
         .response(responseString)
