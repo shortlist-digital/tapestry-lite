@@ -114,12 +114,12 @@ module.exports = (target = 'node') => {
 
   const whenEnvIs = (condition, config) => (condition ? config : null)
 
-  let babelConfig = babelDefaultConfig
+  let babelConfig = babelDefaultConfig(target)
 
   if (fs.existsSync(paths.appBabelRc)) {
     console.log('Using .babelrc defined in your app root')
     const babelAppConfig = fs.readJsonSync(paths.appBabelRc)
-    babelConfig = merge(babelDefaultConfig, babelAppConfig)
+    babelConfig = merge(babelDefaultConfig(target), babelAppConfig)
   }
 
   let babelOptions = {
