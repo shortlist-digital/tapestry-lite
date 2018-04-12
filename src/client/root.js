@@ -10,10 +10,12 @@ const Root = config => {
     const Component = buildErrorView({ config, missing: false })
     return <Component {...window.__data.appData} />
   }
+  console.log(`Application data`, window.__data)
   const { route, match } = matchRoutes(
     prepareAppRoutes(config),
     window.location.pathname
   )
+  console.log('Matched route', route)
   return <route.component {...match} {...window.__data.appData} />
 }
 
