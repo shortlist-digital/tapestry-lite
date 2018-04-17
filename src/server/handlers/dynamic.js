@@ -87,6 +87,7 @@ export default ({ server, config }) => {
       // an empty response is not allowed, we replace the route component
       // with our error view component
       if (
+        componentData.code === 404 ||
         routeComponentUndefined ||
         (fetchRequestHasErrored && !allowEmptyResponse)
       ) {
