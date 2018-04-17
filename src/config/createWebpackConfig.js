@@ -58,7 +58,7 @@ const webProdEntry = {
 
 const webDevOutput = {
   path: paths.appBuildPublic,
-  publicPath: 'http://localhost:4001',
+  publicPath: 'http://localhost:4001/',
   pathinfo: true,
   filename: 'static/js/bundle.js',
   chunkFilename: 'static/js/[name].chunk.js',

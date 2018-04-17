@@ -37,7 +37,10 @@ export default class CacheManager {
 
   clearAll() {
     if (internalCaches) {
-      internalCaches.forEach(async cache => await cache.reset())
+      internalCaches.forEach(async cache => {
+        log.debug(`Cache reset in ${chalk.green(cache)}`)
+        await cache.reset()
+      })
     }
   }
 
