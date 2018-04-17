@@ -1,7 +1,9 @@
 import idx from 'idx'
+import chalk from 'chalk'
 import isPlainObject from 'lodash.isplainobject'
 import resolvePaths from '../utilities/resolve-paths'
 import apiFetch from './api-fetch'
+import { log } from '../utilities/logger'
 
 let query = null
 let origin = null
@@ -17,6 +19,7 @@ const fetchJSON = endpoint => {
     const queryPrefix = endpoint.indexOf('?') > -1 ? '&' : '?'
     const queryParams = `tapestry_hash=${query.tapestry_hash}&p=${query.p}`
     url = `${url}${queryPrefix}${queryParams}`
+    log.debug(`API endpoint is a preview: ${chalk.green(url)}`)
   }
   // return fetch as promise
   return apiFetch(url, allowEmpty)
@@ -49,6 +52,8 @@ export default async ({
     params,
     generatePromise: fetchJSON
   })
+
+  log.silly('Resolved API endpoints', resolvedEndpointConfig.paths)
 
   // save reference of API request
   fetchRequests.push(resolvedEndpointConfig.paths)

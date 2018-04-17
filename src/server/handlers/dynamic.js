@@ -29,7 +29,7 @@ export default ({ server, config }) => {
     },
     method: 'GET',
     path: '/{path*}',
-    handler: async function(request, h) {
+    handler: async (request, h) => {
       // Set a cache key
       const cacheKey = request.url.pathname || '/'
       // Is there cached HTML?
@@ -62,8 +62,9 @@ export default ({ server, config }) => {
 
       // Set a flag for whether we have a missing component later on
       const routeComponentUndefined = typeof route.component === 'undefined'
-      // Does the fetch we are about to perform allow an empty response from WordPress?
-      // If it doesn't, then we will override WP's 200 with a 404
+      // Does the fetch we are about to perform allow an empty response
+      // from WordPress? If it doesn't, then we will override WP's 200
+      // with a 404
       const allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
       // If we have an endpoint
       if (route.endpoint) {
@@ -83,7 +84,7 @@ export default ({ server, config }) => {
           // If we received data without throwing - normalize it
           componentData = normalizeApiResponse(multidata, route)
           log.silly(
-            `Endpoint (${route.endpoint}) fetched and normalized:`,
+            `Endpoint (${chalk.green(route.endpoint)}) fetched and normalized:`,
             componentData
           )
         } catch (e) {
@@ -92,7 +93,7 @@ export default ({ server, config }) => {
           componentData = e
           fetchRequestHasErrored = true
           log.error(
-            `Endpoint (${route.endpoint}) failed to fetch:`,
+            `Endpoint (${chalk.green(route.endpoint)}) failed to fetch:`,
             componentData
           )
         } // End of fetching 'try' block
@@ -105,7 +106,7 @@ export default ({ server, config }) => {
         routeComponentUndefined ||
         (fetchRequestHasErrored && !allowEmptyResponse)
       ) {
-        log.debug(`Render Error component as`, {
+        log.debug(`Render Error component`, {
           routeComponentUndefined,
           fetchRequestHasErrored,
           allowEmptyResponse
@@ -119,6 +120,7 @@ export default ({ server, config }) => {
       // If our route is the not found route
       // Overwrite the data
       if (route.notFoundRoute) {
+        log.debug('Route is "not found" route')
         componentData = {
           message: 'Not Found',
           code: 404
