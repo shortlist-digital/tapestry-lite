@@ -53,7 +53,7 @@ export default async ({
     generatePromise: fetchJSON
   })
 
-  log.silly('Resolved API endpoints', resolvedEndpointConfig.paths)
+  log.debug('Resolved API endpoints', resolvedEndpointConfig.paths)
 
   // save reference of API request
   fetchRequests.push(resolvedEndpointConfig.paths)

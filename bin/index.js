@@ -10,9 +10,17 @@ const args = process.argv.slice(3)
 
 const validCommands = ['start', 'build', 'dev']
 
-if (command && !validCommands.includes(command)) {
-  console.log(`\nUnknown command: ${chalk.green(`tapestry ${command}`)}\n`)
+const logError = msg => {
+  console.log(`\n${chalk.red('Error:')} ${msg}\n`)
   process.exit(0)
+}
+
+if (command && !validCommands.includes(command)) {
+  logError(`Unknown command ${chalk.green(`tapestry ${command}`)}`)
+}
+
+if (!process.env.CMS_ENDPOINT) {
+  logError('Missing a CMS_ENDPOINT process.env')
 }
 
 spawn.sync('node', [require.resolve(`./${command || 'dev'}`)].concat(args), {

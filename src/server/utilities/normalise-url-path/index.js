@@ -1,5 +1,5 @@
 export default path => {
-  if (path === '/') return path
+  if (!path || path === '/') return path
 
   return (
     path

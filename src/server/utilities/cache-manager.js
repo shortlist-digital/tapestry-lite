@@ -52,7 +52,6 @@ export default class CacheManager {
     log.debug(
       `Cache cleared ${chalk.green(keyName)} in ${chalk.green(cacheName)}`
     )
-    log.silly(JSON.stringify(internalCaches, null, 2))
 
     await internalCaches[cacheName].del(keyName)
   }

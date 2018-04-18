@@ -30,20 +30,23 @@ const apiFetch = (url, allowEmptyResponse = false) => {
       }
     })
     .then(resp => resp.json())
-    .then(apiData => {
+    .then(json => {
       timing.end(`fetch: ${url}`)
-      log.silly(`API Fetch: Data from ${chalk.green(url)}`, apiData)
-      if (apiData.length == false && allowEmptyResponse !== true) {
+      log.debug(`API Fetch JSON response exists: ${chalk.green(Boolean(json))}`)
+      if (!json.length && allowEmptyResponse !== true) {
         throw {
           name: 'FetchError',
           type: 'http-error',
+          // Traditional request properties
+          status: 404,
           statusText: 'WP-API returned no results',
+          // Tapestry properties (we should remove these)
           message:
             'WP-API returned no results and empty results are not allowed on this route',
           code: 404
         }
       } else {
-        return apiData
+        return json
       }
     })
     .catch(err => log.error(`API Fetch: Catch error`, err))
