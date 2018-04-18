@@ -1,4 +1,5 @@
 import chalk from 'chalk'
+import isEmpty from 'lodash.isempty'
 import fetcher from './fetcher'
 import timing from '../utilities/timing'
 import { log } from '../utilities/logger'
@@ -30,10 +31,10 @@ const apiFetch = (url, allowEmptyResponse = false) => {
       }
     })
     .then(resp => resp.json())
-    .then(json => {
+    .then(apiData => {
       timing.end(`fetch: ${url}`)
-      log.debug(`API Fetch JSON response exists: ${chalk.green(Boolean(json))}`)
-      if (!json.length && allowEmptyResponse !== true) {
+      log.silly(`API Fetch: Data from ${chalk.green(url)}`, apiData)
+      if (isEmpty(apiData) && allowEmptyResponse !== true) {
         throw {
           name: 'FetchError',
           type: 'http-error',
@@ -46,7 +47,7 @@ const apiFetch = (url, allowEmptyResponse = false) => {
           code: 404
         }
       } else {
-        return json
+        return apiData
       }
     })
     .catch(err => log.error(`API Fetch: Catch error`, err))
