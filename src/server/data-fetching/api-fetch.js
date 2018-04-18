@@ -1,4 +1,5 @@
 import chalk from 'chalk'
+import isEmpty from 'lodash.isempty'
 import fetcher from './fetcher'
 import timing from '../utilities/timing'
 import { log } from '../utilities/logger'
@@ -33,11 +34,14 @@ const apiFetch = (url, allowEmptyResponse = false) => {
     .then(apiData => {
       timing.end(`fetch: ${url}`)
       log.silly(`API Fetch: Data from ${chalk.green(url)}`, apiData)
-      if (apiData.length == false && allowEmptyResponse !== true) {
+      if (isEmpty(apiData) && allowEmptyResponse !== true) {
         throw {
           name: 'FetchError',
           type: 'http-error',
+          // Traditional request properties
+          status: 404,
           statusText: 'WP-API returned no results',
+          // Tapestry properties (we should remove these)
           message:
             'WP-API returned no results and empty results are not allowed on this route',
           code: 404

@@ -2,7 +2,6 @@ import React from 'react'
 import { renderToString, renderToStaticMarkup } from 'react-dom/server'
 import Helmet from 'react-helmet'
 import idx from 'idx'
-import { log } from '../utilities/logger'
 
 export default async ({ route, match, componentData }) => {
   const htmlString = renderToString(
@@ -16,7 +15,6 @@ export default async ({ route, match, componentData }) => {
   } else {
     styleData = require('glamor/server').renderStaticOptimized(() => htmlString)
   }
-  log.silly('CSS data for page', styleData)
   const helmet = Helmet.renderStatic()
   // Assets to come, everything else works
   const renderData = {

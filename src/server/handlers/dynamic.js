@@ -83,19 +83,13 @@ export default ({ server, config }) => {
           // )
           // If we received data without throwing - normalize it
           componentData = normalizeApiResponse(multidata, route)
-          log.silly(
-            `Endpoint (${chalk.green(route.endpoint)}) fetched and normalized:`,
-            componentData
-          )
+          log.silly(`Endpoint data fetched and normalized:`, componentData)
         } catch (e) {
           // There has eiter been a 'natural 404', or we've thrown one
           // due to an empty response from a WP endpoint
           componentData = e
           fetchRequestHasErrored = true
-          log.error(
-            `Endpoint (${chalk.green(route.endpoint)}) failed to fetch:`,
-            componentData
-          )
+          log.error(`Endpoint data failed to fetch:`, componentData)
         } // End of fetching 'try' block
       } // End of 'if endpoint' block
       // We now have componentData
@@ -108,6 +102,7 @@ export default ({ server, config }) => {
         (fetchRequestHasErrored && !allowEmptyResponse)
       ) {
         log.debug(`Render Error component`, {
+          componentData,
           routeComponentUndefined,
           fetchRequestHasErrored,
           allowEmptyResponse
@@ -141,7 +136,7 @@ export default ({ server, config }) => {
         log.debug(`Set HTML in cache ${chalk.green(cacheKey)}`)
         cache.set(cacheKey, responseString)
       }
-      log.silly('Rendering HTML from scratch', responseString)
+      log.debug('Rendering HTML from scratch')
       // Respond with new Hapi 17 api
       return h
         .response(responseString)
