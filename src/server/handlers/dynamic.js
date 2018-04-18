@@ -1,4 +1,5 @@
 import idx from 'idx'
+import chalk from 'chalk'
 
 import prepareAppRoutes from '../routing/prepare-app-routes'
 import matchRoutes from '../routing/match-routes'
@@ -28,13 +29,14 @@ export default ({ server, config }) => {
     },
     method: 'GET',
     path: '/{path*}',
-    handler: async function(request, h) {
+    handler: async (request, h) => {
       // Set a cache key
       const cacheKey = request.url.pathname || '/'
       // Is there cached HTML?
       const cachedHTML = await cache.get(cacheKey)
       // If there's a cache response, return the response straight away
       if (cachedHTML) {
+        log.debug(`Rendering HTML from cache: ${chalk.green(cacheKey)}`)
         return h
           .response(cachedHTML)
           .type('text/html')
@@ -47,6 +49,8 @@ export default ({ server, config }) => {
       // this should only have one route as we force "exact" on each route
       // How would we error out if two routes match here? "Ambigous routes detected?" maybe earlier in app
       const { route, match } = matchRoutes(routes, request.url.pathname)
+
+      log.debug(`Matched route ${chalk.green(route.path)}`)
       // This needs tidying
       // If there's a branch of the route config, we have a route
       // Optimistic default component data for static routes
@@ -58,8 +62,9 @@ export default ({ server, config }) => {
 
       // Set a flag for whether we have a missing component later on
       const routeComponentUndefined = typeof route.component === 'undefined'
-      // Does the fetch we are about to perform allow an empty response from WordPress?
-      // If it doesn't, then we will override WP's 200 with a 404
+      // Does the fetch we are about to perform allow an empty response
+      // from WordPress? If it doesn't, then we will override WP's 200
+      // with a 404
       const allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
       // If we have an endpoint
       if (route.endpoint) {
@@ -72,14 +77,19 @@ export default ({ server, config }) => {
             params: match.params,
             allowEmptyResponse
           })
+          // log.silly(
+          //   `HTML: Result from ${chalk.green('fetchFromEndpointConfig')}`,
+          //   multidata
+          // )
           // If we received data without throwing - normalize it
           componentData = normalizeApiResponse(multidata, route)
+          log.silly(`Endpoint data fetched and normalized:`, componentData)
         } catch (e) {
           // There has eiter been a 'natural 404', or we've thrown one
           // due to an empty response from a WP endpoint
-          log.error(e)
           componentData = e
           fetchRequestHasErrored = true
+          log.error(`Endpoint data failed to fetch:`, componentData)
         } // End of fetching 'try' block
       } // End of 'if endpoint' block
       // We now have componentData
@@ -87,9 +97,16 @@ export default ({ server, config }) => {
       // an empty response is not allowed, we replace the route component
       // with our error view component
       if (
+        componentData.code === 404 ||
         routeComponentUndefined ||
         (fetchRequestHasErrored && !allowEmptyResponse)
       ) {
+        log.debug(`Render Error component`, {
+          componentData,
+          routeComponentUndefined,
+          fetchRequestHasErrored,
+          allowEmptyResponse
+        })
         route.component = buildErrorView({
           config,
           missing: routeComponentUndefined
@@ -99,6 +116,7 @@ export default ({ server, config }) => {
       // If our route is the not found route
       // Overwrite the data
       if (route.notFoundRoute) {
+        log.debug('Route is "not found" route')
         componentData = {
           message: 'Not Found',
           code: 404
@@ -115,8 +133,10 @@ export default ({ server, config }) => {
       // Set status code
       const code = componentData.code || 200
       if (code == 200) {
+        log.debug(`Set HTML in cache ${chalk.green(cacheKey)}`)
         cache.set(cacheKey, responseString)
       }
+      log.debug('Rendering HTML from scratch')
       // Respond with new Hapi 17 api
       return h
         .response(responseString)
