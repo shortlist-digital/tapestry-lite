@@ -1,4 +1,3 @@
-import idx from 'idx'
 import chalk from 'chalk'
 
 import prepareAppRoutes from '../routing/prepare-app-routes'
@@ -14,11 +13,50 @@ import baseUrlResolver from '../utilities/base-url-resolver'
 import CacheManager from '../utilities/cache-manager'
 import { log } from '../utilities/logger'
 
+const renderErrorTree = async ({
+  errorComponent,
+  route,
+  match,
+  componentData,
+  h
+}) => {
+  log.silly('Rendering Error HTML')
+  const responseString = await renderTreeToHTML({
+    Component: errorComponent,
+    routeOptions: route.options,
+    match,
+    componentData
+  })
+  log.silly('Error Data: ', componentData)
+  return h
+    .response(responseString)
+    .type('text/html')
+    .code(componentData.code || 404)
+}
+
+const renderSuccessTree = async (
+  { route, match, componentData, h },
+  cache,
+  cacheKey
+) => {
+  log.silly('Rendering Success HTML', { match })
+  const responseString = await renderTreeToHTML({
+    Component: route.component,
+    routeOptions: route.options,
+    match,
+    componentData
+  })
+  cache.set(cacheKey, responseString)
+  return h
+    .response(responseString)
+    .type('text/html')
+    .code(200)
+}
+
 export default ({ server, config }) => {
-  let cacheManager = new CacheManager()
+  const cacheManager = new CacheManager()
   const cache = cacheManager.createCache('html')
   const routes = prepareAppRoutes(config)
-
   server.route({
     options: {
       cache: {
@@ -58,58 +96,37 @@ export default ({ server, config }) => {
         status: 200,
         message: '200'
       }
-      let fetchRequestHasErrored = false
 
       // Set a flag for whether we have a missing component later on
       const routeComponentUndefined = typeof route.component === 'undefined'
-      // Does the fetch we are about to perform allow an empty response
-      // from WordPress? If it doesn't, then we will override WP's 200
-      // with a 404
-      const allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
       // If we have an endpoint
       if (route.endpoint) {
         // Start to try and fetch data
-        try {
-          const multidata = await fetchFromEndpointConfig({
-            endpointConfig: route.endpoint,
-            baseUrl: baseUrlResolver(config, request.url),
-            requestUrlObject: request.url,
-            params: match.params,
-            allowEmptyResponse
-          })
-          // log.silly(
-          //   `HTML: Result from ${chalk.green('fetchFromEndpointConfig')}`,
-          //   multidata
-          // )
-          // If we received data without throwing - normalize it
-          componentData = normalizeApiResponse(multidata, route)
-          log.silly(`Endpoint data fetched and normalized:`, componentData)
-        } catch (e) {
-          // There has eiter been a 'natural 404', or we've thrown one
-          // due to an empty response from a WP endpoint
-          componentData = e
-          fetchRequestHasErrored = true
-          log.error(`Endpoint data failed to fetch:`, componentData)
-        } // End of fetching 'try' block
-      } // End of 'if endpoint' block
-      // We now have componentData
-      // If there's no component, and have a 4xx or 5xx error - and
-      // an empty response is not allowed, we replace the route component
-      // with our error view component
-      if (
-        componentData.code === 404 ||
-        routeComponentUndefined ||
-        (fetchRequestHasErrored && !allowEmptyResponse)
-      ) {
+        const multidata = await fetchFromEndpointConfig({
+          endpointConfig: route.endpoint,
+          baseUrl: baseUrlResolver(config, request.url),
+          requestUrlObject: request.url,
+          params: match.params
+        })
+        componentData = normalizeApiResponse(multidata, route)
+      }
+      if (componentData.code > 299 || routeComponentUndefined) {
         log.debug(`Render Error component`, {
           componentData,
-          routeComponentUndefined,
-          fetchRequestHasErrored,
-          allowEmptyResponse
+          routeComponentUndefined
         })
-        route.component = buildErrorView({
+
+        const errorComponent = buildErrorView({
           config,
           missing: routeComponentUndefined
+        })
+
+        return renderErrorTree({
+          errorComponent,
+          route,
+          match,
+          componentData,
+          h
         })
       }
 
@@ -121,27 +138,29 @@ export default ({ server, config }) => {
           message: 'Not Found',
           code: 404
         }
+        const errorComponent = buildErrorView({
+          config,
+          missing: routeComponentUndefined
+        })
+        return renderErrorTree({
+          errorComponent,
+          route,
+          match,
+          componentData,
+          h
+        })
       }
 
-      // Render the route with componentData, the route
-      const responseString = await renderTreeToHTML({
-        route,
-        match,
-        componentData
-      })
-
-      // Set status code
-      const code = componentData.code || 200
-      if (code == 200) {
-        log.debug(`Set HTML in cache ${chalk.green(cacheKey)}`)
-        cache.set(cacheKey, responseString)
-      }
-      log.debug('Rendering HTML from scratch')
-      // Respond with new Hapi 17 api
-      return h
-        .response(responseString)
-        .type('text/html')
-        .code(code)
+      return renderSuccessTree(
+        {
+          route,
+          match,
+          componentData,
+          h
+        },
+        cache,
+        cacheKey
+      )
     }
   })
 }

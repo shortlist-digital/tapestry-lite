@@ -32,12 +32,6 @@ describe('Handling server responses', () => {
         component: () => <p>Empty Response</p>
       },
       {
-        path: '/empty-allowed-response',
-        endpoint: () => 'pages?slug=empty-response',
-        options: { allowEmptyResponse: true },
-        component: () => <p>Empty Response Allowed</p>
-      },
-      {
         path: '/static-endpoint',
         component: () => <p>Static endpoint</p>
       },
@@ -76,7 +70,7 @@ describe('Handling server responses', () => {
       .reply(200, [])
     // boot tapestry server
     process.env.CACHE_CONTROL_MAX_AGE = 60
-    server = new Server({config})
+    server = new Server({ config })
     await server.start()
     uri = server.info.uri
   })
@@ -124,20 +118,6 @@ describe('Handling server responses', () => {
   it('Route matched, API 404, status code is 404', done => {
     request.get(`${uri}/404-response`, (err, res) => {
       expect(res.statusCode).to.equal(404)
-      done()
-    })
-  })
-
-  it('Route matched, API empty response, status code is 404', done => {
-    request.get(`${uri}/empty-response`, (err, res) => {
-      expect(res.statusCode).to.equal(404)
-      done()
-    })
-  })
-
-  it('Route matched, API empty but allowed, status code is 200', done => {
-    request.get(`${uri}/empty-allowed-response`, (err, res) => {
-      expect(res.statusCode).to.equal(200)
       done()
     })
   })
