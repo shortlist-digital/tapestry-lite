@@ -27,13 +27,18 @@ const renderErrorTree = async ({ route, match, componentData, h }) => {
     .code(componentData.code || 404)
 }
 
-const renderSuccessTree = async ({ route, match, componentData, h }) => {
+const renderSuccessTree = async (
+  { route, match, componentData, h },
+  cache,
+  cacheKey
+) => {
   log.silly('Rendering Success HTML', { match })
   const responseString = await renderTreeToHTML({
     route,
     match,
     componentData
   })
+  cache.set(cacheKey, responseString)
   return h
     .response(responseString)
     .type('text/html')
@@ -132,12 +137,16 @@ export default ({ server, config }) => {
         })
       }
 
-      return renderSuccessTree({
-        route,
-        match,
-        componentData,
-        h
-      })
+      return renderSuccessTree(
+        {
+          route,
+          match,
+          componentData,
+          h
+        },
+        cache,
+        cacheKey
+      )
     }
   })
 }
