@@ -37,7 +37,10 @@ export default class CacheManager {
 
   clearAll() {
     if (internalCaches) {
-      internalCaches.forEach(async cache => await cache.reset())
+      internalCaches.forEach(async cache => {
+        log.debug(`Cache reset in ${chalk.green(cache)}`)
+        await cache.reset()
+      })
     }
   }
 
@@ -49,7 +52,6 @@ export default class CacheManager {
     log.debug(
       `Cache cleared ${chalk.green(keyName)} in ${chalk.green(cacheName)}`
     )
-    log.silly(JSON.stringify(internalCaches, null, 2))
 
     await internalCaches[cacheName].del(keyName)
   }

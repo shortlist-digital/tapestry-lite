@@ -1,7 +1,8 @@
+import chalk from 'chalk'
 import idx from 'idx'
 import HTTPStatus from 'http-status'
-import isEmpty from 'lodash.isempty'
 import isPlainObject from 'lodash.isplainobject'
+import { log } from '../utilities/logger'
 
 export default (response, route) => {
   // WP returns single objects or arrays
@@ -10,14 +11,8 @@ export default (response, route) => {
   const objectOnPurpose = isPlainObject(route.endpoint)
   // 1: is it a falsey value
   // 2: does it contain a status code? then it'll be an error response from WP
-  // 3: is it an array, that is empty, and options.allowEmptyResponse is falsey
-  if (
-    !response ||
-    idx(response, _ => _.data.status) ||
-    (arrayResp &&
-      isEmpty(response) &&
-      !idx(route, _ => _.options.allowEmptyResponse))
-  ) {
+  if (!response || idx(response, _ => _.data.status)) {
+    log.warn('Returning error response from normalize-api-response', response)
     // Assign status
     let status = idx(response, _ => _.data.status) || HTTPStatus.NOT_FOUND
 
@@ -33,6 +28,11 @@ export default (response, route) => {
       message: HTTPStatus[status]
     }
   }
+  log.debug(
+    `Should wrap API response in object "{ data: response }": ${chalk.green(
+      Boolean(objectOnPurpose || arrayResp)
+    )}`
+  )
   // to avoid React mangling the array to {'0':{},'1':{}}
   // wrap in an object
   return objectOnPurpose || arrayResp ? { data: response } : response

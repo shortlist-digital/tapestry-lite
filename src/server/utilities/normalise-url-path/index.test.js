@@ -28,4 +28,10 @@ describe('Normalise URL Path', () => {
     const expected = '/'
     expect(actual).to.equal(expected)
   })
+
+  it('should not fail if nothing passed', () => {
+    const actual = normaliseUrlPath()
+    const expected = ''
+    expect(actual).to.equal(expected)
+  })
 })

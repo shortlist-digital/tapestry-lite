@@ -28,7 +28,6 @@ const schema = joi.object({
       endpoint: [joi.string(), joi.func(), joi.object(), joi.array()],
       getComponent: joi.func(),
       options: joi.object().keys({
-        allowEmptyResponse: joi.boolean(),
         customDocument: joi.func()
       }),
       path: joi.string().required()

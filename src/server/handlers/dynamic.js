@@ -1,4 +1,4 @@
-import idx from 'idx'
+import chalk from 'chalk'
 
 import prepareAppRoutes from '../routing/prepare-app-routes'
 import matchRoutes from '../routing/match-routes'
@@ -13,11 +13,50 @@ import baseUrlResolver from '../utilities/base-url-resolver'
 import CacheManager from '../utilities/cache-manager'
 import { log } from '../utilities/logger'
 
+const renderErrorTree = async ({
+  errorComponent,
+  route,
+  match,
+  componentData,
+  h
+}) => {
+  log.silly('Rendering Error HTML')
+  const responseString = await renderTreeToHTML({
+    Component: errorComponent,
+    routeOptions: route.options,
+    match,
+    componentData
+  })
+  log.silly('Error Data: ', componentData)
+  return h
+    .response(responseString)
+    .type('text/html')
+    .code(componentData.code || 404)
+}
+
+const renderSuccessTree = async (
+  { route, match, componentData, h },
+  cache,
+  cacheKey
+) => {
+  log.silly('Rendering Success HTML', { match })
+  const responseString = await renderTreeToHTML({
+    Component: route.component,
+    routeOptions: route.options,
+    match,
+    componentData
+  })
+  cache.set(cacheKey, responseString)
+  return h
+    .response(responseString)
+    .type('text/html')
+    .code(200)
+}
+
 export default ({ server, config }) => {
-  let cacheManager = new CacheManager()
+  const cacheManager = new CacheManager()
   const cache = cacheManager.createCache('html')
   const routes = prepareAppRoutes(config)
-
   server.route({
     options: {
       cache: {
@@ -28,13 +67,14 @@ export default ({ server, config }) => {
     },
     method: 'GET',
     path: '/{path*}',
-    handler: async function(request, h) {
+    handler: async (request, h) => {
       // Set a cache key
       const cacheKey = request.url.pathname || '/'
       // Is there cached HTML?
       const cachedHTML = await cache.get(cacheKey)
       // If there's a cache response, return the response straight away
       if (cachedHTML) {
+        log.debug(`Rendering HTML from cache: ${chalk.green(cacheKey)}`)
         return h
           .response(cachedHTML)
           .type('text/html')
@@ -47,6 +87,8 @@ export default ({ server, config }) => {
       // this should only have one route as we force "exact" on each route
       // How would we error out if two routes match here? "Ambigous routes detected?" maybe earlier in app
       const { route, match } = matchRoutes(routes, request.url.pathname)
+
+      log.debug(`Matched route ${chalk.green(route.path)}`)
       // This needs tidying
       // If there's a branch of the route config, we have a route
       // Optimistic default component data for static routes
@@ -54,75 +96,71 @@ export default ({ server, config }) => {
         status: 200,
         message: '200'
       }
-      let fetchRequestHasErrored = false
 
       // Set a flag for whether we have a missing component later on
       const routeComponentUndefined = typeof route.component === 'undefined'
-      // Does the fetch we are about to perform allow an empty response from WordPress?
-      // If it doesn't, then we will override WP's 200 with a 404
-      const allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
       // If we have an endpoint
       if (route.endpoint) {
         // Start to try and fetch data
-        try {
-          const multidata = await fetchFromEndpointConfig({
-            endpointConfig: route.endpoint,
-            baseUrl: baseUrlResolver(config, request.url),
-            requestUrlObject: request.url,
-            params: match.params,
-            allowEmptyResponse
-          })
-          // If we received data without throwing - normalize it
-          componentData = normalizeApiResponse(multidata, route)
-        } catch (e) {
-          // There has eiter been a 'natural 404', or we've thrown one
-          // due to an empty response from a WP endpoint
-          log.error(e)
-          componentData = e
-          fetchRequestHasErrored = true
-        } // End of fetching 'try' block
-      } // End of 'if endpoint' block
-      // We now have componentData
-      // If there's no component, and have a 4xx or 5xx error - and
-      // an empty response is not allowed, we replace the route component
-      // with our error view component
-      if (
-        componentData.code === 404 ||
-        routeComponentUndefined ||
-        (fetchRequestHasErrored && !allowEmptyResponse)
-      ) {
-        route.component = buildErrorView({
+        const multidata = await fetchFromEndpointConfig({
+          endpointConfig: route.endpoint,
+          baseUrl: baseUrlResolver(config, request.url),
+          requestUrlObject: request.url,
+          params: match.params
+        })
+        componentData = normalizeApiResponse(multidata, route)
+      }
+      if (componentData.code > 299 || routeComponentUndefined) {
+        log.debug(`Render Error component`, {
+          componentData,
+          routeComponentUndefined
+        })
+
+        const errorComponent = buildErrorView({
           config,
           missing: routeComponentUndefined
+        })
+
+        return renderErrorTree({
+          errorComponent,
+          route,
+          match,
+          componentData,
+          h
         })
       }
 
       // If our route is the not found route
       // Overwrite the data
       if (route.notFoundRoute) {
+        log.debug('Route is "not found" route')
         componentData = {
           message: 'Not Found',
           code: 404
         }
+        const errorComponent = buildErrorView({
+          config,
+          missing: routeComponentUndefined
+        })
+        return renderErrorTree({
+          errorComponent,
+          route,
+          match,
+          componentData,
+          h
+        })
       }
 
-      // Render the route with componentData, the route
-      const responseString = await renderTreeToHTML({
-        route,
-        match,
-        componentData
-      })
-
-      // Set status code
-      const code = componentData.code || 200
-      if (code == 200) {
-        cache.set(cacheKey, responseString)
-      }
-      // Respond with new Hapi 17 api
-      return h
-        .response(responseString)
-        .type('text/html')
-        .code(code)
+      return renderSuccessTree(
+        {
+          route,
+          match,
+          componentData,
+          h
+        },
+        cache,
+        cacheKey
+      )
     }
   })
 }
