@@ -13,10 +13,17 @@ import baseUrlResolver from '../utilities/base-url-resolver'
 import CacheManager from '../utilities/cache-manager'
 import { log } from '../utilities/logger'
 
-const renderErrorTree = async ({ route, match, componentData, h }) => {
+const renderErrorTree = async ({
+  errorComponent,
+  route,
+  match,
+  componentData,
+  h
+}) => {
   log.silly('Rendering Error HTML')
   const responseString = await renderTreeToHTML({
-    route,
+    Component: errorComponent,
+    routeOptions: route.options,
     match,
     componentData
   })
@@ -34,7 +41,8 @@ const renderSuccessTree = async (
 ) => {
   log.silly('Rendering Success HTML', { match })
   const responseString = await renderTreeToHTML({
-    route,
+    Component: route.component,
+    routeOptions: route.options,
     match,
     componentData
   })
@@ -46,10 +54,9 @@ const renderSuccessTree = async (
 }
 
 export default ({ server, config }) => {
-  let cacheManager = new CacheManager()
+  const cacheManager = new CacheManager()
   const cache = cacheManager.createCache('html')
   const routes = prepareAppRoutes(config)
-
   server.route({
     options: {
       cache: {
@@ -109,11 +116,13 @@ export default ({ server, config }) => {
           routeComponentUndefined
         })
 
-        route.component = buildErrorView({
+        const errorComponent = buildErrorView({
           config,
           missing: routeComponentUndefined
         })
+
         return renderErrorTree({
+          errorComponent,
           route,
           match,
           componentData,
@@ -129,7 +138,12 @@ export default ({ server, config }) => {
           message: 'Not Found',
           code: 404
         }
+        const errorComponent = buildErrorView({
+          config,
+          missing: routeComponentUndefined
+        })
         return renderErrorTree({
+          errorComponent,
           route,
           match,
           componentData,
