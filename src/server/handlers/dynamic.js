@@ -1,4 +1,3 @@
-import idx from 'idx'
 import chalk from 'chalk'
 
 import prepareAppRoutes from '../routing/prepare-app-routes'
@@ -62,10 +61,6 @@ export default ({ server, config }) => {
 
       // Set a flag for whether we have a missing component later on
       const routeComponentUndefined = typeof route.component === 'undefined'
-      // Does the fetch we are about to perform allow an empty response
-      // from WordPress? If it doesn't, then we will override WP's 200
-      // with a 404
-      const allowEmptyResponse = idx(route, _ => _.options.allowEmptyResponse)
       // If we have an endpoint
       if (route.endpoint) {
         // Start to try and fetch data
@@ -74,8 +69,7 @@ export default ({ server, config }) => {
             endpointConfig: route.endpoint,
             baseUrl: baseUrlResolver(config, request.url),
             requestUrlObject: request.url,
-            params: match.params,
-            allowEmptyResponse
+            params: match.params
           })
           // log.silly(
           //   `HTML: Result from ${chalk.green('fetchFromEndpointConfig')}`,
@@ -87,6 +81,7 @@ export default ({ server, config }) => {
         } catch (e) {
           // There has eiter been a 'natural 404', or we've thrown one
           // due to an empty response from a WP endpoint
+          log.debug('Multidata failed', e)
           componentData = e
           fetchRequestHasErrored = true
           log.error(`Endpoint data failed to fetch:`, componentData)
@@ -96,17 +91,13 @@ export default ({ server, config }) => {
       // If there's no component, and have a 4xx or 5xx error - and
       // an empty response is not allowed, we replace the route component
       // with our error view component
-      if (
-        componentData.code === 404 ||
-        routeComponentUndefined ||
-        (fetchRequestHasErrored && !allowEmptyResponse)
-      ) {
+      if (componentData.code === 404 || routeComponentUndefined) {
         log.debug(`Render Error component`, {
           componentData,
           routeComponentUndefined,
-          fetchRequestHasErrored,
-          allowEmptyResponse
+          fetchRequestHasErrored
         })
+
         route.component = buildErrorView({
           config,
           missing: routeComponentUndefined

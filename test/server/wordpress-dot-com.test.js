@@ -32,12 +32,6 @@ describe('Handling server responses using Wordpress.com API', () => {
         component: () => <p>Hello</p>
       },
       {
-        path: '/empty-allowed-response',
-        endpoint: () => 'pages?slug=empty-response',
-        options: { allowEmptyResponse: true },
-        component: () => <p>Hello</p>
-      },
-      {
         path: '/static-endpoint',
         component: () => <p>Static endpoint</p>
       }
@@ -70,7 +64,7 @@ describe('Handling server responses using Wordpress.com API', () => {
       .times(5)
       .reply(200, [])
     // boot tapestry server
-    server = new Server({config})
+    server = new Server({ config })
     await server.start()
     uri = server.info.uri
   })
@@ -99,21 +93,6 @@ describe('Handling server responses using Wordpress.com API', () => {
       done()
     })
   })
-
-  it('WP.com Route matched, API empty response, status code is 404', done => {
-    request.get(`${uri}/empty-response`, (err, res) => {
-      expect(res.statusCode).to.equal(404)
-      done()
-    })
-  })
-
-  it('WP.com Route matched, API empty but allowed, status code is 200', done => {
-    request.get(`${uri}/empty-allowed-response`, (err, res) => {
-      expect(res.statusCode).to.equal(200)
-      done()
-    })
-  })
-
 
   it('Static route matched, no data loaded, status code is 200', done => {
     request.get(`${uri}/static-endpoint`, (err, res) => {
