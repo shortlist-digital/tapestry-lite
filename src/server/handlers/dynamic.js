@@ -11,6 +11,7 @@ import buildErrorView from '../render/error-view'
 import renderTreeToHTML from '../render/tree-to-html'
 
 import baseUrlResolver from '../utilities/base-url-resolver'
+import normaliseUrlPath from '../utilities/normalise-url-path'
 import CacheManager from '../utilities/cache-manager'
 import { log } from '../utilities/logger'
 
@@ -47,6 +48,7 @@ const renderSuccessTree = async (
     match,
     componentData
   })
+  log.silly('Setting ', cacheKey)
   cache.set(cacheKey, responseString)
   return h
     .response(responseString)
@@ -70,7 +72,8 @@ export default ({ server, config }) => {
     path: '/{path*}',
     handler: async (request, h) => {
       // Set a cache key
-      const cacheKey = request.url.pathname || '/'
+      const currentPath = request.url.pathname || '/'
+      const cacheKey = normaliseUrlPath(currentPath)
       // Is there cached HTML?
       const cachedHTML = await cache.get(cacheKey)
       // If there's a cache response, return the response straight away
