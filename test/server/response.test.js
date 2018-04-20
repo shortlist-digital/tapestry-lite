@@ -129,6 +129,13 @@ describe('Handling server responses', () => {
     })
   })
 
+  it('Route matched, API empty response, status code is 404', done => {
+    request.get(`${uri}/empty-response`, (err, res) => {
+      expect(res.statusCode).to.equal(404)
+      done()
+    })
+  })
+
   it('Static route matched, no data loaded, status code is 200', done => {
     request.get(`${uri}/static-endpoint`, (err, res) => {
       expect(res.statusCode).to.equal(200)

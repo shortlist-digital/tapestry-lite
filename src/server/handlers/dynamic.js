@@ -1,4 +1,5 @@
 import chalk from 'chalk'
+import isEmpty from 'lodash.isempty'
 
 import prepareAppRoutes from '../routing/prepare-app-routes'
 import matchRoutes from '../routing/match-routes'
@@ -132,8 +133,15 @@ export default ({ server, config }) => {
 
       // If our route is the not found route
       // Overwrite the data
-      if (route.notFoundRoute) {
-        log.debug('Route is "not found" route')
+      const loadedData = componentData.data || componentData
+      if (route.notFoundRoute || (route.endpoint && isEmpty(loadedData))) {
+        log.silly(
+          'Route is "not found" route',
+          route.endpoint,
+          isEmpty(loadedData),
+          componentData,
+          route.notFoundRoute
+        )
         componentData = {
           message: 'Not Found',
           code: 404
