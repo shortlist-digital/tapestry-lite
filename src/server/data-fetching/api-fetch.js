@@ -32,7 +32,7 @@ const apiFetch = url => {
     .then(resp => resp.json())
     .then(apiData => {
       timing.end(`fetch: ${url}`)
-      log.silly(`API Fetch: Data from ${chalk.green(url)}`, apiData)
+      log.silly(`API Fetch: Data from ${chalk.green(url)}`)
       return apiData
     })
     .catch(err => log.error(`API Fetch: Catch error`, err))

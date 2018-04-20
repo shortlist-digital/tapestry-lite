@@ -1,5 +1,6 @@
 import HTTPStatus from 'http-status'
 import CacheManager from '../utilities/cache-manager'
+import { log } from '../utilities/logger'
 
 export default ({ server }) => {
   const cacheManager = new CacheManager()
@@ -10,7 +11,8 @@ export default ({ server }) => {
     handler: (request, h) => {
       // as hapi strips the trailing slash
       const path = request.params.path || '/'
-      cacheManager.clearCache('html', path)
+      const cacheFeedback = cacheManager.clearCache('html', path)
+      log.silly('Purging path: ', path, 'status: ', cacheFeedback)
       return h
         .response({
           status: `Purged ${path}`
