@@ -8,10 +8,10 @@ export default ({ server }) => {
   server.route({
     method: 'GET',
     path: `/${purgePath}/{path*}`,
-    handler: (request, h) => {
+    handler: async (request, h) => {
       // as hapi strips the trailing slash
       const path = request.params.path || '/'
-      const cacheFeedback = cacheManager.clearCache('html', path)
+      const cacheFeedback = await cacheManager.clearCache('html', path)
       log.silly('Purging path: ', path, 'status: ', cacheFeedback)
       return h
         .response({
