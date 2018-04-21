@@ -51,7 +51,7 @@ describe('Handling cache purges', () => {
       .times(4)
       .reply(200, dataPage)
     // boot tapestry server
-    server = new Server({config})
+    server = new Server({ config })
     await server.start()
     uri = server.info.uri
   })
@@ -62,9 +62,12 @@ describe('Handling cache purges', () => {
     const route = 'string-endpoint'
     const purgeResp = { status: `Purged ${route}` }
 
-    request.get(`${uri}/${route}`, (err, res, body) => {
+    request.get(`${uri}/${route}`, async (err, res, body) => {
       expect(body).to.contain('Basic endpoint')
       expect(res.statusCode).to.equal(200)
+      const cacheApi = cacheManager.getCache('html')
+      const result = await cacheApi.get(route)
+      expect(result).to.exist
 
       request.get(`${uri}/purge/${route}`, async (err, res, body) => {
         const cacheApi = cacheManager.getCache('html')
@@ -131,7 +134,7 @@ describe('Handling cache set/get', () => {
       .get('/wp-json/wp/v2/posts?slug=query-test&_embed')
       .reply(200, dataPost)
     // boot tapestry server
-    server = new Server({config})
+    server = new Server({ config })
     await server.start()
     uri = server.info.uri
   })
@@ -158,7 +161,7 @@ describe('Handling cache set/get', () => {
       `${uri}/2017/12/01/query-test?utm_source=stop-it`,
       async (err, res, body) => {
         const cacheHtml = cacheManager.getCache('html')
-        const shouldCache = await cacheHtml.get('/2017/12/01/query-test')
+        const shouldCache = await cacheHtml.get('2017/12/01/query-test')
         const shouldNotCache = await cacheHtml.get(
           '2017/12/01/query-test?utm_source=stop-it'
         )
@@ -174,7 +177,7 @@ describe('Handling cache set/get', () => {
   it('Retrieves HTML cache items correctly', done => {
     const cacheHtml = cacheManager.getCache('html')
     const response = 'test string'
-    cacheHtml.set('/2018/01/01/test', response)
+    cacheHtml.set('2018/01/01/test', response)
     request.get(`${uri}/2018/01/01/test`, (err, res, body) => {
       expect(body).to.equal(response)
       done()

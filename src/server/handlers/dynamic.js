@@ -1,4 +1,5 @@
 import chalk from 'chalk'
+import isEmpty from 'lodash.isempty'
 
 import prepareAppRoutes from '../routing/prepare-app-routes'
 import matchRoutes from '../routing/match-routes'
@@ -10,6 +11,7 @@ import buildErrorView from '../render/error-view'
 import renderTreeToHTML from '../render/tree-to-html'
 
 import baseUrlResolver from '../utilities/base-url-resolver'
+import normaliseUrlPath from '../utilities/normalise-url-path'
 import CacheManager from '../utilities/cache-manager'
 import { log } from '../utilities/logger'
 
@@ -46,6 +48,7 @@ const renderSuccessTree = async (
     match,
     componentData
   })
+  log.silly('Setting ', cacheKey)
   cache.set(cacheKey, responseString)
   return h
     .response(responseString)
@@ -69,7 +72,8 @@ export default ({ server, config }) => {
     path: '/{path*}',
     handler: async (request, h) => {
       // Set a cache key
-      const cacheKey = request.url.pathname || '/'
+      const currentPath = request.url.pathname || '/'
+      const cacheKey = normaliseUrlPath(currentPath)
       // Is there cached HTML?
       const cachedHTML = await cache.get(cacheKey)
       // If there's a cache response, return the response straight away
@@ -132,8 +136,15 @@ export default ({ server, config }) => {
 
       // If our route is the not found route
       // Overwrite the data
-      if (route.notFoundRoute) {
-        log.debug('Route is "not found" route')
+      const loadedData = componentData.data || componentData
+      if (route.notFoundRoute || (route.endpoint && isEmpty(loadedData))) {
+        log.silly(
+          'Route is "not found" route',
+          route.endpoint,
+          isEmpty(loadedData),
+          componentData,
+          route.notFoundRoute
+        )
         componentData = {
           message: 'Not Found',
           code: 404
