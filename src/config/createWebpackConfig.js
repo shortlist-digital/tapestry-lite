@@ -11,6 +11,7 @@ const StartServerPlugin = require('start-server-webpack-plugin')
 const StatsPlugin = require('stats-webpack-plugin')
 
 const babelDefaultConfig = require('./babel')
+const env = require('./env')
 const paths = require('./paths')
 
 const nodeDevEntry = ['webpack/hot/poll?1000', paths.ownDevServer]
@@ -40,11 +41,10 @@ const nodeDevPlugins = [
     target: 'node',
     onSuccessMessage: 'Tapestry Lite is Running',
     verbose: process.env.NODE_ENV === 'test'
-  }),
-  new webpack.DefinePlugin({ __DEV__: true })
+  })
 ]
 
-const nodeProdPlugins = [new webpack.DefinePlugin({ __DEV__: false })]
+const nodeProdPlugins = []
 
 const webDevEntry = {
   client: [
@@ -79,12 +79,7 @@ const webProdOutput = {
 const webDevPlugins = [
   new webpack.NamedModulesPlugin(),
   new webpack.HotModuleReplacementPlugin(),
-  new webpack.NoEmitOnErrorsPlugin(),
-  new webpack.DefinePlugin({
-    __CSS_PLUGIN__:
-      JSON.stringify(process.env.CSS_PLUGIN) || JSON.stringify('glamor'),
-    __DEV__: true
-  })
+  new webpack.NoEmitOnErrorsPlugin()
 ]
 
 const webProdPlugins = [
@@ -92,11 +87,6 @@ const webProdPlugins = [
   new AssetsPlugin({
     path: paths.appBuild,
     filename: 'assets.json'
-  }),
-  new webpack.DefinePlugin({
-    __CSS_PLUGIN__:
-      JSON.stringify(process.env.CSS_PLUGIN) || JSON.stringify('glamor'),
-    __DEV__: false
   })
 ]
 
@@ -231,7 +221,8 @@ module.exports = (target = 'node') => {
     new CleanPlugin(['.tapestry'], {
       root: process.cwd(),
       verbose: false
-    })
+    }),
+    new webpack.DefinePlugin(env(target))
   )
   // Sweet jesus
   if (fs.existsSync(paths.appWebpackConfig)) {

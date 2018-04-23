@@ -34,12 +34,12 @@ const DefaultDocument = ({ html, css, ids, head, bootstrapData }) => (
           )}, ids: ${JSON.stringify(ids)} }`
         }}
       />
+      {process.env.NODE_ENV === 'production' ? (
+        getProductionBundles()
+      ) : (
+        <script src={'http://localhost:4001/static/js/bundle.js'} />
+      )}
     </body>
-    {process.env.NODE_ENV === 'production' ? (
-      getProductionBundles()
-    ) : (
-      <script src={'http://localhost:4001/static/js/bundle.js'} />
-    )}
   </html>
 )
 
