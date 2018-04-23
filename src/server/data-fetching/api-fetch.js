@@ -3,7 +3,7 @@ import fetcher from './fetcher'
 import timing from '../utilities/timing'
 import { log } from '../utilities/logger'
 
-const apiFetch = (url, allowEmptyResponse = false) => {
+const apiFetch = url => {
   timing.start(`fetch: ${url}`)
   return fetcher(url)
     .then(resp => {
@@ -32,19 +32,8 @@ const apiFetch = (url, allowEmptyResponse = false) => {
     .then(resp => resp.json())
     .then(apiData => {
       timing.end(`fetch: ${url}`)
-      log.silly(`API Fetch: Data from ${chalk.green(url)}`, apiData)
-      if (apiData.length == false && allowEmptyResponse !== true) {
-        throw {
-          name: 'FetchError',
-          type: 'http-error',
-          statusText: 'WP-API returned no results',
-          message:
-            'WP-API returned no results and empty results are not allowed on this route',
-          code: 404
-        }
-      } else {
-        return apiData
-      }
+      log.silly(`API Fetch: Data from ${chalk.green(url)}`)
+      return apiData
     })
     .catch(err => log.error(`API Fetch: Catch error`, err))
 }

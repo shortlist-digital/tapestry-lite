@@ -10,10 +10,7 @@ export default ({ FrontPage, Post, Page, Category }) => [
     component: Category,
     endpoint: params =>
       `posts?filter[category_name]=${params.category ||
-        params.subcategory}&_embed`,
-    options: {
-      allowEmptyResponse: true
-    }
+        params.subcategory}&_embed`
   },
   {
     path: '/:page/:subpage?',

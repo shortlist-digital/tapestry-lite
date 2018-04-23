@@ -8,7 +8,6 @@ import { log } from '../utilities/logger'
 let query = null
 let origin = null
 let preview = false
-let allowEmpty = false
 let fetchRequests = []
 
 const fetchJSON = endpoint => {
@@ -22,7 +21,7 @@ const fetchJSON = endpoint => {
     log.debug(`API endpoint is a preview: ${chalk.green(url)}`)
   }
   // return fetch as promise
-  return apiFetch(url, allowEmpty)
+  return apiFetch(url)
 }
 
 const mapArrayToObject = (arr, obj) => {
@@ -37,13 +36,11 @@ export default async ({
   endpointConfig,
   baseUrl,
   requestUrlObject,
-  params,
-  allowEmptyResponse
+  params
 }) => {
   // save data for use in util functions
   query = idx(requestUrlObject, _ => _.query)
   origin = baseUrl
-  allowEmpty = allowEmptyResponse
   preview = idx(requestUrlObject, _ => _.query.tapestry_hash)
   // kick off progress loader
   // fetch each endpoint
@@ -53,7 +50,7 @@ export default async ({
     generatePromise: fetchJSON
   })
 
-  log.silly('Resolved API endpoints', resolvedEndpointConfig.paths)
+  log.debug('Resolved API endpoints', resolvedEndpointConfig.paths)
 
   // save reference of API request
   fetchRequests.push(resolvedEndpointConfig.paths)

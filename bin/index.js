@@ -11,7 +11,11 @@ const args = process.argv.slice(3)
 const validCommands = ['start', 'build', 'dev']
 
 if (command && !validCommands.includes(command)) {
-  console.log(`\nUnknown command: ${chalk.green(`tapestry ${command}`)}\n`)
+  console.log(
+    `\n${chalk.red('Error:')} Unknown command ${chalk.green(
+      `tapestry ${command}`
+    )}\n`
+  )
   process.exit(0)
 }
 

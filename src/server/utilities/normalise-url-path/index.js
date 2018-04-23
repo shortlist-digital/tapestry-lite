@@ -1,4 +1,6 @@
 export default path => {
+  if (!path) return ''
+
   if (path === '/') return path
 
   return (
