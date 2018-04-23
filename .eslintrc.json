@@ -1,7 +1,7 @@
 {
   "extends": ["@shortlist-studio/eslint-config-standard"],
   "globals": {
-    "__DEV__": true,
-    "__CSS_PLUGIN__": true
+    "NODE_ENV": true,
+    "CSS_PLUGIN": true
   }
 }
