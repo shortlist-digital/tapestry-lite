@@ -90,7 +90,7 @@ const webProdPlugins = [
   })
 ]
 
-module.exports = (target = 'node') => {
+module.exports = (target = 'node', options = {}) => {
   const IS_NODE = target === 'node'
   const IS_WEB = target === 'web'
   const IS_DEV =
@@ -110,6 +110,28 @@ module.exports = (target = 'node') => {
     console.log('Using .babelrc defined in your app root')
     const babelAppConfig = fs.readJsonSync(paths.appBabelRc)
     babelConfig = merge(babelDefaultConfig(target), babelAppConfig)
+    if (options.esmodule) {
+      babelConfig = merge(babelConfig, {
+        presets: [
+          [
+            require.resolve('@babel/preset-env'),
+            {
+              modules: false, // don't convert to commonjs, retain es modules
+              useBuiltIns: 'usage', // only polyfill from whats used
+              targets: {
+                browsers: [
+                  'Chrome >= 60',
+                  'Safari >= 11',
+                  'iOS >= 10.3',
+                  'Firefox >= 54',
+                  'Edge >= 15'
+                ]
+              }
+            }
+          ]
+        ]
+      })
+    }
   }
 
   let babelOptions = {
@@ -217,6 +239,11 @@ module.exports = (target = 'node') => {
       }
     }
   }
+
+  if (options.esmodule)
+    config.entry = {
+      'client-es': [paths.ownClientIndex]
+    }
   config.plugins.push(
     new CleanPlugin(['.tapestry'], {
       root: process.cwd(),
