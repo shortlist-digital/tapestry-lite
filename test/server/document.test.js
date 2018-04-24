@@ -33,6 +33,41 @@ describe('Document contents', () => {
         }
       },
       {
+        path: '/migration',
+        component: () => {
+          const Paragraph = styled('p')`
+            color: #369;
+          `
+          return (
+            <div>
+              <Paragraph>Emotion</Paragraph>
+              <p className={css({ color: '#639' })}>Glamor</p>
+            </div>
+          )
+        }
+      },
+      {
+        path: '/custom-document',
+        component: () => <p>Custom HTML</p>,
+        options: {
+          customDocument: () => 'testing-document'
+        }
+      },
+      {
+        path: '/migration/clash',
+        component: () => {
+          const Paragraph = styled('p')`
+            color: #bada55;
+          `
+          return (
+            <div>
+              <Paragraph>Emotion</Paragraph>
+              <p className={css({ color: '#bada55' })}>Glamor</p>
+            </div>
+          )
+        }
+      },
+      {
         path: '/custom-document',
         component: () => <p>Custom HTML</p>,
         options: {
@@ -45,7 +80,7 @@ describe('Document contents', () => {
         component: () => (
           <div>
             <Helmet>
-              <title>Custom Title</title>
+              <title>Custom Document Title</title>
             </Helmet>
             <p className={css({ fontSize: '13px' })}>Custom HTML</p>
           </div>
@@ -89,7 +124,7 @@ describe('Document contents', () => {
       .times(5)
       .reply(200, dataPosts.data)
     // boot tapestry server
-    
+
     server = new Server({ config })
     await registerPlugins({ config, server })
     await server.start()
@@ -107,7 +142,7 @@ describe('Document contents', () => {
         `window.__data = { appData: {"data":${JSON.stringify(dataPosts.data)
           .replace(/\//g, '\\/')
           .replace(/\u2028/g, '\\u2028')
-          .replace(/\u2029/g, '\\u2029')}}, ids: ["vg9k2b"] }`
+          .replace(/\u2029/g, '\\u2029')}}, ids: {"glamor":["vg9k2b"]} }`
       )
       done()
     })
@@ -125,6 +160,29 @@ describe('Document contents', () => {
     process.env.CSS_PLUGIN = 'emotion'
     request.get(`${uri}/emotion`, (err, res, body) => {
       expect(body).to.contain('{color:#369;}')
+      // reset
+      process.env.CSS_PLUGIN = undefined
+      done()
+    })
+  })
+
+  it('Migration mode works', done => {
+    // set emotion env variable
+    process.env.CSS_PLUGIN = 'migration'
+    request.get(`${uri}/migration`, (err, res, body) => {
+      expect(body).to.contain('{color:#369;}')
+      expect(body).to.contain('{color:#639;}')
+      // reset
+      process.env.CSS_PLUGIN = undefined
+      done()
+    })
+  })
+
+  it("Migration mode plugins don't clash", done => {
+    // set emotion env variable
+    process.env.CSS_PLUGIN = 'migration'
+    request.get(`${uri}/migration/clash`, (err, res, body) => {
+      expect(body).to.contain('{color:#bada55;}')
       // reset
       process.env.CSS_PLUGIN = undefined
       done()
@@ -151,7 +209,7 @@ describe('Document contents', () => {
 
   it('Passes correct data to custom document', done => {
     request.get(`${uri}/custom-document/with-data`, (err, res, body) => {
-      expect(body).to.contain('Custom Title')
+      expect(body).to.contain('Custom Document Title')
       expect(body).to.contain('Custom HTML')
       expect(body).to.contain(
         `const test = {"data":${JSON.stringify(dataPosts.data)}}`

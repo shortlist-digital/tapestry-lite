@@ -10,17 +10,34 @@ export default async ({
 }) => {
   const htmlString = renderToString(<Component {...match} {...componentData} />)
   // { html, css, ids }
-  let styleData = {}
+  let glamorData = {
+    css: ''
+  }
+  let emotionData = {
+    css: ''
+  }
   // extract CSS from either Glamor or Emotion
   if (process.env.CSS_PLUGIN === 'emotion') {
-    styleData = require('emotion-server').extractCritical(htmlString)
+    emotionData = require('emotion-server').extractCritical(htmlString)
+  } else if (process.env.CSS_PLUGIN === 'migration') {
+    emotionData = require('emotion-server').extractCritical(htmlString)
+    glamorData = require('glamor/server').renderStaticOptimized(
+      () => htmlString
+    )
   } else {
-    styleData = require('glamor/server').renderStaticOptimized(() => htmlString)
+    glamorData = require('glamor/server').renderStaticOptimized(
+      () => htmlString
+    )
   }
   const helmet = Helmet.renderStatic()
   // Assets to come, everything else works
   const renderData = {
-    ...styleData,
+    html: htmlString,
+    css: `${glamorData.css} ${emotionData.css}`,
+    ids: {
+      glamor: glamorData.ids,
+      emotion: emotionData.ids
+    },
     head: helmet,
     bootstrapData: componentData
   }
