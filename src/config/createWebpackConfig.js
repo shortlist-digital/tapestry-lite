@@ -59,7 +59,7 @@ module.exports = (target = 'node') => {
         }
       ]
     },
-    target
+    plugins: []
   }
 
   if (NODE_DEV) {
@@ -181,7 +181,6 @@ module.exports = (target = 'node') => {
     })
   }
 
-  if (!config.plugins) config.plugins = []
   config.plugins.push(
     new CleanPlugin(['.tapestry'], {
       root: process.cwd(),
@@ -191,8 +190,9 @@ module.exports = (target = 'node') => {
   )
 
   // use custom webpack config
-  if (fs.existsSync(paths.appWebpackConfig))
+  if (fs.existsSync(paths.appWebpackConfig)) {
     config = require(paths.appWebpackConfig)(config, {}, webpack)
+  }
 
   console.log(JSON.stringify(config, null, 2))
 
