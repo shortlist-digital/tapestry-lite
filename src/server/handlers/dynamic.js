@@ -37,23 +37,32 @@ const renderErrorTree = async ({
 }
 
 const renderSuccessTree = async (
-  { route, match, componentData, h },
+  { route, match, componentData, isPreview, h },
   cache,
   cacheKey
 ) => {
   log.silly('Rendering Success HTML', { match })
+
   const responseString = await renderTreeToHTML({
     Component: route.component,
     routeOptions: route.options,
     match,
     componentData
   })
-  log.silly('Setting ', cacheKey)
-  cache.set(cacheKey, responseString)
-  return h
+  const response = h
     .response(responseString)
     .type('text/html')
     .code(200)
+  // only set cache if _not_ a preview
+  if (!isPreview) {
+    log.debug(`Setting html in cache: ${chalk.green(cacheKey)}`)
+    cache.set(cacheKey, responseString)
+  }
+  // send back no-cache header if preview
+  if (isPreview) {
+    response.header('cache-control', 'no-cache')
+  }
+  return response
 }
 
 export default ({ server, config }) => {
@@ -73,6 +82,7 @@ export default ({ server, config }) => {
     handler: async (request, h) => {
       // Set a cache key
       const currentPath = request.url.pathname || '/'
+      const isPreview = request.query && request.query.tapestry_hash
       const cacheKey = normaliseUrlPath(currentPath)
       // Is there cached HTML?
       const cachedHTML = await cache.get(cacheKey)
@@ -167,6 +177,7 @@ export default ({ server, config }) => {
           route,
           match,
           componentData,
+          isPreview,
           h
         },
         cache,
