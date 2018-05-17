@@ -82,7 +82,7 @@ export default ({ server, config }) => {
     handler: async (request, h) => {
       // Set a cache key
       const currentPath = request.url.pathname || '/'
-      const isPreview = request.query && request.query.tapestry_hash
+      const isPreview = Boolean(request.query && request.query.tapestry_hash)
       const cacheKey = normaliseUrlPath(currentPath)
       // Is there cached HTML?
       const cachedHTML = await cache.get(cacheKey)
