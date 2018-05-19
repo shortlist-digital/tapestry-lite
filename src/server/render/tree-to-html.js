@@ -9,7 +9,9 @@ export default async ({
   match,
   componentData
 }) => {
-  const htmlString = renderToString(<Component {...match} {...componentData} />)
+  const app = <Component {...match} {...componentData} />
+  const htmlString = renderToString(app)
+  const loadableState = await getLoadableState(app)
   // { html, css, ids }
   let styleData = {}
   // extract CSS from either Glamor or Emotion
@@ -19,9 +21,6 @@ export default async ({
     styleData = require('glamor/server').renderStaticOptimized(() => htmlString)
   }
   const helmet = Helmet.renderStatic()
-  const loadableState = await getLoadableState(
-    <Component {...match} {...componentData} />
-  )
   // Assets to come, everything else works
   const renderData = {
     ...styleData,
