@@ -4419,6 +4419,13 @@ load-json-file@^2.0.0:
     pify "^2.0.0"
     strip-bom "^3.0.0"
 
+loadable-components@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.npmjs.org/loadable-components/-/loadable-components-2.1.0.tgz#c2308efb7ca9a45a74a229fce7f78db2208a8fa8"
+  dependencies:
+    babel-plugin-syntax-dynamic-import "^6.18.0"
+    hoist-non-react-statics "^2.5.0"
+
 loader-runner@^2.3.0:
   version "2.3.0"
   resolved "https://registry.npmjs.org/loader-runner/-/loader-runner-2.3.0.tgz#f482aea82d543e07921700d5a46ef26fdac6b8a2"

@@ -1,5 +1,7 @@
 import React from 'react'
 import { hydrate } from 'react-dom'
+import { loadComponents } from 'loadable-components'
+
 import config from '../config/config-proxy'
 import Root from './root'
 
@@ -7,4 +9,6 @@ import Root from './root'
 if (CSS_PLUGIN === 'emotion') require('emotion').hydrate(window.__data.ids)
 if (CSS_PLUGIN === 'glamor') require('glamor').rehydrate(window.__data.ids)
 
-hydrate(<Root {...config} />, document.getElementById('root'))
+loadComponents().then(() =>
+  hydrate(<Root {...config} />, document.getElementById('root'))
+)
