@@ -1,3 +1,5 @@
+import 'isomorphic-unfetch'
+
 import React from 'react'
 import { hydrate } from 'react-dom'
 import { loadComponents } from 'loadable-components'

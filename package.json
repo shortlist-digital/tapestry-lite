@@ -59,6 +59,7 @@
     "idx": "^2.2.0",
     "inert": "^5.1.0",
     "isomorphic-fetch": "^2.2.1",
+    "isomorphic-unfetch": "^2.0.0",
     "loadable-components": "^2.1.0",
     "lodash.isempty": "^4.4.0",
     "lodash.isfunction": "^3.0.9",
