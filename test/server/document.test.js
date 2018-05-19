@@ -89,7 +89,7 @@ describe('Document contents', () => {
       .times(5)
       .reply(200, dataPosts.data)
     // boot tapestry server
-    
+
     server = new Server({ config })
     await registerPlugins({ config, server })
     await server.start()
@@ -104,7 +104,9 @@ describe('Document contents', () => {
   it('Contains correct Bootstrap data', done => {
     request.get(uri, (err, res, body) => {
       expect(body).to.contain(
-        `window.__data = { appData: {"data":${JSON.stringify(dataPosts.data)
+        `window.__TAPESTRY_DATA__ = { appData: {"data":${JSON.stringify(
+          dataPosts.data
+        )
           .replace(/\//g, '\\/')
           .replace(/\u2028/g, '\\u2028')
           .replace(/\u2029/g, '\\u2029')}}, ids: ["vg9k2b"] }`

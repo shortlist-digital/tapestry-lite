@@ -8,7 +8,7 @@ const getBootstrapData = ({ bootstrapData, ids }) => (
   <script
     type="text/javascript"
     dangerouslySetInnerHTML={{
-      __html: `window.__data = { appData: ${stringifyEscapeScript(
+      __html: `window.__TAPESTRY_DATA__ = { appData: ${stringifyEscapeScript(
         bootstrapData
       )}, ids: ${JSON.stringify(ids)} }`
     }}
