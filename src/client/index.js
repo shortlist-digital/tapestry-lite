@@ -1,4 +1,5 @@
 import 'isomorphic-unfetch'
+import 'promis'
 
 import React from 'react'
 import { hydrate } from 'react-dom'
