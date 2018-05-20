@@ -8,7 +8,7 @@ export default config => {
   const preparedRoutes = routes.map(route => ({ ...route, exact: true }))
   // add the a default 404 route
   preparedRoutes.push({
-    path: '(.*)',
+    path: '/*',
     notFoundRoute: true,
     component: buildErrorView({
       config,
