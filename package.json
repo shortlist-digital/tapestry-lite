@@ -64,7 +64,7 @@
     "lodash.isfunction": "^3.0.9",
     "lodash.isplainobject": "^4.0.6",
     "make-promises-safe": "^1.1.0",
-    "path-to-regexp": "^2.2.0",
+    "matchit": "^1.0.6",
     "promis": "^1.1.4",
     "ps-tree": "^1.1.0",
     "razzle-dev-utils": "^2.0.0-alpha.2",

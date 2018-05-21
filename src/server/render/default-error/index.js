@@ -1,11 +1,12 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
 const DefaultError = ({ message, code, children }) => (
   <section
     style={{
       backgroundColor: '#f9f9f9',
+      color: '#c0c0c0',
       fontFamily: 'Helvetica, sans-serif',
+      fontWeight: 'bold',
       minHeight: '100vh',
       padding: '80px',
       width: '100vw'
@@ -31,41 +32,14 @@ const DefaultError = ({ message, code, children }) => (
         d="M7.6 20.67h1.93v18.3H7.4c-.9.04-1.75.3-1.75.3V21.6s.86-.95 1.94-.95zm5.46-11.3h3.88V27.7h-3.88V9.38zm14.82.03h3.88v18.3h-3.88V9.4zm14.83 0h3.9v18.3h-3.9V9.4zm7.5 11.3h2.4c.8 0 1.5-.22 1.5-.22v18s-.4.44-1.73.5H50.2v-18.3zM13.1 31.94H17v18.3h-3.9v-18.3zm14.8.06h3.88v18.2H27.9V32zm14.83-.04h3.9v18.3h-3.9v-18.3zm-22.2-11.3h3.9v18.3h-3.9v-18.3zm14.83 0h3.88v18.3h-3.9v-18.3zM7.46 43.24H9.5V57.6c0 1.07-.87 1.95-1.94 1.95-1.08 0-1.95-.88-1.95-1.96V43.9s.5-.62 1.8-.73zM52.2 16.36h-2.1V2.14c0-1.08.87-1.96 1.94-1.96 1.07 0 1.94.88 1.94 1.96V15.9s-.72.47-1.8.47z"
       />
     </svg>
-    {code && (
-      <p
-        style={{
-          color: '#c0c0c0',
-          fontSize: '28px',
-          fontWeight: 'bold',
-          marginBottom: '10px',
-          marginTop: '20px'
-        }}
-      >
-        {code}
-      </p>
-    )}
-    <h1
-      style={{
-        color: '#c0c0c0',
-        fontSize: '18px',
-        fontWeight: 'bold',
-        marginBottom: '40px'
-      }}
-    >
-      {message}
-    </h1>
+    {code && <p style={{ fontSize: '28px', marginBottom: '10px' }}>{code}</p>}
+    <h1 style={{ fontSize: '18px', marginBottom: '40px' }}>{message}</h1>
     {children}
   </section>
 )
 
 DefaultError.defaultProps = {
   message: 'Application Error'
-}
-
-DefaultError.propTypes = {
-  message: PropTypes.string,
-  code: PropTypes.number,
-  children: PropTypes.node
 }
 
 export default DefaultError
