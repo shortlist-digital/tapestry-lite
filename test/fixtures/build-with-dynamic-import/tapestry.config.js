@@ -1,15 +1,22 @@
 import React from 'react'
+import loadable from 'loadable-components'
+
+const Component = loadable(() => import('./components/front-page'))
 
 export default {
   siteUrl: 'http://shortliststudio.foundry.press',
   routes: [
     {
       path: '/',
-      getComponent: () => import('./components/front-page')
+      component: Component
     },
     {
       path: '/hello',
-      component: () => <div><p>hello</p></div>
+      component: () => (
+        <div>
+          <p>hello</p>
+        </div>
+      )
     }
   ]
 }

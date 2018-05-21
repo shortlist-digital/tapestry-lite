@@ -4018,12 +4018,19 @@ isobject@^3.0.0, isobject@^3.0.1:
   version "3.0.1"
   resolved "https://registry.npmjs.org/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
 
-isomorphic-fetch@^2.1.1, isomorphic-fetch@^2.2.1:
+isomorphic-fetch@^2.1.1:
   version "2.2.1"
   resolved "https://registry.npmjs.org/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz#611ae1acf14f5e81f729507472819fe9733558a9"
   dependencies:
     node-fetch "^1.0.1"
     whatwg-fetch ">=0.10.0"
+
+isomorphic-unfetch@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/isomorphic-unfetch/-/isomorphic-unfetch-2.0.0.tgz#f50140a4c163d7582b5f37f1591968c4f809a645"
+  dependencies:
+    node-fetch "^1.7.1"
+    unfetch "^3.0.0"
 
 isstream@0.1.x, isstream@~0.1.2:
   version "0.1.2"
@@ -4422,6 +4429,13 @@ load-json-file@^2.0.0:
     parse-json "^2.2.0"
     pify "^2.0.0"
     strip-bom "^3.0.0"
+
+loadable-components@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.npmjs.org/loadable-components/-/loadable-components-2.1.0.tgz#c2308efb7ca9a45a74a229fce7f78db2208a8fa8"
+  dependencies:
+    babel-plugin-syntax-dynamic-import "^6.18.0"
+    hoist-non-react-statics "^2.5.0"
 
 loader-runner@^2.3.0:
   version "2.3.0"
@@ -5003,7 +5017,7 @@ nock@^9.0.11:
     qs "^6.5.1"
     semver "^5.5.0"
 
-node-fetch@^1.0.1:
+node-fetch@^1.0.1, node-fetch@^1.7.1:
   version "1.7.3"
   resolved "https://registry.npmjs.org/node-fetch/-/node-fetch-1.7.3.tgz#980f6f72d85211a5347c6b2bc18c5b84c3eb47ef"
   dependencies:
@@ -5550,6 +5564,10 @@ process@~0.5.1:
 progress@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/progress/-/progress-2.0.0.tgz#8a1be366bf8fc23db2bd23f10c6fe920b4389d1f"
+
+promis@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.npmjs.org/promis/-/promis-1.1.4.tgz#0d0ef43ccacacdd8f9679cd6e0950f7c7f52096c"
 
 promise-inflight@^1.0.1:
   version "1.0.1"
@@ -7093,6 +7111,10 @@ underscore.string@~2.4.0:
 underscore@~1.7.0:
   version "1.7.0"
   resolved "https://registry.npmjs.org/underscore/-/underscore-1.7.0.tgz#6bbaf0877500d36be34ecaa584e0db9fef035209"
+
+unfetch@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/unfetch/-/unfetch-3.0.0.tgz#8d1e0513a4ecd0e5ff2d41a6ba77771aae8b6482"
 
 union-value@^1.0.0:
   version "1.0.0"

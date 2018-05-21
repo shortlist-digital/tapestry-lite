@@ -1,6 +1,6 @@
 {
   "name": "tapestry-lite",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Universal React & Wordpress Renderer",
   "main": "./src/server/index.js",
   "bin": {
@@ -58,12 +58,14 @@
     "http-status": "^1.0.1",
     "idx": "^2.2.0",
     "inert": "^5.1.0",
-    "isomorphic-fetch": "^2.2.1",
+    "isomorphic-unfetch": "^2.0.0",
+    "loadable-components": "^2.1.0",
     "lodash.isempty": "^4.4.0",
     "lodash.isfunction": "^3.0.9",
     "lodash.isplainobject": "^4.0.6",
     "make-promises-safe": "^1.1.0",
     "matchit": "^1.0.6",
+    "promis": "^1.1.4",
     "ps-tree": "^1.1.0",
     "razzle-dev-utils": "^2.0.0-alpha.2",
     "react-dev-utils": "5.0.1",

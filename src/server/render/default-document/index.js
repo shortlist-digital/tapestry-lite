@@ -4,15 +4,41 @@ import path from 'path'
 
 import stringifyEscapeScript from '../../utilities/stringify-escape-script'
 
-const getProductionBundles = () => {
-  const assetsPath = path.resolve(process.cwd(), '.tapestry', 'assets.json')
-  const assets = fs.readJsonSync(assetsPath)
-  return Object.values(assets).map(({ js }, index) => (
-    <script key={index} src={js} />
-  ))
+const getBootstrapData = ({ bootstrapData, ids }) => (
+  <script
+    type="text/javascript"
+    dangerouslySetInnerHTML={{
+      __html: `window.__TAPESTRY_DATA__ = { appData: ${stringifyEscapeScript(
+        bootstrapData
+      )}, ids: ${JSON.stringify(ids)} }`
+    }}
+  />
+)
+
+const getJavascriptBundles = () => {
+  if (
+    process.env.NODE_ENV === 'development' ||
+    process.env.NODE_ENV === 'test'
+  ) {
+    return <script src={'http://localhost:4001/static/js/bundle.js'} />
+  }
+  if (process.env.NODE_ENV === 'production') {
+    const assetsPath = path.resolve(process.cwd(), '.tapestry', 'assets.json')
+    const assets = fs.readJsonSync(assetsPath)
+    return Object.values(assets).map(({ js }, index) => (
+      <script key={index} src={js} />
+    ))
+  }
 }
 
-const DefaultDocument = ({ html, css, ids, head, bootstrapData }) => (
+const DefaultDocument = ({
+  html,
+  css,
+  ids,
+  head,
+  bootstrapData,
+  loadableState
+}) => (
   <html lang="en" {...head.htmlAttributes.toComponent()}>
     <head>
       {head.title.toComponent()}
@@ -25,19 +51,9 @@ const DefaultDocument = ({ html, css, ids, head, bootstrapData }) => (
     </head>
     <body>
       <div id="root" dangerouslySetInnerHTML={{ __html: html }} />
-      <script
-        type="text/javascript"
-        dangerouslySetInnerHTML={{
-          __html: `window.__data = { appData: ${stringifyEscapeScript(
-            bootstrapData
-          )}, ids: ${JSON.stringify(ids)} }`
-        }}
-      />
-      {process.env.NODE_ENV === 'production' ? (
-        getProductionBundles()
-      ) : (
-        <script src={'http://localhost:4001/static/js/bundle.js'} />
-      )}
+      {loadableState.getScriptElement()}
+      {getBootstrapData({ bootstrapData, ids })}
+      {getJavascriptBundles()}
     </body>
   </html>
 )
