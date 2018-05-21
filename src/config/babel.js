@@ -25,8 +25,10 @@ module.exports = target => {
         require.resolve('@babel/plugin-proposal-object-rest-spread'),
         { useBuiltIns: true }
       ],
-      // Adds syntax support for import()
+      // Adds syntax support for import('./component.js')
       require.resolve('@babel/plugin-syntax-dynamic-import'),
+      // loadable(() => import('./component.js'))
+      require.resolve('loadable-components/babel'),
       // Add support for async/await
       require.resolve('@babel/plugin-transform-runtime')
     ]
