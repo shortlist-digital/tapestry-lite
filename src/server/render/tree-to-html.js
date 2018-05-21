@@ -1,5 +1,6 @@
 import React from 'react'
 import { renderToString, renderToStaticMarkup } from 'react-dom/server'
+import { getLoadableState } from 'loadable-components/server'
 import Helmet from 'react-helmet'
 
 export default async ({
@@ -8,7 +9,9 @@ export default async ({
   match,
   componentData
 }) => {
-  const htmlString = renderToString(<Component {...match} {...componentData} />)
+  const app = <Component {...match} {...componentData} />
+  const htmlString = renderToString(app)
+  const loadableState = await getLoadableState(app)
   // { html, css, ids }
   let styleData = {}
   // extract CSS from either Glamor or Emotion
@@ -22,7 +25,8 @@ export default async ({
   const renderData = {
     ...styleData,
     head: helmet,
-    bootstrapData: componentData
+    bootstrapData: componentData,
+    loadableState
   }
   let Document =
     routeOptions.customDocument || require('../render/default-document').default
