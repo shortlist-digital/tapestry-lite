@@ -5,10 +5,15 @@ export default (routes, pathname) => {
   // e.g. [{ old:'/', type:0, val:'/' }]
   const matchedRoute = match(
     pathname,
-    routes.map(route => route.path).map(parse)
+    routes
+      .filter(Boolean)
+      .map(route => route.path)
+      .map(parse)
   )
   return {
-    route: routes.filter(({ path }) => matchedRoute[0].old === path)[0],
+    route: routes
+      .filter(Boolean)
+      .filter(({ path }) => matchedRoute[0].old === path)[0],
     match: {
       path: pathname,
       params: exec(pathname, matchedRoute)
