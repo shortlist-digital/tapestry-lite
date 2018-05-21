@@ -1,7 +1,6 @@
 import React from 'react'
 import fs from 'fs-extra'
 import path from 'path'
-import PropTypes from 'prop-types'
 
 import stringifyEscapeScript from '../../utilities/stringify-escape-script'
 
@@ -42,12 +41,5 @@ const DefaultDocument = ({ html, css, ids, head, bootstrapData }) => (
     </body>
   </html>
 )
-
-DefaultDocument.propTypes = {
-  bootstrapData: PropTypes.object.isRequired,
-  css: PropTypes.string.isRequired,
-  head: PropTypes.object.isRequired,
-  html: PropTypes.string.isRequired
-}
 
 export default DefaultDocument

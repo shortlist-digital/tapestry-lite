@@ -6,7 +6,7 @@ import matchRoutes from '../server/routing/match-routes'
 import buildErrorView from '../server/render/error-view'
 
 const log = (msg, data) =>
-  window.location.search.indexOf('debug') !== -1 && console.log(msg, data)
+  window.location.hash.indexOf('development') !== -1 && console.log(msg, data)
 
 const Root = config => {
   log(`Application data`, window.__data)
@@ -18,7 +18,7 @@ const Root = config => {
     prepareAppRoutes(config),
     window.location.pathname
   )
-  log('Matched route', route)
+  log('Matched route', { route, match })
   return <route.component {...match} {...window.__data.appData} />
 }
 

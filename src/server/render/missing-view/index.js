@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import DefaultError from '../default-error'
 
 const MissingView = response => (
@@ -9,7 +8,4 @@ const MissingView = response => (
   </DefaultError>
 )
 
-MissingView.propTypes = {
-  response: PropTypes.object
-}
 export default MissingView
