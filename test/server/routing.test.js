@@ -27,14 +27,15 @@ describe('Handling custom static routes', () => {
       {
         path: '/static-route/:custom',
         component: props => <p>Param: {props.params.custom}</p>
-      }
+      },
+      null
     ],
     siteUrl: 'http://routing-dummy.api'
   }
 
   before(async () => {
     // boot server server
-    server = new Server({config: config})
+    server = new Server({ config: config })
     await server.start()
     uri = server.info.uri
   })
@@ -91,12 +92,12 @@ describe('Handling custom endpoint routes', () => {
       .times(5)
       .reply(200, dataPage)
     // boot server server
-    server = new Server({config: config})
+    server = new Server({ config: config })
     await server.start()
     uri = server.info.uri
   })
 
- after(async () => await server.stop())
+  after(async () => await server.stop())
 
   it('Route matched, string endpoint works', done => {
     request.get(`${uri}/string-endpoint`, (err, res, body) => {
@@ -177,7 +178,7 @@ describe('Handling custom endpoint routes', () => {
       .times(5)
       .reply(200, dataPage)
     // boot tapestry server
-    server = new Server({config})
+    server = new Server({ config })
     await server.start()
     uri = server.info.uri
   })
@@ -242,5 +243,3 @@ describe('Handling custom endpoint routes', () => {
     })
   })
 })
-
-
