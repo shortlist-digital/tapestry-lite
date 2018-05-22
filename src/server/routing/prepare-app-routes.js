@@ -6,7 +6,7 @@ export default config => {
   if (!routes) routes = require('./default-routes').default(config.components)
   // add a default "not found" route
   routes.push({
-    path: '/*',
+    path: '(.*)',
     notFoundRoute: true,
     component: errorView({ config })
   })
