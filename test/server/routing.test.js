@@ -27,8 +27,7 @@ describe('Handling custom static routes', () => {
       {
         path: '/static-route/:custom',
         component: props => <p>Param: {props.params.custom}</p>
-      },
-      null
+      }
     ],
     siteUrl: 'http://routing-dummy.api'
   }
