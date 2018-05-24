@@ -13,6 +13,6 @@ export default ({ server, config }) => {
       }
     },
     handler: ({ params, url }, h) =>
-      h.proxy({ uri: `${base}/${params.query}${url.search}` })
+      h.proxy({ uri: `${base}/${params.query}${url.search || ''}` })
   })
 }
