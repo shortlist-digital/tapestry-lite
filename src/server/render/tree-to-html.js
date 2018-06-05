@@ -7,7 +7,8 @@ export default async ({
   Component,
   routeOptions = {},
   match,
-  componentData
+  componentData,
+  requestParams
 }) => {
   const app = <Component {...match} {...componentData} />
   const htmlString = renderToString(app)
@@ -25,7 +26,10 @@ export default async ({
   const renderData = {
     ...styleData,
     head: helmet,
-    bootstrapData: componentData,
+    bootstrapData: {
+      ...componentData,
+      requestParams
+    },
     loadableState
   }
   let Document =

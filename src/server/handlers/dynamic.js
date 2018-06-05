@@ -37,7 +37,7 @@ const renderErrorTree = async ({
 }
 
 const renderSuccessTree = async (
-  { route, match, componentData, isPreview, h },
+  { route, match, componentData, isPreview, h, requestParams },
   cache,
   cacheKey
 ) => {
@@ -47,7 +47,8 @@ const renderSuccessTree = async (
     Component: route.component,
     routeOptions: route.options,
     match,
-    componentData
+    componentData,
+    requestParams
   })
   const response = h
     .response(responseString)
@@ -94,6 +95,8 @@ export default ({ server, config }) => {
           .type('text/html')
           .code(200)
       }
+
+      const requestParams = request.query
 
       // Don't even import react-router any more, but backwards compatible
       // With the exception of optional params: (:thing) becomes :thing?
@@ -178,7 +181,8 @@ export default ({ server, config }) => {
           match,
           componentData,
           isPreview,
-          h
+          h,
+          requestParams
         },
         cache,
         cacheKey
