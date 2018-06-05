@@ -8,9 +8,16 @@ export default async ({
   routeOptions = {},
   match,
   componentData,
-  requestParams
+  queryParams
 }) => {
-  const app = <Component {...match} {...componentData} />
+  const bootstrapData = {
+    ...componentData,
+    requestData: {
+      ...match,
+      queryParams
+    }
+  }
+  const app = <Component {...componentData} />
   const htmlString = renderToString(app)
   const loadableState = await getLoadableState(app)
   // { html, css, ids }
@@ -26,10 +33,7 @@ export default async ({
   const renderData = {
     ...styleData,
     head: helmet,
-    bootstrapData: {
-      ...componentData,
-      requestParams
-    },
+    bootstrapData,
     loadableState
   }
   let Document =
