@@ -40,6 +40,14 @@ describe('Document contents', () => {
         }
       },
       {
+        path: '/custom-document-no-doctype',
+        component: () => <p>Custom HTML</p>,
+        options: {
+          customDocument: () => 'testing-document',
+          disableDoctype: true
+        }
+      },
+      {
         path: '/custom-document/with-data',
         endpoint: () => 'posts',
         component: () => (
@@ -147,6 +155,14 @@ describe('Document contents', () => {
     request.get(`${uri}/custom-document`, (err, res, body) => {
       expect(body).to.contain('testing-document')
       expect(body).to.contain('<!doctype html>')
+      done()
+    })
+  })
+
+  it('Custom document can have doctype disabled', done => {
+    request.get(`${uri}/custom-document-no-doctype`, (err, res, body) => {
+      expect(body).to.contain('testing-document')
+      expect(body).to.not.contain('<!doctype html>')
       done()
     })
   })
