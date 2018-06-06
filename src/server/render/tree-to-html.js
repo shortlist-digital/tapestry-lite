@@ -17,12 +17,14 @@ export default async ({
       queryParams
     }
   }
-  const app = <Component {...componentData} />
+  // create html string from target component
+  const app = <Component {...bootstrapData} />
   const htmlString = renderToString(app)
+  // get app loading state
   const loadableState = await getLoadableState(app)
   // { html, css, ids }
   let styleData = {}
-  // extract CSS from either Glamor or Emotion
+  // extract html, css and ids from either Glamor or Emotion
   if (process.env.CSS_PLUGIN === 'emotion') {
     styleData = require('emotion-server').extractCritical(htmlString)
   } else {
