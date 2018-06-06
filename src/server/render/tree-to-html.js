@@ -10,8 +10,8 @@ export default async ({
   componentData
 }) => {
   const app = <Component {...match} {...componentData} />
-  const htmlString = renderToString(app)
   const loadableState = await getLoadableState(app)
+  const htmlString = renderToString(app)
   // { html, css, ids }
   let styleData = {}
   // extract CSS from either Glamor or Emotion
