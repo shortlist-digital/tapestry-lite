@@ -1,6 +1,7 @@
 import { expect } from 'chai'
 import request from 'request'
 import nock from 'nock'
+import posts from '../mocks/posts.json'
 
 import Server, { registerPlugins } from '../../src/server'
 
@@ -76,6 +77,37 @@ describe('Handling wildcard proxies', () => {
   it('Proxy should return correct content from test b', done => {
     request.get(uri + '/sitemap/different-id.xml', (err, res, body) => {
       expect(body).to.contain(proxyContents)
+      done()
+    })
+  })
+})
+
+describe('Handling API proxy', () => {
+  let server = null
+  let uri = null
+  let config = {
+    siteUrl: 'http://dummy.api',
+    components: {}
+  }
+
+  before(async () => {
+    // mock api response
+    nock('http://dummy.api')
+      .get('/wp-json/wp/v2/posts')
+      .reply(200, posts)
+    // boot tapestry server
+    server = new Server({ config })
+    await registerPlugins({ config, server })
+    await server.start()
+    uri = server.info.uri
+  })
+
+  after(async () => await server.stop())
+
+  it('API proxy should return correct content', done => {
+    request.get(uri + '/api/v1/posts', (err, res, body) => {
+      // console.log({body})
+      expect(body).to.contain(JSON.stringify(posts.data))
       done()
     })
   })

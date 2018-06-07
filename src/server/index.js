@@ -6,6 +6,7 @@ import ProxyHandler from './handlers/proxy'
 import PurgeHandler from './handlers/purge'
 import RedirectHandler from './handlers/redirect'
 import StaticHandler from './handlers/static'
+import ApiHandler from './handlers/api'
 
 import CacheManager from './utilities/cache-manager'
 
@@ -66,6 +67,7 @@ export const registerPlugins = async ({ server, config }) => {
   await server.register(plugins)
   StaticHandler({ server })
   ProxyHandler({ server, config })
+  ApiHandler({ config, server })
 }
 
 export default Server

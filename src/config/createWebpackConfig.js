@@ -44,7 +44,8 @@ module.exports = (target = 'node') => {
             presets: [require('babel-preset-razzle')],
             plugins: [
               require('loadable-components/babel'),
-              process.env.CSS_PLUGIN === 'emotion' && require('babel-plugin-emotion'),
+              process.env.CSS_PLUGIN === 'emotion' &&
+                require('babel-plugin-emotion'),
               WEB_DEV && require('react-hot-loader/babel')
             ].filter(Boolean)
           }
@@ -80,7 +81,7 @@ module.exports = (target = 'node') => {
         new FriendlyErrorsPlugin({
           target: 'node',
           onSuccessMessage: 'Tapestry Lite is Running',
-          verbose: process.env.NODE_ENV === 'test'
+          verbose: true
         })
       ],
       externals: [
@@ -123,11 +124,9 @@ module.exports = (target = 'node') => {
           path.resolve(info.resourcePath).replace(/\\/g, '/')
       },
       plugins: [
-        new StatsPlugin('../stats.json'),
-        new AssetsPlugin({
-          path: paths.appBuild,
-          filename: 'assets.json'
-        })
+        new webpack.NamedModulesPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoEmitOnErrorsPlugin()
       ],
       devServer: {
         disableHostCheck: true,
