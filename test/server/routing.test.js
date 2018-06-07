@@ -9,11 +9,15 @@ import dataPost from '../mocks/post.json'
 import dataPages from '../mocks/pages.json'
 import dataPosts from '../mocks/posts.json'
 
-const prepareJson = data =>
-  JSON.stringify(data)
+const prepareJson = data => {
+  const str = JSON.stringify(data)
     .replace(/\//g, '\\/')
     .replace(/\u2028/g, '\\u2028')
     .replace(/\u2029/g, '\\u2029')
+
+  // Remove last '}' to make string matching logic more forgiving
+  return str.substring(0, str.length - 1)
+}
 
 describe('Handling custom static routes', () => {
   let server = null
@@ -26,7 +30,7 @@ describe('Handling custom static routes', () => {
       },
       {
         path: '/static-route/:custom',
-        component: props => <p>Param: {props.params.custom}</p>
+        component: props => <p>Param: {props.requestData.params.custom}</p>
       }
     ],
     siteUrl: 'http://routing-dummy.api'

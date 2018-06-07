@@ -11,6 +11,16 @@ import styled from 'react-emotion'
 import dataPosts from '../mocks/posts.json'
 import Server, { registerPlugins } from '../../src/server'
 
+const prepareJson = data => {
+  const str = JSON.stringify(data)
+    .replace(/\//g, '\\/')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029')
+
+  // Remove last '}' to make string matching logic more forgiving
+  return str.substring(0, str.length - 1)
+}
+
 describe('Document contents', () => {
   const publicFilePath = path.resolve(process.cwd(), 'public', 'test.txt')
   let server = null
@@ -112,13 +122,11 @@ describe('Document contents', () => {
   it('Contains correct Bootstrap data', done => {
     request.get(uri, (err, res, body) => {
       expect(body).to.contain(
-        `window.__TAPESTRY_DATA__ = { appData: {"data":${JSON.stringify(
+        `window.__TAPESTRY_DATA__ = { appData: {"data":${prepareJson(
           dataPosts.data
-        )
-          .replace(/\//g, '\\/')
-          .replace(/\u2028/g, '\\u2028')
-          .replace(/\u2029/g, '\\u2029')}}, ids: ["vg9k2b"] }`
+        )}`
       )
+      expect(body).to.contain('ids: ["vg9k2b"]')
       done()
     })
   })
@@ -169,10 +177,12 @@ describe('Document contents', () => {
 
   it('Passes correct data to custom document', done => {
     request.get(`${uri}/custom-document/with-data`, (err, res, body) => {
+      const str = JSON.stringify(dataPosts.data)
+
       expect(body).to.contain('Custom Title')
       expect(body).to.contain('Custom HTML')
       expect(body).to.contain(
-        `const test = {"data":${JSON.stringify(dataPosts.data)}}`
+        `const test = {"data":${str.substring(0, str.length - 1)}`
       )
       expect(body).to.contain('{font-size:13px;}')
       done()
