@@ -7,19 +7,6 @@ import CacheManager from '../../src/server/utilities/cache-manager'
 import Server from '../../src/server'
 import dataPost from '../mocks/post.json'
 
-const createRequestData = request => {
-  // console.log('> request', request)
-  return {
-    requestData: {
-      isExact: true,
-      params: {},
-      path: '',
-      queryParams: {},
-      url: ''
-    }
-  }
-}
-
 const prepareJson = data => {
   const str = JSON.stringify(data)
     .replace(/\//g, '\\/')
