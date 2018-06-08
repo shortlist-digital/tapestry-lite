@@ -18,6 +18,8 @@ module.exports = (target = 'node') => {
   let config = {
     devtool: IS_DEV ? 'cheap-module-source-map' : false,
     mode: IS_DEV ? 'development' : 'production',
+    target,
+    watch: IS_DEV,
     resolve: {
       modules: [paths.appNodeModules, paths.ownNodeModules],
       extensions: ['.js', '.json', '.jsx', '.mjs'],
@@ -43,10 +45,10 @@ module.exports = (target = 'node') => {
             cacheDirectory: true,
             presets: [require('babel-preset-razzle')],
             plugins: [
-              require('loadable-components/babel'),
+              require.resolve('loadable-components/babel'),
               process.env.CSS_PLUGIN === 'emotion' &&
-                require('babel-plugin-emotion'),
-              WEB_DEV && require('react-hot-loader/babel')
+                require.resolve('babel-plugin-emotion'),
+              WEB_DEV && require.resolve('react-hot-loader/babel')
             ].filter(Boolean)
           }
         },
@@ -89,8 +91,7 @@ module.exports = (target = 'node') => {
           modulesDirs: [paths.appNodeModules],
           whitelist: ['webpack/hot/poll?1000']
         })
-      ].filter(Boolean),
-      watch: true
+      ].filter(Boolean)
     })
   }
 
