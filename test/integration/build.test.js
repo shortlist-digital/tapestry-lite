@@ -16,7 +16,7 @@ describe('tapestry build', () => {
     expect(shell.ls('.tapestry/server.production.js').code).to.equal(0)
     expect(shell.ls('.tapestry/_assets/*.css').code).to.equal(0)
     expect(child.code).to.equal(0)
-  }).timeout(20000)
+  }).timeout(40000)
 
   after(() => {
     fixture.teardownStage('stage-build')
