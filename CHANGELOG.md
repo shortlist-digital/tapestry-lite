@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+# 1.3.2 (08-06-2018)
+
+* make request data available in `window.__TAPESTRY_DATA__`
+
 # 1.3.1 (07-06-2018)
 
 * Fixed Loadable Components initial server render
