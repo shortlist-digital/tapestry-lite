@@ -194,7 +194,5 @@ module.exports = (target = 'node') => {
     config = require(paths.appWebpackConfig)(config, {}, webpack)
   }
 
-  console.log(JSON.stringify(config, null, 2))
-
   return config
 }
