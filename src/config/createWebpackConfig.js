@@ -19,7 +19,7 @@ module.exports = (target = 'node') => {
     devtool: IS_DEV ? 'cheap-module-source-map' : false,
     mode: IS_DEV ? 'development' : 'production',
     target,
-    watch: IS_DEV,
+    watch: NODE_DEV,
     resolve: {
       modules: [paths.appNodeModules, paths.ownNodeModules],
       extensions: ['.js', '.json', '.jsx', '.mjs'],
