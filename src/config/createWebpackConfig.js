@@ -1,6 +1,7 @@
 const webpack = require('webpack')
 const path = require('path')
 const fs = require('fs-extra')
+const merge = require('babel-merge')
 
 const AssetsPlugin = require('assets-webpack-plugin')
 const CleanPlugin = require('clean-webpack-plugin')
@@ -9,6 +10,7 @@ const nodeExternals = require('webpack-node-externals')
 const StartServerPlugin = require('start-server-webpack-plugin')
 const StatsPlugin = require('stats-webpack-plugin')
 
+const babelDefaultConfig = require('./babel')
 const env = require('./env')
 const paths = require('./paths')
 
@@ -100,20 +102,21 @@ module.exports = (target = 'node') => {
   const WEB_DEV = IS_WEB && IS_DEV
   const WEB_PROD = IS_WEB && IS_PROD
 
-  // console.log({ IS_NODE }, { IS_WEB }, { IS_DEV }, { IS_PROD })
+  const whenEnvIs = (condition, config) => (condition ? config : null)
 
-  const mainBabelOptions = {
-    babelrc: true,
-    cacheDirectory: true,
-    presets: [require('babel-preset-razzle')],
-    plugins: [
-      require.resolve('loadable-components/babel'),
-      process.env.CSS_PLUGIN === 'emotion' && require('babel-plugin-emotion'),
-      WEB_DEV && require('react-hot-loader/babel')
-    ].filter(Boolean)
+  let babelConfig = babelDefaultConfig(target)
+
+  if (fs.existsSync(paths.appBabelRc)) {
+    console.log('Using .babelrc defined in your app root')
+    const babelAppConfig = fs.readJsonSync(paths.appBabelRc)
+    babelConfig = merge(babelDefaultConfig(target), babelAppConfig)
   }
 
-  const whenEnvIs = (condition, config) => (condition ? config : null)
+  let babelOptions = {
+    babelrc: false,
+    cacheDirectory: true,
+    ...babelConfig
+  }
 
   let config = {
     devtool: IS_DEV ? 'cheap-module-source-map' : false,
@@ -138,7 +141,7 @@ module.exports = (target = 'node') => {
           test: /\.(js|jsx|mjs)$/,
           loader: require.resolve('babel-loader'),
           exclude: /node_modules(?!\/tapestry-lite)/,
-          options: mainBabelOptions
+          options: babelOptions
         },
         {
           test: /\.(css|jpe?g|png|svg|ico|woff(2)?)$/,
