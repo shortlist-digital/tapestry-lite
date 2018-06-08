@@ -10,15 +10,14 @@ export default async ({
   componentData,
   queryParams
 }) => {
-  const bootstrapData = {
-    ...componentData,
+  const _tapestryData = {
     requestData: {
       ...match,
       queryParams
     }
   }
   // create html string from target component
-  const app = <Component {...bootstrapData} />
+  const app = <Component {...componentData} {..._tapestryData} />
   const htmlString = renderToString(app)
   // get app loading state
   const loadableState = await getLoadableState(app)
@@ -35,7 +34,8 @@ export default async ({
   const renderData = {
     ...styleData,
     head: helmet,
-    bootstrapData,
+    bootstrapData: componentData,
+    _tapestryData,
     loadableState
   }
   let Document =

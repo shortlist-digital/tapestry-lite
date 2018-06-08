@@ -4,13 +4,14 @@ import path from 'path'
 
 import stringifyEscapeScript from '../../utilities/stringify-escape-script'
 
-const getBootstrapData = ({ bootstrapData, ids }) => (
+const getBootstrapData = ({ bootstrapData, ids, _tapestryData }) => (
   <script
     type="text/javascript"
     dangerouslySetInnerHTML={{
       __html: `window.__TAPESTRY_DATA__ = { appData: ${stringifyEscapeScript(
         bootstrapData
-      )}, ids: ${JSON.stringify(ids)} }`
+      )}, ids: ${JSON.stringify(ids)},
+      _tapestry: ${stringifyEscapeScript(_tapestryData)} }`
     }}
   />
 )
@@ -37,6 +38,7 @@ const DefaultDocument = ({
   ids,
   head,
   bootstrapData,
+  _tapestryData,
   loadableState
 }) => (
   <html lang="en" {...head.htmlAttributes.toComponent()}>
@@ -52,7 +54,7 @@ const DefaultDocument = ({
     <body>
       <div id="root" dangerouslySetInnerHTML={{ __html: html }} />
       {loadableState.getScriptElement()}
-      {getBootstrapData({ bootstrapData, ids })}
+      {getBootstrapData({ bootstrapData, ids, _tapestryData })}
       {getJavascriptBundles()}
     </body>
   </html>

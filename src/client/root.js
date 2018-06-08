@@ -19,7 +19,12 @@ const Root = config => {
     window.location.pathname
   )
   log('Matched route', { route, match })
-  return <route.component {...window.__TAPESTRY_DATA__.appData} />
+  return (
+    <route.component
+      {...window.__TAPESTRY_DATA__.appData}
+      {...window.__TAPESTRY_DATA__._tapestry}
+    />
+  )
 }
 
 export default hot(module)(Root)
