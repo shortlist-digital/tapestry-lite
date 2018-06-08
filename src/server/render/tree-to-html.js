@@ -17,7 +17,7 @@ export default async ({
     }
   }
   // create html string from target component
-  const app = <Component {...componentData} {..._tapestryData} />
+  const app = <Component {...componentData} _tapestry={_tapestryData} />
   const htmlString = renderToString(app)
   // get app loading state
   const loadableState = await getLoadableState(app)

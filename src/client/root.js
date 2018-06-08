@@ -22,7 +22,7 @@ const Root = config => {
   return (
     <route.component
       {...window.__TAPESTRY_DATA__.appData}
-      {...window.__TAPESTRY_DATA__._tapestry}
+      _tapestry={window.__TAPESTRY_DATA__._tapestry}
     />
   )
 }
