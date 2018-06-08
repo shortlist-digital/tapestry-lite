@@ -7,15 +7,11 @@ import CacheManager from '../../src/server/utilities/cache-manager'
 import Server from '../../src/server'
 import dataPost from '../mocks/post.json'
 
-const prepareJson = data => {
-  const str = JSON.stringify(data)
+const prepareJson = data =>
+  JSON.stringify(data)
     .replace(/\//g, '\\/')
     .replace(/\u2028/g, '\\u2028')
     .replace(/\u2029/g, '\\u2029')
-
-  // Remove last '}' to make string matching logic more forgiving
-  return str.substring(0, str.length - 1)
-}
 
 describe('Handling preview requests', () => {
   let server = null
@@ -56,7 +52,7 @@ describe('Handling preview requests', () => {
     request.get(
       `${uri}/dynamic-string-endpoint/preview-test?tapestry_hash=hash&p=10`,
       (err, res, body) => {
-        expect(body).to.have.string(prepareJson(dataPost))
+        expect(body).to.contain(prepareJson(dataPost))
         done()
       }
     )
