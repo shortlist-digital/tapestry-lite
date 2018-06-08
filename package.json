@@ -1,6 +1,6 @@
 {
   "name": "tapestry-lite",
-  "version": "1.0.5",
+  "version": "1.4.0",
   "description": "Universal React & Wordpress Renderer",
   "main": "./src/server/index.js",
   "bin": {
@@ -16,8 +16,8 @@
     "prepublishOnly": "npm run lint && npm run test",
     "lint": "eslint . --fix --cache",
     "test": "HOST=localhost npm run test:server && npm run test:integration",
-    "test:server": "NODE_ENV=test LOG_LEVEL=silent mocha ./src/**/*.test.js ./test/server/*.test.js --require test/babel-register --bail",
-    "test:integration": "PORT=4321 NODE_ENV=test LOG_LEVEL=silent mocha ./test/integration/*.test.js --require test/babel-register --bail"
+    "test:server": "NODE_ENV=test LOG_LEVEL=silent mocha ./src/**/*.test.js ./test/server/*.test.js --require test/babel-register",
+    "test:integration": "PORT=4321 NODE_ENV=test LOG_LEVEL=silent mocha ./test/integration/*.test.js --require test/babel-register"
   },
   "license": "ISC",
   "devDependencies": {
@@ -75,7 +75,7 @@
     "lodash.isfunction": "^3.0.9",
     "lodash.isplainobject": "^4.0.6",
     "make-promises-safe": "^1.1.0",
-    "path-to-regexp": "^2.2.0",
+    "path-to-regexp": "^2.2.1",
     "promis": "^1.1.4",
     "ps-tree": "^1.1.0",
     "razzle-dev-utils": "^2.0.0-alpha.2",

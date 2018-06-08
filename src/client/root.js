@@ -6,7 +6,7 @@ import matchRoutes from '../server/routing/match-routes'
 import buildErrorView from '../server/render/error-view'
 
 const log = (msg, data) =>
-  window.location.search.indexOf('debug') !== -1 && console.log(msg, data)
+  window.location.hash.indexOf('development') !== -1 && console.log(msg, data)
 
 const Root = config => {
   log(`Application data`, window.__TAPESTRY_DATA__)
@@ -18,8 +18,13 @@ const Root = config => {
     prepareAppRoutes(config),
     window.location.pathname
   )
-  log('Matched route', route)
-  return <route.component {...match} {...window.__TAPESTRY_DATA__.appData} />
+  log('Matched route', { route, match })
+  return (
+    <route.component
+      {...window.__TAPESTRY_DATA__.appData}
+      _tapestry={window.__TAPESTRY_DATA__._tapestry}
+    />
+  )
 }
 
 export default hot(module)(Root)

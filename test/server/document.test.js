@@ -40,6 +40,14 @@ describe('Document contents', () => {
         }
       },
       {
+        path: '/custom-document-no-doctype',
+        component: () => <p>Custom HTML</p>,
+        options: {
+          customDocument: () => 'testing-document',
+          disableDoctype: true
+        }
+      },
+      {
         path: '/custom-document/with-data',
         endpoint: () => 'posts',
         component: () => (
@@ -109,8 +117,9 @@ describe('Document contents', () => {
         )
           .replace(/\//g, '\\/')
           .replace(/\u2028/g, '\\u2028')
-          .replace(/\u2029/g, '\\u2029')}}, ids: ["vg9k2b"] }`
+          .replace(/\u2029/g, '\\u2029')}}`
       )
+      expect(body).to.contain('ids: ["vg9k2b"]')
       done()
     })
   })
@@ -147,6 +156,14 @@ describe('Document contents', () => {
     request.get(`${uri}/custom-document`, (err, res, body) => {
       expect(body).to.contain('testing-document')
       expect(body).to.contain('<!doctype html>')
+      done()
+    })
+  })
+
+  it('Custom document can have doctype disabled', done => {
+    request.get(`${uri}/custom-document-no-doctype`, (err, res, body) => {
+      expect(body).to.contain('testing-document')
+      expect(body).to.not.contain('<!doctype html>')
       done()
     })
   })

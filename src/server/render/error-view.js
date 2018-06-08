@@ -1,12 +1,12 @@
-import idx from 'idx'
 import DefaultError from './default-error'
 import MissingView from './missing-view'
 
-export default ({ config, missing }) => {
+export default ({ config = {}, missing = false }) => {
   // render custom error or default if custom error not declared
-  let ErrorView = idx(config, _ => _.components.CustomError)
-    ? config.components.CustomError
-    : DefaultError
+  let ErrorView =
+    config.components && config.components.CustomError
+      ? config.components.CustomError
+      : DefaultError
   // render missing component only in DEV
   if (
     (process.env.NODE_ENV === 'test' ||
