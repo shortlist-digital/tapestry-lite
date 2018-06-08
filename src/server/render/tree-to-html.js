@@ -7,14 +7,23 @@ export default async ({
   Component,
   routeOptions = {},
   match,
-  componentData
+  componentData,
+  queryParams
 }) => {
-  const app = <Component {...match} {...componentData} />
-  const loadableState = await getLoadableState(app)
+  const _tapestryData = {
+    requestData: {
+      ...match,
+      queryParams
+    }
+  }
+  // create html string from target component
+  const app = <Component {...componentData} _tapestry={_tapestryData} />
   const htmlString = renderToString(app)
+  // get app loading state
+  const loadableState = await getLoadableState(app)
   // { html, css, ids }
   let styleData = {}
-  // extract CSS from either Glamor or Emotion
+  // extract html, css and ids from either Glamor or Emotion
   if (process.env.CSS_PLUGIN === 'emotion') {
     styleData = require('emotion-server').extractCritical(htmlString)
   } else {
@@ -26,6 +35,7 @@ export default async ({
     ...styleData,
     head: helmet,
     bootstrapData: componentData,
+    _tapestryData,
     loadableState
   }
   let Document =

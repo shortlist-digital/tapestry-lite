@@ -26,7 +26,9 @@ describe('Handling custom static routes', () => {
       },
       {
         path: '/static-route/:custom',
-        component: props => <p>Param: {props.params.custom}</p>
+        component: props => (
+          <p>Param: {props._tapestry.requestData.params.custom}</p>
+        )
       }
     ],
     siteUrl: 'http://routing-dummy.api'

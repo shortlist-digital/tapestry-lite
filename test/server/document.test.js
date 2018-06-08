@@ -117,8 +117,9 @@ describe('Document contents', () => {
         )
           .replace(/\//g, '\\/')
           .replace(/\u2028/g, '\\u2028')
-          .replace(/\u2029/g, '\\u2029')}}, ids: ["vg9k2b"] }`
+          .replace(/\u2029/g, '\\u2029')}}`
       )
+      expect(body).to.contain('ids: ["vg9k2b"]')
       done()
     })
   })
