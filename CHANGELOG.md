@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+# 1.4.2 (10-06-2018)
+
+* Fixed Loadable Components regression in 1.4.1
+
 # 1.4.1 (08-06-2018)
 
 * Removed `matchRoutes` helper from client bundle
