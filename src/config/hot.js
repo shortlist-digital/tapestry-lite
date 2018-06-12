@@ -1,34 +1,21 @@
-import Server, { registerPlugins } from '../server'
-import appConfig from './config-proxy'
-import { log, notify } from '../server/utilities/logger'
+import { registerPluginProxy, createNewServerProxy } from './hot-server'
+import { notify } from '../server/utilities/logger'
 
-let currentApp
+let currentApp = createNewServerProxy()
 
-const run = async () => {
-  try {
-    currentApp = new Server({ config: appConfig })
-    // Register plugins
-    await registerPlugins({ config: appConfig, server: currentApp })
-    // Start server
+if (module.hot) {
+  module.hot.accept('./hot-server', async function() {
+    await currentApp.stop({ timeout: 0 })
+    currentApp = createNewServerProxy()
+    await registerPluginProxy(currentApp)
     await currentApp.start()
-    if (module.hot) {
-      module.hot.addStatusHandler(async status => {
-        if (status === 'ready') {
-          await currentApp.stop({ timeout: 0 })
-          currentApp = new Server({ config: require('./config-proxy').default })
-          // Re-register plugins
-          await registerPlugins({
-            config: require('./config-proxy').default,
-            server: currentApp
-          })
-          await currentApp.start()
-        }
-      })
-    }
-    notify(`Server started at: ${currentApp.info.uri}\n`)
-  } catch (e) {
-    log.error(e)
-  }
+    notify('🔁  HMR Reloading `./hot-server`...')
+  })
+  notify('✅  Server-side HMR Enabled!')
 }
 
-run()
+registerPluginProxy(currentApp).then(() => {
+  currentApp.start()
+})
+
+notify(`Server started at: ${currentApp.info.uri}\n`)

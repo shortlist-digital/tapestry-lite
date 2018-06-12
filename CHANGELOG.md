@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+# 1.4.3 (12-06-2018)
+
+* Fixed server hot reloading
+
 # 1.4.2 (10-06-2018)
 
 * Fixed Loadable Components regression in 1.4.1
