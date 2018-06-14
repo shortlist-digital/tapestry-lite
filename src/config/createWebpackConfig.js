@@ -102,7 +102,8 @@ module.exports = (target = 'node') => {
         path: paths.appBuild,
         filename: 'server.production.js',
         libraryTarget: 'commonjs2'
-      }
+      },
+      externals: [nodeExternals({ modulesDirs: [paths.appNodeModules] })]
     })
   }
 
