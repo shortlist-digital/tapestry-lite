@@ -1,4 +1,6 @@
 # Tapestry Lite
+We must write more documentation!
+
 
 ## Installation
 

@@ -18,9 +18,9 @@ export default async ({
   }
   // create html string from target component
   const app = <Component {...componentData} _tapestry={_tapestryData} />
-  const htmlString = renderToString(app)
-  // get app loading state
+  // getLoadableState must be called before renderToString to preload all import() components
   const loadableState = await getLoadableState(app)
+  const htmlString = renderToString(app)
   // { html, css, ids }
   let styleData = {}
   // extract html, css and ids from either Glamor or Emotion
