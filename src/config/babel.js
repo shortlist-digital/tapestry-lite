@@ -1,12 +1,11 @@
 'use strict'
 
-module.exports = (target, opts) => {
+module.exports = (target = 'node', opts = {}) => {
   const { NODE_ENV, CSS_PLUGIN } = process.env
   // set @babel/preset-env default options
   const presetEnvOptions = {
     modules: false, // don't convert to commonjs, retain es modules
-    targets: {},
-    debug: true
+    targets: {}
   }
   // targeting node, no need to transpile a bunch of features
   // outputs a small server build
