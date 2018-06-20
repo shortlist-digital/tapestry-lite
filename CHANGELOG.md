@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+# 1.4.4 (20-06-2018)
+
+* Boost initial boot time with improved Webpack config creation
+
 # 1.4.3 (12-06-2018)
 
 * Fixed server hot reloading
