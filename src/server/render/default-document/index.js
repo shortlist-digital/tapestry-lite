@@ -27,9 +27,21 @@ const getJavascriptBundles = () => {
     const assetsPath = path.resolve(process.cwd(), '.tapestry', 'assets.json')
     const assets = fs.readJsonSync(assetsPath)
     return Object.values(assets).map(({ js }, index) => (
-      <script key={index} src={js} />
+      <script noModule key={index} src={js} />
     ))
   }
+}
+
+const getModuleBundles = () => {
+  const assetsPath = path.resolve(
+    process.cwd(),
+    '.tapestry',
+    'assets-module.json'
+  )
+  const assets = fs.readJsonSync(assetsPath)
+  return Object.values(assets).map(({ js }, index) => (
+    <script type="module" key={index} src={js} />
+  ))
 }
 
 const DefaultDocument = ({
@@ -56,6 +68,7 @@ const DefaultDocument = ({
       {loadableState.getScriptElement()}
       {getBootstrapData({ bootstrapData, ids, _tapestryData })}
       {getJavascriptBundles()}
+      {process.env.NODE_ENV === 'production' && getModuleBundles()}
     </body>
   </html>
 )

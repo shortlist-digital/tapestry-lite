@@ -12,8 +12,16 @@ const StatsPlugin = require('stats-webpack-plugin')
 const { env, helpers } = require('./env')
 const paths = require('./paths')
 
-module.exports = (target = 'node') => {
+const babelConfig = require('./babel')
+
+module.exports = (target = 'node', opts = {}) => {
   const { IS_DEV, NODE_DEV, NODE_PROD, WEB_DEV, WEB_PROD } = helpers(target)
+
+  let babelOptions = {
+    babelrc: false,
+    cacheDirectory: true,
+    ...babelConfig(target, opts)
+  }
 
   let config = {
     devtool: IS_DEV ? 'cheap-module-source-map' : false,
@@ -40,17 +48,7 @@ module.exports = (target = 'node') => {
           test: /\.(js|jsx|mjs)$/,
           loader: require.resolve('babel-loader'),
           exclude: /node_modules(?!\/tapestry-lite)/,
-          options: {
-            babelrc: true,
-            cacheDirectory: true,
-            presets: [require('babel-preset-razzle')],
-            plugins: [
-              require.resolve('loadable-components/babel'),
-              process.env.CSS_PLUGIN === 'emotion' &&
-                require.resolve('babel-plugin-emotion'),
-              WEB_DEV && require.resolve('react-hot-loader/babel')
-            ].filter(Boolean)
-          }
+          options: babelOptions
         },
         {
           test: /\.(css|jpe?g|png|svg|ico|woff(2)?)$/,
@@ -170,7 +168,7 @@ module.exports = (target = 'node') => {
         new StatsPlugin('../stats.json'),
         new AssetsPlugin({
           path: paths.appBuild,
-          filename: 'assets.json'
+          filename: opts.module ? 'assets-module.json' : 'assets.json'
         })
       ],
       optimization: {
@@ -180,6 +178,13 @@ module.exports = (target = 'node') => {
         }
       }
     })
+  }
+
+  // update entry name for esmodule builds
+  if (opts.module) {
+    config.entry = {
+      module: [paths.ownClientIndex]
+    }
   }
 
   config.plugins.push(
