@@ -11,7 +11,7 @@ module.exports = (target = 'node', opts = {}) => {
   if (fs.existsSync(paths.appBrowerslist)) {
     const browsers = fs.readFileSync(paths.appBrowerslist, 'utf8')
     presetEnvOptions.targets = {
-      browsers: browsers.split('\n')
+      browsers: browsers.split('\n').filter(Boolean)
     }
   }
   // targeting node, no need to transpile a bunch of features

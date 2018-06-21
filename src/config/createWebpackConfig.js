@@ -23,9 +23,6 @@ module.exports = (target = 'node', opts = {}) => {
     ...babelConfig(target, opts)
   }
 
-  console.log(target)
-  console.log(JSON.stringify(babelOptions, null, 2))
-
   let config = {
     devtool: IS_DEV ? 'cheap-module-source-map' : false,
     mode: IS_DEV ? 'development' : 'production',
