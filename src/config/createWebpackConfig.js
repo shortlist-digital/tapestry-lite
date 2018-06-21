@@ -20,7 +20,7 @@ module.exports = (target = 'node', opts = {}) => {
   let babelOptions = {
     babelrc: true,
     cacheDirectory: true,
-    ...babelConfig(target, opts)
+    ...babelConfig(target, opts, { WEB_PROD })
   }
 
   let config = {
