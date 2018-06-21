@@ -8,20 +8,31 @@ const FriendlyErrorsPlugin = require('razzle-dev-utils/FriendlyErrorsPlugin')
 const nodeExternals = require('webpack-node-externals')
 const StartServerPlugin = require('start-server-webpack-plugin')
 const StatsPlugin = require('stats-webpack-plugin')
+const merge = require('babel-merge')
 
 const { env, helpers } = require('./env')
 const paths = require('./paths')
 
-const babelConfig = require('./babel')
+const babelDefaultConfig = require('./babel')
 
 module.exports = (target = 'node', opts = {}) => {
   const { IS_DEV, NODE_DEV, NODE_PROD, WEB_DEV, WEB_PROD } = helpers(target)
+  let babelConfig
+  if (fs.existsSync(paths.appBabelRc)) {
+    console.log('Using .babelrc defined in your app root')
+    babelConfig = merge(
+      require(paths.appBabelRc),
+      babelDefaultConfig(target, opts)
+    )
+  }
 
   let babelOptions = {
     babelrc: false,
     cacheDirectory: true,
-    ...babelConfig(target, opts)
+    ...babelConfig
   }
+
+  console.log(JSON.stringify(babelOptions, null, 2))
 
   let config = {
     devtool: IS_DEV ? 'cheap-module-source-map' : false,
