@@ -1,10 +1,18 @@
-'use strict'
+const fs = require('fs-extra')
+const paths = require('./paths')
 
 module.exports = (target = 'node', opts = {}) => {
   const { NODE_ENV, CSS_PLUGIN } = process.env
   // set @babel/preset-env default options
   const presetEnvOptions = {
     modules: false // retain es modules
+  }
+
+  if (fs.existsSync(paths.appBrowerslist)) {
+    const browsers = fs.readFileSync(paths.appBrowerslist, 'utf8')
+    presetEnvOptions.targets = {
+      browsers: browsers.split('\n')
+    }
   }
   // targeting node, no need to transpile a bunch of features
   // outputs a small server build
