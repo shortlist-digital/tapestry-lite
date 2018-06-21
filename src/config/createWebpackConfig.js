@@ -17,13 +17,12 @@ const babelDefaultConfig = require('./babel')
 
 module.exports = (target = 'node', opts = {}) => {
   const { IS_DEV, NODE_DEV, NODE_PROD, WEB_DEV, WEB_PROD } = helpers(target)
-  let babelConfig
+
+  let babelConfig = babelDefaultConfig(target, opts)
+
   if (fs.existsSync(paths.appBabelRc)) {
-    console.log('Using .babelrc defined in your app root')
-    babelConfig = merge(
-      require(paths.appBabelRc),
-      babelDefaultConfig(target, opts)
-    )
+    console.log('Using .babelrc.js defined in your app root')
+    babelConfig = merge(require(paths.appBabelRc), babelConfig)
   }
 
   let babelOptions = {

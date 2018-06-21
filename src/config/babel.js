@@ -4,21 +4,25 @@ module.exports = (target = 'node', opts = {}) => {
   const { NODE_ENV, CSS_PLUGIN } = process.env
   // set @babel/preset-env default options
   const presetEnvOptions = {
-    modules: false, // don't convert to commonjs, retain es modules
-    targets: {}
+    modules: false // retain es modules
   }
   // targeting node, no need to transpile a bunch of features
   // outputs a small server build
-  if (target === 'node') presetEnvOptions.targets.node = 'current'
+  if (target === 'node')
+    presetEnvOptions.targets = {
+      node: 'current'
+    }
 
   if (opts.module)
-    presetEnvOptions.targets.browsers = [
-      'Chrome >= 60',
-      'Safari >= 11',
-      'iOS >= 10.3',
-      'Firefox >= 54',
-      'Edge >= 15'
-    ]
+    presetEnvOptions.targets = {
+      browsers: [
+        'Chrome >= 60',
+        'Safari >= 11',
+        'iOS >= 10.3',
+        'Firefox >= 54',
+        'Edge >= 15'
+      ]
+    }
 
   const config = {
     presets: [
