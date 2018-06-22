@@ -169,8 +169,9 @@ module.exports = (target = 'node') => {
       plugins: [
         new StatsPlugin('../stats.json'),
         new AssetsPlugin({
+          filename: 'assets.json',
           path: paths.appBuild,
-          filename: 'assets.json'
+          prettyPrint: true
         })
       ],
       optimization: {

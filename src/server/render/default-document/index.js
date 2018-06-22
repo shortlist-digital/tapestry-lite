@@ -26,9 +26,9 @@ const getJavascriptBundles = () => {
   if (process.env.NODE_ENV === 'production') {
     const assetsPath = path.resolve(process.cwd(), '.tapestry', 'assets.json')
     const assets = fs.readJsonSync(assetsPath)
-    return Object.values(assets).map(({ js }, index) => (
-      <script key={index} src={js} />
-    ))
+    return Object.keys(assets)
+      .filter(Boolean)
+      .map((key, index) => <script key={index} src={assets[key].js} />)
   }
 }
 
