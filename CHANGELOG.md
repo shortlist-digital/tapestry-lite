@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+# 1.4.5 (22-06-2018)
+
+* Fix oddly formatted chunks (within assets.json) adding malformed script references to the page
+
 # 1.4.4 (20-06-2018)
 
 * Boost initial boot time with improved Webpack config creation
