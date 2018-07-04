@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+# 1.5.0 (04-07-2018)
+
+* Added support for proxies from a different domain
+
 # 1.4.5 (22-06-2018)
 
 * Fix oddly formatted chunks (within assets.json) adding malformed script references to the page
