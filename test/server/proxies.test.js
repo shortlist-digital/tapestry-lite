@@ -46,7 +46,10 @@ describe('Handling wildcard proxies', () => {
   let proxyPath = '/sitemap/{sitemapId}'
   let proxyContents = 'Test file'
   let config = {
-    proxyPaths: [proxyPath, { '/test': 'http://test.proxy/test.xml' }],
+    proxyPaths: [
+      proxyPath,
+      { '/test/{something}': 'http://test.proxy/test/hello.xml' }
+    ],
     siteUrl: 'http://dummy.api',
     components: {}
   }
@@ -59,7 +62,7 @@ describe('Handling wildcard proxies', () => {
       .get('/sitemap/different-id.xml')
       .reply(200, proxyContents)
     nock('http://test.proxy')
-      .get('/test.xml')
+      .get('/test/hello.xml')
       .reply(200, proxyContents)
     // boot tapestry server
     server = new Server({ config })
@@ -85,7 +88,7 @@ describe('Handling wildcard proxies', () => {
   })
 
   it('Proxy should return correct content from object syntax', done => {
-    request.get(uri + '/test', (err, res, body) => {
+    request.get(uri + '/test/hello', (err, res, body) => {
       expect(body).to.contain(proxyContents)
       done()
     })
