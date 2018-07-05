@@ -27,6 +27,8 @@ export default ({ server, config }) => {
       })
     }
     // otherwise treat the string as a traditional proxy to the site URL
-    return route({ from: path, to: config.siteUrl + path })
+    if (path) {
+      return route({ from: path, to: config.siteUrl + path })
+    }
   })
 }

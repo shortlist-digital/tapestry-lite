@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+# 1.5.1 (05-07-2018)
+
+* Test for falsey values when setting proxies
+
 # 1.5.0 (04-07-2018)
 
 * Added support for proxies from a different domain
