@@ -1,6 +1,7 @@
 const fs = require('fs-extra')
 const path = require('path')
 const webpack = require('webpack')
+const merge = require('babel-merge')
 
 const AssetsPlugin = require('assets-webpack-plugin')
 const CleanPlugin = require('clean-webpack-plugin')
@@ -9,11 +10,32 @@ const nodeExternals = require('webpack-node-externals')
 const StartServerPlugin = require('start-server-webpack-plugin')
 const StatsPlugin = require('stats-webpack-plugin')
 
+const babelDefaultConfig = require('./babel')
 const { env, helpers } = require('./env')
 const paths = require('./paths')
 
 module.exports = (target = 'node') => {
-  const { IS_DEV, NODE_DEV, NODE_PROD, WEB_DEV, WEB_PROD } = helpers(target)
+  const { IS_WEB, IS_DEV, NODE_DEV, NODE_PROD, WEB_DEV, WEB_PROD } = helpers(
+    target
+  )
+
+  let babelConfig
+
+  if (fs.existsSync(paths.appBabelRc)) {
+    if (IS_WEB) console.log('Using .babelrc defined in your app root')
+    const babelAppConfig = fs.readJsonSync(paths.appBabelRc)
+    babelConfig = merge(babelDefaultConfig(target), babelAppConfig)
+  } else {
+    babelConfig = babelDefaultConfig(target)
+  }
+
+  let babelOptions = {
+    babelrc: false,
+    cacheDirectory: true,
+    ...babelConfig
+  }
+
+  if (WEB_PROD) console.log(JSON.stringify(babelConfig, null, 2))
 
   let config = {
     devtool: IS_DEV ? 'cheap-module-source-map' : false,
@@ -40,17 +62,7 @@ module.exports = (target = 'node') => {
           test: /\.(js|jsx|mjs)$/,
           loader: require.resolve('babel-loader'),
           exclude: /node_modules(?!\/tapestry-lite)/,
-          options: {
-            babelrc: true,
-            cacheDirectory: true,
-            presets: [require('babel-preset-razzle')],
-            plugins: [
-              require.resolve('loadable-components/babel'),
-              process.env.CSS_PLUGIN === 'emotion' &&
-                require.resolve('babel-plugin-emotion'),
-              WEB_DEV && require.resolve('react-hot-loader/babel')
-            ].filter(Boolean)
-          }
+          options: babelOptions
         },
         {
           test: /\.(css|jpe?g|png|svg|ico|woff(2)?)$/,

@@ -6,6 +6,8 @@ module.exports.helpers = target => {
   const IS_PROD = process.env.NODE_ENV === 'production'
 
   return {
+    IS_WEB,
+    IS_NODE,
     IS_DEV,
     IS_PROD,
     NODE_DEV: IS_NODE && IS_DEV,
