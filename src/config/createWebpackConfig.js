@@ -35,8 +35,6 @@ module.exports = (target = 'node') => {
     ...babelConfig
   }
 
-  if (WEB_PROD) console.log(JSON.stringify(babelConfig, null, 2))
-
   let config = {
     devtool: IS_DEV ? 'cheap-module-source-map' : false,
     mode: IS_DEV ? 'development' : 'production',
