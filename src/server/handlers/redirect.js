@@ -14,7 +14,7 @@ const setRedirects = (server, redirects) => {
         )} to ${chalk.green(redirect)}`
       )
       return h
-        .redirect(`${redirect}${request.url.search ? request.url.search : ''}`)
+        .redirect(`${redirect}${request.url.search || ''}`)
         .permanent()
         .takeover()
     }
