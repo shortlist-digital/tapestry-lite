@@ -32,7 +32,7 @@ describe('Handling redirects', () => {
     siteUrl: 'http://dummredirects.api'
   }
 
-  beforeEach(async () => {
+  before(async () => {
     // create redirects file sync to prevent race condition
     fs.writeFileSync(
       redirectsFilePath, // file name
@@ -52,7 +52,7 @@ describe('Handling redirects', () => {
     uri = server.info.uri
   })
 
-  afterEach(async () => {
+  after(async () => {
     fs.unlink(redirectsFilePath, () => {}) // tidy up redirects.json asynchronously
     await server.stop()
   })
