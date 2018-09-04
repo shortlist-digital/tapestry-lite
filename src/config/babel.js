@@ -66,6 +66,8 @@ module.exports = (target = 'node') => {
   }
   if (NODE_ENV === 'test') {
     config.plugins.push.apply(config.plugins, [
+      // required for import() in tests
+      'dynamic-import-node',
       // Transform ES modules to commonjs for Jest support
       [
         require.resolve('@babel/plugin-transform-modules-commonjs'),
