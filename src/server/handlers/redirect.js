@@ -6,18 +6,15 @@ import { log } from '../utilities/logger'
 
 const setRedirects = (server, redirects) => {
   server.ext('onPreHandler', async (request, h) => {
-    if (typeof redirects[request.url.pathname.toLowerCase()] !== 'undefined') {
+    const redirect = redirects[request.url.pathname.toLowerCase()]
+    if (typeof redirect !== 'undefined') {
       log.debug(
         `Redirect handled for ${chalk.green(
           request.url.pathname
-        )} to ${chalk.green(redirects[request.url.pathname])}`
+        )} to ${chalk.green(redirect)}`
       )
       return h
-        .redirect(
-          `${redirects[request.url.pathname]}${
-            request.url.search ? request.url.search : ''
-          }`
-        )
+        .redirect(`${redirect}${request.url.search ? request.url.search : ''}`)
         .permanent()
         .takeover()
     }
