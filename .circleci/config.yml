@@ -1,0 +1,63 @@
+version: 2
+
+references:
+
+  yarn_cache_key: &yarn_cache_key
+    yarn-cache-{{ checksum "package.json" }}
+  git_cache_key: &git_cache_key
+    git-cache-{{ .Branch }}-{{ .Revision }}
+
+  restore_repo: &restore_repo
+    restore_cache:
+      key: *git_cache_key
+  restore_dependencies: &restore_dependencies
+    restore_cache:
+      key: *yarn_cache_key
+
+  container_config: &container_config
+    docker:
+      - image: circleci/node:8.9.4
+    working_directory: ~/test-ci
+
+jobs:
+  setup:
+    <<: *container_config
+    steps:
+      - *restore_repo
+      - checkout
+      - save_cache:
+          key: *git_cache_key
+          paths:
+            - .
+      - *restore_dependencies
+      - run: yarn install --ignore-engines
+      - save_cache:
+          key: *yarn_cache_key
+          paths:
+            - node_modules
+
+  unit_tests:
+    <<: *container_config
+    steps:
+      - *restore_repo
+      - *restore_dependencies
+      - run: yarn run test
+
+  lint:
+    <<: *container_config
+    steps:
+      - *restore_repo
+      - *restore_dependencies
+      - run: yarn run lint
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - setup
+      - unit_tests:
+          requires:
+            - setup
+      - lint:
+          requires:
+            - setup
