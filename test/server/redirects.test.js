@@ -27,7 +27,8 @@ describe('Handling redirects', () => {
       '/redirect/with/query': '/page',
       '/test()what£]cool': '/page'
     },
-    redirectsEndpoint: 'http://dummredirects.api/web/app/uploads/redirects.json',
+    redirectsEndpoint:
+      'http://dummredirects.api/web/app/uploads/redirects.json',
     siteUrl: 'http://dummredirects.api'
   }
 
@@ -46,7 +47,7 @@ describe('Handling redirects', () => {
       .reply(200, { '/redirect/from/endpoint': '/page' })
 
     // boot tapestry server
-    server = new Server({config})
+    server = new Server({ config })
     await server.start()
     uri = server.info.uri
   })
@@ -87,6 +88,13 @@ describe('Handling redirects', () => {
     })
   })
 
+  it('Redirect correctly redirects insensitive to case', done => {
+    request.get(`${uri}/reDirect/From/tHis-path`, (err, res, body) => {
+      expect(res.statusCode).to.equal(200)
+      done()
+    })
+  })
+
   it('Redirect path loaded from `redirects.json` file', done => {
     request.get(`${uri}/redirect/from/this`, (err, res, body) => {
       expect(body).to.contain('Redirected component')
@@ -106,7 +114,8 @@ describe('Handling endpoint redirects', () => {
         component: () => <p>Redirected component</p>
       }
     ],
-    redirectsEndpoint: 'http://dummredirects.api/web/app/uploads/redirects.json',
+    redirectsEndpoint:
+      'http://dummredirects.api/web/app/uploads/redirects.json',
     siteUrl: 'http://dummredirects.api'
   }
 
@@ -120,7 +129,7 @@ describe('Handling endpoint redirects', () => {
       .reply(200, dataRedirects)
 
     // boot tapestry server
-    server = new Server({config})
+    server = new Server({ config })
     await server.start()
     uri = server.info.uri
     let res = await r.get(`${uri}/redirect/from/this`)
@@ -136,7 +145,7 @@ describe('Handling endpoint redirects', () => {
       .reply(404)
 
     // boot tapestry server
-    server = new Server({config})
+    server = new Server({ config })
     await server.start()
     uri = server.info.uri
     let res = await r.get(`${uri}/page`)
@@ -152,7 +161,7 @@ describe('Handling endpoint redirects', () => {
       .reply(200, 'Error: <p>Something went wrong')
 
     // boot tapestry server
-    server = new Server({config})
+    server = new Server({ config })
     await server.start()
     uri = server.info.uri
     let res = await r.get(`${uri}/page`)
