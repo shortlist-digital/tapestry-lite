@@ -22,7 +22,8 @@ module.exports = (target = 'node', opts = {}) => {
   let babelConfig
 
   if (fs.existsSync(paths.appBabelRc)) {
-    if (IS_WEB) console.log('Using .babelrc defined in your app root')
+    if (IS_WEB && !opts.module)
+      console.log('Using .babelrc defined in your app root')
     const babelAppConfig = fs.readJsonSync(paths.appBabelRc)
     babelConfig = merge(babelDefaultConfig(target, opts), babelAppConfig)
   } else {
@@ -185,7 +186,6 @@ module.exports = (target = 'node', opts = {}) => {
         })
       ],
       optimization: {
-        runtimeChunk: true,
         splitChunks: {
           chunks: 'all'
         }
