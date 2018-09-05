@@ -46,7 +46,10 @@ describe('Handling wildcard proxies', () => {
   let proxyPath = '/sitemap/{sitemapId}'
   let proxyContents = 'Test file'
   let config = {
-    proxyPaths: [proxyPath],
+    proxyPaths: [
+      proxyPath,
+      { '/test/{something}': 'http://test.proxy/test/hello.xml' }
+    ],
     siteUrl: 'http://dummy.api',
     components: {}
   }
@@ -57,6 +60,9 @@ describe('Handling wildcard proxies', () => {
       .get('/sitemap/test.xml')
       .reply(200, proxyContents)
       .get('/sitemap/different-id.xml')
+      .reply(200, proxyContents)
+    nock('http://test.proxy')
+      .get('/test/hello.xml')
       .reply(200, proxyContents)
     // boot tapestry server
     server = new Server({ config })
@@ -76,6 +82,13 @@ describe('Handling wildcard proxies', () => {
 
   it('Proxy should return correct content from test b', done => {
     request.get(uri + '/sitemap/different-id.xml', (err, res, body) => {
+      expect(body).to.contain(proxyContents)
+      done()
+    })
+  })
+
+  it('Proxy should return correct content from object syntax', done => {
+    request.get(uri + '/test/hello', (err, res, body) => {
       expect(body).to.contain(proxyContents)
       done()
     })
@@ -108,6 +121,15 @@ describe('Handling API proxy', () => {
     request.get(uri + '/api/v1/posts', (err, res, body) => {
       // console.log({body})
       expect(body).to.contain(JSON.stringify(posts.data))
+      done()
+    })
+  })
+
+  it('API proxy should return response with correct headers', done => {
+    request.get(uri + '/api/v1/posts', (err, res, body) => {
+      expect(res.headers).to.include({
+        'content-type': 'application/json; charset=utf-8'
+      })
       done()
     })
   })
