@@ -124,4 +124,13 @@ describe('Handling API proxy', () => {
       done()
     })
   })
+
+  it('API proxy should return response with correct headers', done => {
+    request.get(uri + '/api/v1/posts', (err, res, body) => {
+      expect(res.headers).to.include({
+        'content-type': 'application/json; charset=utf-8'
+      })
+      done()
+    })
+  })
 })
