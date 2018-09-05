@@ -39,9 +39,11 @@ const getModuleBundles = () => {
     'assets-module.json'
   )
   const assets = fs.readJsonSync(assetsPath)
-  return Object.values(assets).map(({ js }, index) => (
-    <script type="module" key={index} src={js} />
-  ))
+  return Object.keys(assets)
+    .filter(Boolean)
+    .map((key, index) => (
+      <script type="module" key={index} src={assets[key].js} />
+    ))
 }
 
 const DefaultDocument = ({
