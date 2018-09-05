@@ -6,12 +6,12 @@ import stringifyEscapeScript from '../../utilities/stringify-escape-script'
 
 const getBootstrapData = ({ bootstrapData, ids, _tapestryData }) => (
   <script
-    type="text/javascript"
     dangerouslySetInnerHTML={{
       __html: `window.__TAPESTRY_DATA__ = { appData: ${stringifyEscapeScript(
         bootstrapData
-      )}, ids: ${JSON.stringify(ids)},
-      _tapestry: ${stringifyEscapeScript(_tapestryData)} }`
+      )}, ids: ${JSON.stringify(ids)}, _tapestry: ${JSON.stringify(
+        _tapestryData
+      )} }`
     }}
   />
 )

@@ -1,4 +1,4 @@
-const babelConfig = require('../src/config/babel')
+const babelDefaultConfig = require('../src/config/babel')
 
 process.on('unhandledRejection', (reason, p) => {
   console.log('Unhandled Rejection at:', p, 'reason:', reason)
@@ -6,4 +6,4 @@ process.on('unhandledRejection', (reason, p) => {
 })
 // This file is required in mocha.opts
 // The only purpose of this file is to ensure the babel transpiler is activated prior to any test code, and using the same babel options
-require('babel-register')(babelConfig())
+require('@babel/register')(babelDefaultConfig())

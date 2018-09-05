@@ -9,7 +9,7 @@ const clientConfig = createWebpackConfig('web')
 const configs = [serverConfig, clientConfig]
 
 // create esmodule build
-if (args.includes('--module')) {
+if (args.includes('--esmodule')) {
   configs.push(createWebpackConfig('web', { module: true }))
 }
 

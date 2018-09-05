@@ -1,6 +1,7 @@
 const fs = require('fs-extra')
 const path = require('path')
 const webpack = require('webpack')
+const merge = require('babel-merge')
 
 const AssetsPlugin = require('assets-webpack-plugin')
 const CleanPlugin = require('clean-webpack-plugin')
@@ -9,18 +10,29 @@ const nodeExternals = require('webpack-node-externals')
 const StartServerPlugin = require('start-server-webpack-plugin')
 const StatsPlugin = require('stats-webpack-plugin')
 
+const babelDefaultConfig = require('./babel')
 const { env, helpers } = require('./env')
 const paths = require('./paths')
 
-const babelConfig = require('./babel')
-
 module.exports = (target = 'node', opts = {}) => {
-  const { IS_DEV, NODE_DEV, NODE_PROD, WEB_DEV, WEB_PROD } = helpers(target)
+  const { IS_WEB, IS_DEV, NODE_DEV, NODE_PROD, WEB_DEV, WEB_PROD } = helpers(
+    target
+  )
+
+  let babelConfig
+
+  if (fs.existsSync(paths.appBabelRc)) {
+    if (IS_WEB) console.log('Using .babelrc defined in your app root')
+    const babelAppConfig = fs.readJsonSync(paths.appBabelRc)
+    babelConfig = merge(babelDefaultConfig(target, opts), babelAppConfig)
+  } else {
+    babelConfig = babelDefaultConfig(target, opts)
+  }
 
   let babelOptions = {
-    babelrc: true,
+    babelrc: false,
     cacheDirectory: true,
-    ...babelConfig(target, opts, { WEB_PROD })
+    ...babelConfig
   }
 
   let config = {

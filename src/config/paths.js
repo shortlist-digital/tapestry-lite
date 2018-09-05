@@ -56,7 +56,7 @@ module.exports = {
   appSrc: resolveApp('src'),
   appPackageJson: resolveApp('package.json'),
   testsSetup: resolveApp('src/setupTests.js'),
-  appBabelRc: resolveApp('.babelrc.js'),
+  appBabelRc: resolveApp('.babelrc'),
   appBrowerslist: resolveApp('browserslist'),
   appEslintRc: resolveApp('.eslintrc'),
   appTapestryConfig: resolveApp('tapestry.config.js'),
