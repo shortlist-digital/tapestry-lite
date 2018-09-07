@@ -31,6 +31,7 @@
     "prettier": "^1.10.2",
     "pstree": "^0.0.1",
     "react": "^16.2.0",
+    "react-dom": "^16.2.0",
     "request": "^2.81.0",
     "requisition": "^1.7.0",
     "shelljs": "^0.8.1"
