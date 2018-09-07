@@ -1,7 +1,7 @@
 import errorView from '../render/error-view'
 
 export default config => {
-  let routes = config.routes
+  let routes = config.routes.filter(Boolean)
   // import and use default routes if user has not defined any routes
   if (!routes) routes = require('./default-routes').default(config.components)
   const preparedRoutes = routes.map(route => ({ ...route, exact: true }))
