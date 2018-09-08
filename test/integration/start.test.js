@@ -16,7 +16,7 @@ describe('tapestry start', () => {
     const run = new Promise(resolve => {
       const child = shell.exec('node ../bin/dev.js', () => resolve(outputTest))
       child.stdout.on('data', data => {
-        if (data.includes('Tapestry Lite is Running')) {
+        if (data.includes('Server started at')) {
           outputTest = true
           kill(child.pid)
         }
@@ -40,7 +40,7 @@ describe('tapestry start with custom webpack', () => {
     const run = new Promise(resolve => {
       const child = shell.exec('node ../bin/dev.js', () => resolve(outputTest))
       child.stdout.on('data', data => {
-        if (data.includes('Tapestry Lite is Running')) {
+        if (data.includes('Server started at')) {
           outputTest = true
           kill(child.pid)
         }
