@@ -5,7 +5,7 @@ const merge = require('babel-merge')
 
 const AssetsPlugin = require('assets-webpack-plugin')
 const CleanPlugin = require('clean-webpack-plugin')
-const FriendlyErrorsPlugin = require('razzle-dev-utils/FriendlyErrorsPlugin')
+const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const nodeExternals = require('webpack-node-externals')
 const StartServerPlugin = require('start-server-webpack-plugin')
 const StatsPlugin = require('stats-webpack-plugin')
@@ -91,9 +91,7 @@ module.exports = (target = 'node') => {
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new FriendlyErrorsPlugin({
-          target: 'node',
-          onSuccessMessage: 'Tapestry Lite is Running',
-          verbose: true
+          clearConsole: process.env.NODE_ENV !== 'test'
         })
       ],
       externals: [
@@ -153,6 +151,7 @@ module.exports = (target = 'node') => {
         hot: true,
         noInfo: true,
         overlay: false,
+        stats: 'none',
         port: 8080,
         quiet: true,
         // By default files from `contentBase` will not trigger a page reload.
