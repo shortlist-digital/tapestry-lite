@@ -80,7 +80,9 @@ module.exports = (target = 'node') => {
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
-        new FriendlyErrorsPlugin({ clearConsole: true })
+        new FriendlyErrorsPlugin({
+          clearConsole: process.env.NODE_ENV !== 'test'
+        })
       ],
       externals: [
         nodeExternals({
