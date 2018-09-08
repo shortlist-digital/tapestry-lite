@@ -177,7 +177,7 @@ module.exports = (target = 'node', opts = {}) => {
         publicPath: '/_assets/'
       },
       plugins: [
-        new StatsPlugin('../stats.json'),
+        new StatsPlugin(opts.module ? '../stats-module.json' : '../stats.json'),
         new AssetsPlugin({
           filename: opts.module ? 'assets-module.json' : 'assets.json',
           path: paths.appBuild,
@@ -204,7 +204,7 @@ module.exports = (target = 'node', opts = {}) => {
       root: process.cwd(),
       verbose: false
     }),
-    new webpack.DefinePlugin(env(target))
+    new webpack.DefinePlugin(env(target, opts))
   )
 
   // use custom webpack config

@@ -2,6 +2,7 @@
   "extends": ["@shortlist-studio/eslint-config-standard"],
   "globals": {
     "NODE_ENV": true,
-    "CSS_PLUGIN": true
+    "CSS_PLUGIN": true,
+    "MODULE_BUILD": false
   }
 }
