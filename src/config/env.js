@@ -19,7 +19,7 @@ module.exports.helpers = target => {
 
 module.exports.env = (target, opts) => {
   const defaults = {
-    MODULE_BUILD: opts.module || false,
+    MODULE_BUILD: Boolean(opts.module),
     NODE_ENV: process.env.NODE_ENV,
     BUILD_TARGET: target === 'web' ? 'client' : 'server',
     CSS_PLUGIN: process.env.CSS_PLUGIN || 'glamor'

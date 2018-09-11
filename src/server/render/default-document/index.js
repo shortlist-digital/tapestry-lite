@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import fs from 'fs-extra'
 import path from 'path'
 
 import stringifyEscapeScript from '../../utilities/stringify-escape-script'
+
+const hasModuleBuildAssets = () =>
+  fs.existsSync(path.resolve(process.cwd(), '.tapestry', 'assets-module.json'))
 
 const getBootstrapData = ({ bootstrapData, ids, _tapestryData }) => (
   <script
@@ -16,34 +19,36 @@ const getBootstrapData = ({ bootstrapData, ids, _tapestryData }) => (
   />
 )
 
-const getJavascriptBundles = () => {
-  if (
-    process.env.NODE_ENV === 'development' ||
-    process.env.NODE_ENV === 'test'
-  ) {
-    return <script src={'http://localhost:4001/static/js/bundle.js'} />
-  }
-  if (process.env.NODE_ENV === 'production') {
-    const assetsPath = path.resolve(process.cwd(), '.tapestry', 'assets.json')
-    const assets = fs.readJsonSync(assetsPath)
-    return Object.keys(assets)
-      .filter(Boolean)
-      .map((key, index) => <script noModule key={index} src={assets[key].js} />)
-  }
-}
+const getDevelopmentBundle = () => (
+  <script src={'http://localhost:4001/static/js/bundle.js'} />
+)
 
-const getModuleBundles = () => {
-  const assetsPath = path.resolve(
-    process.cwd(),
-    '.tapestry',
-    'assets-module.json'
+const getProductionBundles = () => {
+  const moduleBuild = hasModuleBuildAssets()
+  // fetch assets manifest for prod bundles
+  const assets = fs.readJsonSync(
+    path.resolve(process.cwd(), '.tapestry', 'assets.json')
   )
-  const assets = fs.readJsonSync(assetsPath)
-  return Object.keys(assets)
-    .filter(Boolean)
-    .map((key, index) => (
-      <script type="module" key={index} src={assets[key].js} />
-    ))
+  // fetch module specific manifect
+  const assetsModule = fs.readJsonSync(
+    path.resolve(process.cwd(), '.tapestry', 'assets-module.json')
+  )
+
+  return (
+    <Fragment>
+      {Object.keys(assets)
+        .filter(Boolean)
+        .map((key, index) => (
+          <script noModule={moduleBuild} key={index} src={assets[key].js} />
+        ))}
+      {moduleBuild &&
+        Object.keys(assetsModule)
+          .filter(Boolean)
+          .map((key, index) => (
+            <script type="module" key={index} src={assetsModule[key].js} />
+          ))}
+    </Fragment>
+  )
 }
 
 const DefaultDocument = ({
@@ -69,8 +74,10 @@ const DefaultDocument = ({
       <div id="root" dangerouslySetInnerHTML={{ __html: html }} />
       {loadableState.getScriptElement()}
       {getBootstrapData({ bootstrapData, ids, _tapestryData })}
-      {getJavascriptBundles()}
-      {process.env.NODE_ENV === 'production' && getModuleBundles()}
+      {(process.env.NODE_ENV === 'development' ||
+        process.env.NODE_ENV === 'test') &&
+        getDevelopmentBundle()}
+      {process.env.NODE_ENV === 'production' && getProductionBundles()}
     </body>
   </html>
 )

@@ -5,8 +5,12 @@ import { loadComponents } from 'loadable-components'
 import config from '../config/config-proxy'
 import Root from './root'
 
-// No need to include Promise polyfill if browser supports type="module"
-if (MODULE_BUILD === false) require('promis')
+// No need to include Promise or fetch polyfills
+// if browser supports type="module"
+if (MODULE_BUILD === false) {
+  require('promis')
+  require('isomorphic-unfetch')
+}
 
 // Hydrate server rendered CSS with either Emotion or Glamor
 if (CSS_PLUGIN === 'emotion')
