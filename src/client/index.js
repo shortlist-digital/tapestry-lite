@@ -9,7 +9,7 @@ import Root from './root'
 // if browser supports type="module"
 if (MODULE_BUILD === false) {
   require('promis')
-  require('isomorphic-unfetch')
+  require('isomorphic-fetch')
 }
 
 // Hydrate server rendered CSS with either Emotion or Glamor
