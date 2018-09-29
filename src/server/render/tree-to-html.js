@@ -8,7 +8,8 @@ export default async ({
   routeOptions = {},
   match,
   componentData,
-  queryParams
+  queryParams,
+  config
 }) => {
   const _tapestryData = {
     requestData: {
@@ -17,10 +18,19 @@ export default async ({
     }
   }
   // create html string from target component
-  const app = <Component {...componentData} _tapestry={_tapestryData} />
+  const Route = () => <Component {...componentData} _tapestry={_tapestryData} />
+  const App = config.components && config.components.App
+
+  const toRender = App ? (
+    <App>
+      <Route />
+    </App>
+  ) : (
+    <Route />
+  )
   // getLoadableState must be called before renderToString to preload all import() components
-  const loadableState = await getLoadableState(app)
-  const htmlString = renderToString(app)
+  const loadableState = await getLoadableState(toRender)
+  const htmlString = renderToString(toRender)
   // { html, css, ids }
   let styleData = {}
   // extract html, css and ids from either Glamor or Emotion

@@ -20,12 +20,21 @@ const Root = config => {
 
   // We will only ever return the first route, even if multiple are matched
   const Component = routes.filter(route => route.path === path)[0].component
+  const App = config.components && config.components.App
 
-  return (
+  const Route = () => (
     <Component
       {...window.__TAPESTRY_DATA__.appData}
       _tapestry={window.__TAPESTRY_DATA__._tapestry}
     />
+  )
+
+  return App ? (
+    <App>
+      <Route />
+    </App>
+  ) : (
+    <Route />
   )
 }
 

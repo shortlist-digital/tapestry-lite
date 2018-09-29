@@ -20,14 +20,16 @@ const renderErrorTree = async ({
   route,
   match,
   componentData,
-  h
+  h,
+  config
 }) => {
   log.silly('Rendering Error HTML')
   const responseString = await renderTreeToHTML({
     Component: errorComponent,
     routeOptions: route.options,
     match,
-    componentData
+    componentData,
+    config
   })
   log.silly('Error Data: ', componentData)
   return h
@@ -37,7 +39,7 @@ const renderErrorTree = async ({
 }
 
 const renderSuccessTree = async (
-  { route, match, componentData, isPreview, h, queryParams },
+  { route, match, componentData, isPreview, h, queryParams, config },
   cache,
   cacheKey
 ) => {
@@ -48,7 +50,8 @@ const renderSuccessTree = async (
     routeOptions: route.options,
     match,
     componentData,
-    queryParams
+    queryParams,
+    config
   })
   const response = h
     .response(responseString)
@@ -143,7 +146,8 @@ export default ({ server, config }) => {
           route,
           match,
           componentData,
-          h
+          h,
+          config
         })
       }
 
@@ -171,7 +175,8 @@ export default ({ server, config }) => {
           route,
           match,
           componentData,
-          h
+          h,
+          config
         })
       }
 
@@ -182,7 +187,8 @@ export default ({ server, config }) => {
           componentData,
           isPreview,
           h,
-          queryParams
+          queryParams,
+          config
         },
         cache,
         cacheKey
