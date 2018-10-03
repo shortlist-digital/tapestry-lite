@@ -1,6 +1,6 @@
 {
   "name": "tapestry-lite",
-  "version": "2.0.0-2",
+  "version": "2.0.0-3",
   "description": "Universal React & Wordpress Renderer",
   "main": "./src/server/index.js",
   "bin": {
@@ -8,7 +8,8 @@
   },
   "files": [
     "src/",
-    "bin/"
+    "bin/",
+    "babel.js"
   ],
   "repository": "shortlist-digital/tapestry-lite",
   "scripts": {
