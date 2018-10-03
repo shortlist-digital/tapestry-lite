@@ -202,7 +202,11 @@ module.exports = (target = 'node') => {
 
   // use custom webpack config
   if (fs.existsSync(paths.appWebpackConfig)) {
-    config = require(paths.appWebpackConfig)(config, {}, webpack)
+    let customConfig = require(paths.appWebpackConfig)
+    config =
+      typeof customConfig === 'function'
+        ? customConfig(config, {}, webpack)
+        : customConfig.default(config, {}, webpack)
   }
 
   return config
