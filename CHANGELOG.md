@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+# 2.1.0 (10-11-2018)
+* Added `customDoctype` option to `routeOptions`. If a value is passed it will override the default one`<!doctype html>`
+
 # 2.0.0 (11-10-2018)
 
 - Updated all babel packages to 7.0.0

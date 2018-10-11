@@ -28,7 +28,9 @@ const schema = joi.object({
       endpoint: [joi.string(), joi.func(), joi.object(), joi.array()],
       getComponent: joi.func(),
       options: joi.object().keys({
-        customDocument: joi.func()
+        customDocument: joi.func(),
+        disableDoctype: joi.boolean(),
+        customDoctype: joi.string()
       }),
       path: joi.string().required()
     })
