@@ -39,6 +39,9 @@ All notable changes to this project will be documented in this file.
 
 * Removed `matchRoutes` helper from client bundle
 
+# 1.6.0 (10-11-2018)
+* Added `customDoctype` option to `routeOptions`. If a value is passed it will override the default one`<!doctype html>`
+
 # 1.4.0 (08-06-2018)
 
 * Changed schema of `window.__TAPESTRY_DATA__`. Now includes request data and params. This is means that where previously you'd access `props.params` in the top level component, you'll now use `props._tapestry.requestData.params`
