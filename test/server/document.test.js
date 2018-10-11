@@ -44,7 +44,7 @@ describe('Document contents', () => {
         component: () => <p>Custom HTML</p>,
         options: {
           customDocument: () => 'testing-document',
-          doctype: ''
+          disableDoctype: true
         }
       },
       {
@@ -52,7 +52,7 @@ describe('Document contents', () => {
         component: () => <p>Custom HTML</p>,
         options: {
           customDocument: () => 'testing-document',
-          doctype:
+          customDoctype:
             '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
         }
       },
@@ -169,7 +169,7 @@ describe('Document contents', () => {
     })
   })
 
-  it('Custom document can have no doctype', done => {
+  it('Custom document can have doctype disabled', done => {
     request.get(`${uri}/custom-document-no-doctype`, (err, res, body) => {
       expect(body).to.contain('testing-document')
       expect(body).to.not.contain('<!doctype html>')
