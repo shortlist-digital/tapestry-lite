@@ -1,4 +1,4 @@
-import fetch from 'isomorphic-unfetch'
+import fetch from 'isomorphic-fetch'
 
 const fetcher = url => {
   const Agent = url.startsWith('https')
