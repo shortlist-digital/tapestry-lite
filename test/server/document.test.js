@@ -40,6 +40,14 @@ describe('Document contents', () => {
         }
       },
       {
+        path: '/custom-document-no-doctype',
+        component: () => <p>Custom HTML</p>,
+        options: {
+          customDocument: () => 'testing-document',
+          doctype: ''
+        }
+      },
+      {
         path: '/custom-document-custom-doctype',
         component: () => <p>Custom HTML</p>,
         options: {
@@ -157,6 +165,14 @@ describe('Document contents', () => {
     request.get(`${uri}/custom-document`, (err, res, body) => {
       expect(body).to.contain('testing-document')
       expect(body).to.contain('<!doctype html>')
+      done()
+    })
+  })
+
+  it('Custom document can have no doctype', done => {
+    request.get(`${uri}/custom-document-no-doctype`, (err, res, body) => {
+      expect(body).to.contain('testing-document')
+      expect(body).to.not.contain('<!doctype html>')
       done()
     })
   })
