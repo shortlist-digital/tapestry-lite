@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+# 2.2.0 (11-9-2018)
+
+* React Error Overlay for browser error notification in dev
+* Noisier terminal output during dev
+
 # 2.1.0 (10-11-2018)
 * Added `customDoctype` option to `routeOptions`. If a value is passed it will override the default one`<!doctype html>`
 
