@@ -17,8 +17,10 @@ serverCompiler.watch({ quiet: false }, (err, stats) => {
   }
 })
 
+clientDevServer.listen(4001, err => console.error(err))
+
 serverCompiler.hooks.compile.tap(
-  'Tapestry Lite Sever Compile Starting',
+  'Tapestry Lite Server Compile Starting',
   stats => {
     clientDevServer.sockWrite(clientDevServer.sockets, 'server-compile-starts')
     console.log('Emitted server compile end message', stats)
@@ -29,5 +31,3 @@ serverCompiler.hooks.done.tap('Tapestry Lite Server Compile Complete', () => {
   clientDevServer.sockWrite(clientDevServer.sockets, 'server-compile-ends')
   console.log('Emitted server compile start message')
 })
-
-clientDevServer.listen(4001, err => console.error(err))
