@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+# 2.3.1 (11-12-2018)
+
+- Fix issue with dev server and hook registering order
+
 # 2.3.0 (11-12-2018)
 
 - Broadcast websocket events for server compilation to the client
