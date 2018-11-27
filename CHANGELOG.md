@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+# 2.3.2 (11-12-2018)
+
+- Lock version number of ps-tree to fix event-stream issue (https://github.com/dominictarr/event-stream/issues/116)
+
 # 2.3.1 (11-12-2018)
 
 - Fix issue with dev server and hook registering order
