@@ -1,6 +1,6 @@
 {
   "name": "tapestry-lite",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "Universal React & Wordpress Renderer",
   "main": "./src/server/index.js",
   "bin": {
@@ -82,7 +82,7 @@
     "make-promises-safe": "^1.1.0",
     "path-to-regexp": "^2.4.0",
     "promis": "^1.1.4",
-    "ps-tree": "^1.1.0",
+    "ps-tree": "1.2.0",
     "react-dev-utils": "5.0.2",
     "react-emotion": "^9.2.8",
     "react-helmet": "^5.2.0",
