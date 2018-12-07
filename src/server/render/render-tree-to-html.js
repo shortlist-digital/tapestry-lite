@@ -39,7 +39,7 @@ export default async ({
     loadableState
   }
   let Document =
-    routeOptions.customDocument || require('../render/default-document').default
+    routeOptions.customDocument || require('./default-document').default
 
   const doctype = routeOptions.customDoctype || '<!doctype html>'
 
