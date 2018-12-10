@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+# 2.3.3 (12-07-2018)
+
+- Refactor dynamic handler, and render function in preperation for serverless command
+
 # 2.3.2 (11-12-2018)
 
 - Lock version number of ps-tree to fix event-stream issue (https://github.com/dominictarr/event-stream/issues/116)

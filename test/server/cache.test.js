@@ -148,8 +148,8 @@ describe('Handling cache set/get', () => {
   it('Sets HTML cache items correctly', done => {
     request.get(uri, async (err, res, body) => {
       const cacheHtml = cacheManager.getCache('html')
-      const htmlResult = await cacheHtml.get('/')
-      expect(htmlResult)
+      const cacheObject = await cacheHtml.get('/')
+      expect(cacheObject.responseString)
         .to.be.a('string')
         .that.includes('doctype')
       done()
@@ -165,7 +165,7 @@ describe('Handling cache set/get', () => {
         const shouldNotCache = await cacheHtml.get(
           '2017/12/01/query-test?utm_source=stop-it'
         )
-        expect(shouldCache)
+        expect(shouldCache.responseString)
           .to.be.a('string')
           .that.includes('doctype')
         expect(shouldNotCache).to.not.exist
@@ -177,7 +177,7 @@ describe('Handling cache set/get', () => {
   it('Retrieves HTML cache items correctly', done => {
     const cacheHtml = cacheManager.getCache('html')
     const response = 'test string'
-    cacheHtml.set('2018/01/01/test', response)
+    cacheHtml.set('2018/01/01/test', { responseString: response, status: 200 })
     request.get(`${uri}/2018/01/01/test`, (err, res, body) => {
       expect(body).to.equal(response)
       done()
