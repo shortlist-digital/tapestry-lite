@@ -15,7 +15,7 @@ const babelDefaultConfig = require('./babel')
 const { env, helpers } = require('./env')
 const paths = require('./paths')
 
-module.exports = (target = 'node') => {
+module.exports = (target = 'node', lambda = false) => {
   const { IS_WEB, IS_DEV, NODE_DEV, NODE_PROD, WEB_DEV, WEB_PROD } = helpers(
     target
   )
