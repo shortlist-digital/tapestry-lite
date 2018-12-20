@@ -48,6 +48,15 @@ describe('Document contents', () => {
         }
       },
       {
+        path: '/custom-document-custom-doctype',
+        component: () => <p>Custom HTML</p>,
+        options: {
+          customDocument: () => 'testing-document',
+          customDoctype:
+            '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
+        }
+      },
+      {
         path: '/custom-document/with-data',
         endpoint: () => 'posts',
         component: () => (
@@ -164,6 +173,16 @@ describe('Document contents', () => {
     request.get(`${uri}/custom-document-no-doctype`, (err, res, body) => {
       expect(body).to.contain('testing-document')
       expect(body).to.not.contain('<!doctype html>')
+      done()
+    })
+  })
+
+  it('Custom document can have custom doctype', done => {
+    request.get(`${uri}/custom-document-custom-doctype`, (err, res, body) => {
+      expect(body).to.contain('testing-document')
+      expect(body).to.contain(
+        '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
+      )
       done()
     })
   })

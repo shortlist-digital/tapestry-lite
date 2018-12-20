@@ -39,8 +39,11 @@ export default async ({
     loadableState
   }
   let Document =
-    routeOptions.customDocument || require('../render/default-document').default
-  return `${
-    routeOptions.disableDoctype ? '' : '<!doctype html>'
-  }${renderToStaticMarkup(<Document {...renderData} />)}`
+    routeOptions.customDocument || require('./default-document').default
+
+  const doctype = routeOptions.customDoctype || '<!doctype html>'
+
+  return `${routeOptions.disableDoctype ? '' : doctype}${renderToStaticMarkup(
+    <Document {...renderData} />
+  )}`
 }

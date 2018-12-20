@@ -1,9 +1,9 @@
 import idx from 'idx'
 import normaliseUrlPath from './normalise-url-path'
 
-export default (config, url) => {
+export default (config, queryParams) => {
   // Handle preview API path
-  if (idx(url, _ => _.query.tapestry_hash))
+  if (idx(queryParams, _ => _.tapestry_hash))
     return `${normaliseUrlPath(config.siteUrl)}/wp-json/revision/v1`
   // Handle wordpress.com API path
   if (idx(config, _ => _.options.wordpressDotComHosting)) {

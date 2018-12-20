@@ -9,6 +9,7 @@ const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const nodeExternals = require('webpack-node-externals')
 const StartServerPlugin = require('start-server-webpack-plugin')
 const StatsPlugin = require('stats-webpack-plugin')
+const ErrorOverlayPlugin = require('error-overlay-webpack-plugin')
 
 const babelDefaultConfig = require('./babel')
 const { env, helpers } = require('./env')
@@ -137,7 +138,8 @@ module.exports = (target = 'node', opts = {}) => {
       plugins: [
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoEmitOnErrorsPlugin()
+        new webpack.NoEmitOnErrorsPlugin(),
+        new ErrorOverlayPlugin()
       ],
       devServer: {
         disableHostCheck: true,
@@ -150,11 +152,11 @@ module.exports = (target = 'node', opts = {}) => {
         },
         host: 'localhost',
         hot: true,
-        noInfo: true,
-        overlay: false,
+        noInfo: false,
+        overlay: true,
         stats: 'none',
         port: 8080,
-        quiet: true,
+        quiet: false,
         // By default files from `contentBase` will not trigger a page reload.
         // Reportedly, this avoids CPU overload on some systems.
         // https://github.com/facebookincubator/create-react-app/issues/293
@@ -202,7 +204,7 @@ module.exports = (target = 'node', opts = {}) => {
   config.plugins.push(
     new CleanPlugin(['.tapestry'], {
       root: process.cwd(),
-      verbose: false
+      verbose: WEB_PROD ? false : true
     }),
     new webpack.DefinePlugin(env(target, opts))
   )

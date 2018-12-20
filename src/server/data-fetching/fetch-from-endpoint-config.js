@@ -32,16 +32,11 @@ const mapArrayToObject = (arr, obj) => {
   }, {})
 }
 
-export default async ({
-  endpointConfig,
-  baseUrl,
-  requestUrlObject,
-  params
-}) => {
+export default async ({ endpointConfig, baseUrl, params, queryParams }) => {
   // save data for use in util functions
-  query = idx(requestUrlObject, _ => _.query)
+  query = queryParams
   origin = baseUrl
-  preview = idx(requestUrlObject, _ => _.query.tapestry_hash)
+  preview = idx(queryParams, _ => _.tapestry_hash)
   // kick off progress loader
   // fetch each endpoint
   const resolvedEndpointConfig = resolvePaths({

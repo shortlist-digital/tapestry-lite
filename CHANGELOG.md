@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+# 2.3.3 (12-07-2018)
+
+- Refactor dynamic handler, and render function in preperation for serverless command
+
+# 2.3.2 (11-12-2018)
+
+- Lock version number of ps-tree to fix event-stream issue (https://github.com/dominictarr/event-stream/issues/116)
+
+# 2.3.1 (11-12-2018)
+
+- Fix issue with dev server and hook registering order
+
+# 2.3.0 (11-12-2018)
+
+- Broadcast websocket events for server compilation to the client
+
+# 2.2.0 (11-9-2018)
+
+- React Error Overlay for browser error notification in dev
+- Noisier terminal output during dev
+
+# 2.1.0 (10-11-2018)
+
+- Added `customDoctype` option to `routeOptions`. If a value is passed it will override the default one`<!doctype html>`
+
 # 2.0.0 (11-10-2018)
 
 - Updated all babel packages to 7.0.0
