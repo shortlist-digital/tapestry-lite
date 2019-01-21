@@ -68,7 +68,8 @@ module.exports = (target = 'node') => {
           loader: require.resolve('file-loader'),
           options: {
             publicPath: IS_DEV ? 'http://localhost:4001' : '/_assets',
-            emitFile: WEB_DEV || WEB_PROD
+            emitFile: WEB_DEV || WEB_PROD,
+            name: IS_DEV ? '[path][name].[ext]' : '[hash:10].[ext]'
           }
         }
       ]
@@ -173,8 +174,8 @@ module.exports = (target = 'node') => {
       },
       output: {
         path: paths.appBuildPublic,
-        sourceMapFilename: '[name].[chunkhash].map',
-        filename: '[name].[chunkhash].js',
+        sourceMapFilename: '[name].[chunkhash:10].map',
+        filename: '[name].[chunkhash:10].js',
         publicPath: '/_assets/'
       },
       plugins: [
@@ -183,10 +184,11 @@ module.exports = (target = 'node') => {
           filename: 'assets.json',
           path: paths.appBuild,
           prettyPrint: true
-        })
+        }),
+        new webpack.HashedModuleIdsPlugin()
       ],
       optimization: {
-        runtimeChunk: true,
+        runtimeChunk: 'single',
         splitChunks: {
           chunks: 'all'
         }
