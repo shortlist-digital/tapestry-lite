@@ -1,0 +1,73 @@
+---
+route: /
+---
+
+# Tapestry Lite
+
+> Fast Dynamic Websites with WordPress and React
+
+## Quickstart
+
+Install Tapestry Lite and React:
+
+```sh
+npm install tapestry-lite react react-dom
+```
+
+Create a `tapestry.config.js` file in the root of your project:
+
+```js
+// tapestry.config.js
+import Post from './post'
+
+export default {
+  siteUrl: 'https://www.mysite.com',
+  components: { Post }
+}
+
+//post.js
+const Post = props => (
+
+  <article>
+    <h1>{props.title.rendered}</h1>
+    <section dangerouslySetInnerHTML={{__html: props.content.rendered}} />
+  <article>
+)
+```
+
+Run the tapestry development server:
+
+```sh
+npx tapestry dev
+```
+
+## In a nutshell
+
+- Build for the web with elegance or React's component model
+- Empower your customers and colleagues with WordPress to manage content
+- Server side rendering, for dynamic content, SEO, no static build step
+
+## The magic bits
+
+- Full Server side render out of the box
+- Client side navigation and render after initial load
+- True critical CSS. Tapestry inlines only the styles for components rendered.
+- Tapestry handles fetching data from the WP-API
+- Install the Tapestry WP plugin for deep integration
+- Code splitting with (customisable) Webpack 4
+
+## Why use Tapestry?
+
+### You love building with React.
+
+A wise person once tweeted something to the effect of "Reacts killer feature isn't setState, it's that it nailed the component model."
+
+We think colocating markup, styling, and interaction code is the best way to manage front-end projects: Or to put it another way, separation of concerns doesn't mean separation of files.
+
+### You need a proper CMS.
+
+We've tried to teach people to use GitHub and Markdown; we've tried to build our own CMS's - and gotten bogged down in rebuilding login flows, password resets, text editors, taxonomies, access privilege systems.
+
+For all it's flaws, there's a reason WordPress powers 25% of the internet.
+
+Use a system that millions of people have used, tens of thousands of developers have contributed to, and content management functionality that's expanded and matured over a decade. Get timely security updates, an expansive plugin ecosystem, and regular new features. For free!

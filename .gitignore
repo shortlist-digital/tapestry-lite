@@ -2,6 +2,10 @@
 ## Project Specific
 stage-start
 
+### Docz ###
+
+.docz
+
 ### SublimeText ###
 # cache files for sublime text
 *.tmlanguage.cache

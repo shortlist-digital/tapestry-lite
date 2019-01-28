@@ -1,0 +1,53 @@
+---
+menu: Configuration
+---
+
+# Default Components
+
+The fastest way to build a site with default WordPress routing and Tapestry, is to provide an object of "default components".
+
+```js
+//tapestry.config.js
+
+import { Post, FrontPage, Category, Page } from './src/components'
+
+export default {
+  siteUrl: 'https://www.mywordpress.com',
+  components: {
+    Post,
+    FrontPage,
+    Category,
+    Page
+  }
+}
+```
+
+## Post
+
+The top level component for a post, (think of `single.php` if you're in WordPress theme world).
+
+### Route
+
+By default posts will be rendered at the "out of the box" route path:
+
+```
+/:category/:year/:monthnum/:postname
+```
+
+### Data
+
+Data will be fetched from the `posts?slug=my-post-slug&_embed` endpoint.
+
+By default the WordPress API will return the last ten posts from your site
+
+## FrontPage
+
+### Route
+
+Tapestry will render this component on the root `/` of your site.
+
+### Data
+
+Data will be fetched from the `/wp-json/wp/v2/posts?_embed` endpoint.
+
+By default the WordPress API will return the last ten posts from your site.
