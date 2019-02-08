@@ -7,7 +7,7 @@ export default ({ server, config }) => {
     server.route({
       method: 'GET',
       path: from,
-      handler: (req, h) => h.proxy({ uri: to })
+      handler: (req, h) => h.proxy({ uri: to, passThrough: true })
     })
 
   config.proxyPaths.map(path => {
