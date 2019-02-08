@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+# 2.3.4 (08-02-2019)
+
+- Pass through headers for proxies
+
 # 2.3.3 (12-07-2018)
 
 - Refactor dynamic handler, and render function in preperation for serverless command
