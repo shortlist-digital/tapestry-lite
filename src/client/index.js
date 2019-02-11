@@ -10,12 +10,7 @@ import Root from './root'
 
 // If page is a WP preview, remove any tapestry related querystring data
 // This runs on the client only so it won't affect loading preview data
-// Added check for the history API for compatibility with other browsers
-if (
-  window.location.search.indexOf('tapestry_hash') > -1 &&
-  window.history &&
-  window.history.replaceState
-) {
+if (window.location.search.indexOf('tapestry_hash') > -1) {
   window.history.replaceState(
     {},
     document.title,
