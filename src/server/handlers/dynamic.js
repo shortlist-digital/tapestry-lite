@@ -26,7 +26,6 @@ export default ({ server, config }) => {
     handler: async (request, h) => {
       // Set a cache key
       const currentPath = request.url.pathname || '/'
-      const isPreview = Boolean(request.query && request.query.tapestry_hash)
       const cacheKey = normaliseUrlPath(currentPath)
       // Is there cached HTML?
       const cacheObject = await cache.get(cacheKey)
@@ -58,21 +57,13 @@ export default ({ server, config }) => {
         config
       )
 
-      let response = h
+      log.debug(`Setting html in cache: ${chalk.green(cacheKey)}`)
+      cache.set(cacheKey, { responseString, status })
+
+      return h
         .response(responseString)
         .type('text/html')
         .code(status)
-
-      if (!isPreview) {
-        log.debug(`Setting html in cache: ${chalk.green(cacheKey)}`)
-        cache.set(cacheKey, { responseString, status })
-      }
-
-      if (isPreview) {
-        response.header('cache-control', 'no-cache')
-      }
-
-      return response
     }
   })
 }
