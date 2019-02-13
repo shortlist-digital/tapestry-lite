@@ -41,13 +41,16 @@ export default ({ server, config }) => {
         config
       )
 
-      log.debug(`Setting html in cache: ${chalk.green(cacheKey)}`)
-      cache.set(cacheKey, { responseString, status })
-
-      return h
+      const response = h
         .response(responseString)
         .type('text/html')
         .code(status)
+      // cache _must_ be set after response is created
+      // I don't know why
+      log.debug(`Setting html in cache: ${chalk.green(cacheKey)}`)
+      cache.set(cacheKey, { responseString, status })
+
+      return response
     }
   })
 }
