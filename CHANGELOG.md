@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-# 3.0.0 (11-02-2019)
+# 3.0.1 (13-02-2019)
+
+- Fix potential cache/response issue in dynamic
+
+# 3.0.0 (13-02-2019)
 
 - Set cache for all preview links, rely on Tapestry Wordpress Plugin to produce unique hash per update
 - Remove tapestry query string data from URL on load
