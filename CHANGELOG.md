@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# 3.0.0 (11-02-2019)
+
+- Set cache for all preview links, rely on Tapestry Wordpress Plugin to produce unique hash per update
+- Remove tapestry query string data from URL on load
+- Fix normalised path issue
+
 # 2.3.4 (08-02-2019)
 
 - Pass through headers for proxies
