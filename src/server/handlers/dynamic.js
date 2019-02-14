@@ -28,13 +28,15 @@ export default ({ server, config }) => {
       // Is there cached HTML?
       const cacheString = await cache.get(cacheKey)
       // If there's a cache response, return the response straight away
-      if (cacheString) {
+      if (cacheString && !isPreview) {
         const cacheObject = JSON.parse(cacheString)
         log.debug(`Rendering HTML from cache: ${chalk.green(cacheKey)}`)
         return h
           .response(cacheObject.responseString)
           .type('text/html')
           .code(cacheObject.status)
+      } else {
+        log.debug(`Skipping cache: ${chalk.green(cacheKey)}`)
       }
 
       const { responseString, status } = await tapestryRender(

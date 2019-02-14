@@ -176,6 +176,18 @@ describe('Handling cache set/get', () => {
     )
   })
 
+  it('Doesnt set API/HTML cache items if preview', done => {
+    request.get(
+      `${uri}/2017/12/01/preview-test?tapestry_hash=123`,
+      async (err, res, body) => {
+        const cacheHtml = cacheManager.getCache('html')
+        const shouldNotCache = await cacheHtml.get('2017/12/01/preview-test')
+        expect(shouldNotCache).to.not.exist
+        done()
+      }
+    )
+  })
+
   it('Retrieves HTML cache items correctly', done => {
     const cacheHtml = cacheManager.getCache('html')
     const response = 'test string'
