@@ -25,9 +25,10 @@ export default ({ server, config }) => {
       const currentPath = request.url.pathname || '/'
       const cacheKey = normaliseUrlPath(currentPath)
       // Is there cached HTML?
-      const cacheObject = await cache.get(cacheKey)
+      const cacheString = await cache.get(cacheKey)
       // If there's a cache response, return the response straight away
-      if (cacheObject) {
+      if (cacheString) {
+        const cacheObject = JSON.parse(cacheString)
         log.debug(`Rendering HTML from cache: ${chalk.green(cacheKey)}`)
         return h
           .response(cacheObject.responseString)
@@ -48,7 +49,7 @@ export default ({ server, config }) => {
       // cache _must_ be set after response is created
       // I don't know why
       log.debug(`Setting html in cache: ${chalk.green(cacheKey)}`)
-      cache.set(cacheKey, { responseString, status })
+      cache.set(cacheKey, JSON.stringify({ responseString, status }))
 
       return response
     }
