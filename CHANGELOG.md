@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+# 4.0.0 (13-02-2019)
+
+- Revert preview cache behaviour
+
 # 3.0.1 (13-02-2019)
 
 - Fix potential cache/response issue in dynamic
