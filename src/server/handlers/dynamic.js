@@ -23,6 +23,7 @@ export default ({ server, config }) => {
     handler: async (request, h) => {
       // Set a cache key
       const currentPath = request.url.pathname || '/'
+      const isPreview = Boolean(request.query && request.query.tapestry_hash)
       const cacheKey = normaliseUrlPath(currentPath)
       // Is there cached HTML?
       const cacheString = await cache.get(cacheKey)
@@ -46,10 +47,16 @@ export default ({ server, config }) => {
         .response(responseString)
         .type('text/html')
         .code(status)
+
       // cache _must_ be set after response is created
-      // I don't know why
-      log.debug(`Setting html in cache: ${chalk.green(cacheKey)}`)
-      cache.set(cacheKey, JSON.stringify({ responseString, status }))
+      if (!isPreview) {
+        log.debug(`Setting html in cache: ${chalk.green(cacheKey)}`)
+        cache.set(cacheKey, JSON.stringify({ responseString, status }))
+      }
+
+      if (isPreview) {
+        response.header('cache-control', 'no-cache')
+      }
 
       return response
     }

@@ -8,18 +8,6 @@ import { loadComponents } from 'loadable-components'
 import config from '../config/config-proxy'
 import Root from './root'
 
-// If page is a WP preview, remove any tapestry related querystring data
-// This runs on the client only so it won't affect loading preview data
-if (window.location.search.indexOf('tapestry_hash') > -1) {
-  window.history.replaceState(
-    {},
-    document.title,
-    `${window.location.protocol}//${window.location.host}${
-      window.location.pathname
-    }`
-  )
-}
-
 // Hydrate server rendered CSS with either Emotion or Glamor
 if (CSS_PLUGIN === 'emotion')
   require('emotion').hydrate(window.__TAPESTRY_DATA__.ids)
