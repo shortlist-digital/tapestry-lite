@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-# 4.0.0 (13-02-2019)
+# 4.0.1 (14-02-2019)
+
+- Check if request is preview before returning cached response
+
+# 4.0.0 (14-02-2019)
 
 - Revert preview cache behaviour
 
