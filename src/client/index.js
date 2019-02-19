@@ -1,4 +1,4 @@
-import 'isomorphic-fetch'
+import 'isomorphic-unfetch'
 import 'promis'
 
 import React from 'react'

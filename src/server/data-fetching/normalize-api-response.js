@@ -1,39 +1,37 @@
 import chalk from 'chalk'
-import idx from 'idx'
-import HTTPStatus from 'http-status'
-import isPlainObject from 'lodash.isplainobject'
 import { log } from '../utilities/logger'
 
-export default (response, route) => {
-  // WP returns single objects or arrays
-  const arrayResp = Array.isArray(response)
-  // We can configure a route response to be an object "on purpose"
-  const objectOnPurpose = isPlainObject(route.endpoint)
+export default (response, { path, endpoint } = {}) => {
   // 1: is it a falsey value
   // 2: does it contain a status code? then it'll be an error response from WP
-  if (!response || idx(response, _ => _.data.status)) {
+  if (!response || (response.data && response.data.status)) {
     log.warn('Returning error response from normalize-api-response', response)
-    // Assign status
-    let status = idx(response, _ => _.data.status) || HTTPStatus.NOT_FOUND
 
-    // Check for static routes with no endpoint
-    const routeExistsWithNoEndpoint =
-      idx(route, _ => _.path) && !idx(route, _ => _.endpoint)
-
-    // If the route is registered but has no endpoint, assume 200
-    status = routeExistsWithNoEndpoint ? HTTPStatus.OK : status
-
-    return {
-      code: status,
-      message: HTTPStatus[status]
+    if (!response) {
+      return {
+        status: 404,
+        statusText: 'Not Found'
+      }
     }
+    // Check for static routes with no endpoint
+    // If the route is registered but has no endpoint, assume 200
+    if (path && !endpoint) {
+      return {
+        status: 200,
+        statusText: 'OK'
+      }
+    }
+
+    return response.data
   }
-  log.debug(
+
+  log.silly(
     `Should wrap API response in object "{ data: response }": ${chalk.green(
-      Boolean(objectOnPurpose || arrayResp)
+      Boolean(Array.isArray(response))
     )}`
   )
+  // WP returns single objects or arrays
   // to avoid React mangling the array to {'0':{},'1':{}}
   // wrap in an object
-  return objectOnPurpose || arrayResp ? { data: response } : response
+  return Array.isArray(response) ? { data: response } : response
 }

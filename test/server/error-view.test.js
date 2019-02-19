@@ -39,6 +39,7 @@ describe('Error view rendering', () => {
     await server.start()
     let res = await r.get(server.info.uri)
     let body = await res.text()
+    console.log({body})
     expect(body).to.contain('Missing component')
   })
 
@@ -116,4 +117,3 @@ describe('Error view rendering', () => {
     expect(body).to.contain('Not Found')
   })
 })
-

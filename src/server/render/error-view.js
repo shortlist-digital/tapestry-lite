@@ -1,20 +1,14 @@
-import DefaultError from './default-error'
-import MissingView from './missing-view'
-
 export default ({ config = {}, missing = false }) => {
-  // render custom error or default if custom error not declared
-  let ErrorView =
-    config.components && config.components.CustomError
-      ? config.components.CustomError
-      : DefaultError
-  // render missing component only in DEV
-  if (
-    (process.env.NODE_ENV === 'test' ||
-      process.env.NODE_ENV === 'development') &&
-    missing
-  ) {
-    ErrorView = MissingView
+  // always return custom error if declared
+  if (config.components && config.components.CustomError) {
+    return config.components.CustomError
   }
-  // return one of the error views
-  return ErrorView
+  // if _not_ production, return missing view or default tapestry error
+  if (process.env.NODE_ENV !== 'production' && missing) {
+    return missing
+      ? require('./missing-view').default
+      : require('./default-error').default
+  }
+  // otherwise nahp just a nully
+  return () => null
 }

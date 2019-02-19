@@ -16,6 +16,7 @@ export default async ({
       queryParams
     }
   }
+  console.log({ Component })
   // create html string from target component
   const app = <Component {...componentData} _tapestry={_tapestryData} />
   // getLoadableState must be called before renderToString to preload all import() components

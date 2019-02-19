@@ -1,9 +1,10 @@
-import fetch from 'isomorphic-fetch'
+import fetch from 'isomorphic-unfetch'
 
-const fetcher = url => {
+export default url => {
   const Agent = url.startsWith('https')
     ? require('https').Agent
     : require('http').Agent
+
   return fetch(url, {
     agent: new Agent({
       keepAlive: true,
@@ -11,5 +12,3 @@ const fetcher = url => {
     })
   })
 }
-
-export default fetcher

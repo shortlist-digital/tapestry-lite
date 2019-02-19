@@ -10,7 +10,7 @@ const log = (msg, data) =>
 const Root = config => {
   log(`Application data`, window.__TAPESTRY_DATA__)
 
-  if (window.__TAPESTRY_DATA__.appData.code === 404) {
+  if (window.__TAPESTRY_DATA__.appData.status > 299) {
     const Component = buildErrorView({ config, missing: false })
     return <Component {...window.__TAPESTRY_DATA__.appData} />
   }
