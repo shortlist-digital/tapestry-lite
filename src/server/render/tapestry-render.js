@@ -6,6 +6,7 @@ import matchRoutes from '../routing/match-routes'
 
 import normalizeApiResponse from '../data-fetching/normalize-api-response'
 import fetchFromEndpointConfig from '../data-fetching/fetch-from-endpoint-config'
+
 import buildErrorView from './error-view'
 import renderSuccessTree from './render-success-tree'
 import renderErrorTree from './render-error-tree'
@@ -13,92 +14,64 @@ import renderErrorTree from './render-error-tree'
 import baseUrlResolver from '../utilities/base-url-resolver'
 import { log } from '../utilities/logger'
 
+const errorResponse = async ({ config, route, match, missing = false }) => {
+  log.debug('Render Error component')
+
+  const errorComponent = buildErrorView({ config, missing })
+
+  const responseString = await renderErrorTree({
+    errorComponent,
+    route,
+    match,
+    componentData: {
+      code: 404,
+      message: 'Not Found'
+    }
+  })
+  return {
+    responseString,
+    status: 404
+  }
+}
+
 export default async (requestPath, requestQuery, config) => {
-  // Don't even import react-router any more, but backwards compatible
-  // With the exception of optional params: (:thing) becomes :thing?
-  // Match Routes
-  // this should only have one route as we force "exact" on each route
-  // How would we error out if two routes match here? "Ambigous routes detected?" maybe earlier in app
-  const routes = prepareAppRoutes(config)
-  const { route, match } = matchRoutes(routes, requestPath)
+  // get matching route and match data
+  const { route, match } = matchRoutes(prepareAppRoutes(config), requestPath)
+  let componentData = {}
+
   log.debug(`Matched route ${chalk.green(route.path)}`)
-  // This needs tidying
-  // If there's a branch of the route config, we have a route
-  // Optimistic default component data for static routes
-  let componentData = {
-    status: 200,
-    message: '200'
+
+  // route has requested an error response
+  // route hasn't configured a component
+  if (route.error || typeof route.component === 'undefined') {
+    log.silly('Render Error component', { route, match })
+    return errorResponse({ config, route, match, missing: true })
   }
 
-  // Set a flag for whether we have a missing component later on
-  const routeComponentUndefined = typeof route.component === 'undefined'
-  // If we have an endpoint
+  // endpoint has been specified, data requested
   if (route.endpoint) {
-    // Start to try and fetch data
-    const multidata = await fetchFromEndpointConfig({
+    const data = await fetchFromEndpointConfig({
       endpointConfig: route.endpoint,
       baseUrl: baseUrlResolver(config, requestQuery),
       params: match.params,
       queryParams: requestQuery
     })
-    componentData = normalizeApiResponse(multidata, route)
-  }
-  if (componentData.code > 299 || routeComponentUndefined) {
-    log.debug(`Render Error component`, {
-      componentData,
-      routeComponentUndefined
-    })
-
-    const errorComponent = buildErrorView({
-      config,
-      missing: routeComponentUndefined
-    })
-
-    const responseString = await renderErrorTree({
-      errorComponent,
-      route,
-      match,
-      componentData
-    })
-
-    return {
-      responseString,
-      status: componentData.status || 404
-    }
+    componentData = normalizeApiResponse(data, route)
   }
 
-  // If our route is the not found route
-  // Overwrite the data
-  const loadedData = componentData.data || componentData
-  if (route.notFoundRoute || (route.endpoint && isEmpty(loadedData))) {
-    log.silly(
-      'Route is "not found" route',
-      route.endpoint,
-      isEmpty(loadedData),
-      componentData,
-      route.notFoundRoute
-    )
-    componentData = {
-      message: 'Not Found',
-      code: 404
-    }
-    const errorComponent = buildErrorView({
-      config,
-      missing: routeComponentUndefined
-    })
-    const responseString = await renderErrorTree({
-      errorComponent,
-      route,
-      match,
-      componentData
-    })
-
-    return {
-      responseString,
-      status: componentData.status || 404
-    }
+  // route hasn't got a match from config.routes
+  // status from API response is not OK
+  // API returns empty response
+  if (
+    route.notFoundRoute ||
+    componentData.code > 299 ||
+    (route.endpoint && isEmpty(componentData.data || componentData))
+  ) {
+    log.silly('Render Error component', { route, match, componentData })
+    return errorResponse({ config, route, match })
   }
 
+  // otherwise build component tree with API data
   const responseString = await renderSuccessTree({
     route,
     match,

@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+# 4.1.0 (19-02-2019)
+
+- Allow `{ path: '/', error: true }` to return 404
+- Only bundle `missing-view` and `error-view` if PROD
+
 # 4.0.1 (14-02-2019)
 
 - Check if request is preview before returning cached response
