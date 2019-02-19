@@ -71,8 +71,6 @@ export default async (requestPath, requestQuery, config) => {
     return errorResponse({ config, route, match })
   }
 
-  // console.log({ errorComponent })
-
   // otherwise build component tree with API data
   const responseString = await renderSuccessTree({
     route,
