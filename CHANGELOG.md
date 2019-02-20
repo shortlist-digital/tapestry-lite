@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file.
 
+# 4.1.0 (19-02-2019)
+
+- Allow `{ path: '/', error: true }` to return 404
+- Only bundle `missing-view` and `error-view` if PROD
+
+# 4.0.1 (14-02-2019)
+
+- Check if request is preview before returning cached response
+
+# 4.0.0 (14-02-2019)
+
+- Revert preview cache behaviour
+
+# 3.0.2 (14-02-2019)
+
+- Serialize/Deserialize responseObject into cache
+
+# 3.0.1 (13-02-2019)
+
+- Fix potential cache/response issue in dynamic
+
+# 3.0.0 (13-02-2019)
+
+- Set cache for all preview links, rely on Tapestry Wordpress Plugin to produce unique hash per update
+- Remove tapestry query string data from URL on load
+- Fix normalised path issue
+
+# 2.3.4 (08-02-2019)
+
+- Pass through headers for proxies
+
 # 2.3.3 (12-07-2018)
 
 - Refactor dynamic handler, and render function in preperation for serverless command

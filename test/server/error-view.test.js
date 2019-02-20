@@ -35,19 +35,11 @@ describe('Error view rendering', () => {
   afterEach(async () => await server.stop())
 
   it('Show MissingView in DEV if component missing', async () => {
-    server = new Server({config})
+    server = new Server({ config })
     await server.start()
     let res = await r.get(server.info.uri)
     let body = await res.text()
     expect(body).to.contain('Missing component')
-  })
-
-  it('Show DefaultError in PROD if component missing', async () => {
-    server = new Server({config})
-    await server.start()
-    let res = await r.get(server.info.uri)
-    let body = await res.text()
-    expect(body).to.contain('Application Error')
   })
 
   it('Show DefaultError if API 404', async () => {
@@ -116,4 +108,3 @@ describe('Error view rendering', () => {
     expect(body).to.contain('Not Found')
   })
 })
-

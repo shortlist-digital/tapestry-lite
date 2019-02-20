@@ -1,8 +1,5 @@
 import chalk from 'chalk'
 
-import prepareAppRoutes from '../routing/prepare-app-routes'
-import matchRoutes from '../routing/match-routes'
-
 import normaliseUrlPath from '../utilities/normalise-url-path'
 import CacheManager from '../utilities/cache-manager'
 import { log } from '../utilities/logger'
@@ -12,7 +9,7 @@ import tapestryRender from '../render/tapestry-render'
 export default ({ server, config }) => {
   const cacheManager = new CacheManager()
   const cache = cacheManager.createCache('html')
-  const routes = prepareAppRoutes(config)
+
   server.route({
     options: {
       cache: {
@@ -29,43 +26,34 @@ export default ({ server, config }) => {
       const isPreview = Boolean(request.query && request.query.tapestry_hash)
       const cacheKey = normaliseUrlPath(currentPath)
       // Is there cached HTML?
-      const cacheObject = await cache.get(cacheKey)
+      const cacheString = await cache.get(cacheKey)
       // If there's a cache response, return the response straight away
-      if (cacheObject) {
+      if (cacheString && !isPreview) {
+        const cacheObject = JSON.parse(cacheString)
         log.debug(`Rendering HTML from cache: ${chalk.green(cacheKey)}`)
         return h
           .response(cacheObject.responseString)
           .type('text/html')
           .code(cacheObject.status)
+      } else {
+        log.debug(`Skipping cache: ${chalk.green(cacheKey)}`)
       }
 
-      const queryParams = request.query
-
-      // Don't even import react-router any more, but backwards compatible
-      // With the exception of optional params: (:thing) becomes :thing?
-      // Match Routes
-      // this should only have one route as we force "exact" on each route
-      // How would we error out if two routes match here? "Ambigous routes detected?" maybe earlier in app
-      const { route } = matchRoutes(routes, request.url.pathname)
-
-      log.debug(`Matched route ${chalk.green(route.path)}`)
-
-      const requestPath = currentPath
-      const requestQuery = queryParams
       const { responseString, status } = await tapestryRender(
-        requestPath,
-        requestQuery,
+        currentPath,
+        request.query,
         config
       )
 
-      let response = h
+      const response = h
         .response(responseString)
         .type('text/html')
         .code(status)
 
+      // cache _must_ be set after response is created
       if (!isPreview) {
         log.debug(`Setting html in cache: ${chalk.green(cacheKey)}`)
-        cache.set(cacheKey, { responseString, status })
+        cache.set(cacheKey, JSON.stringify({ responseString, status }))
       }
 
       if (isPreview) {
