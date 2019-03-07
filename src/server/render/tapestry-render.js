@@ -34,9 +34,23 @@ const errorResponse = async ({ config, route, match, missing = false }) => {
   }
 }
 
-export default async (requestPath, requestQuery, config) => {
+const shouldError = (data, route) => {
+  if (
+    route.notFoundRoute ||
+    data.code > 299 ||
+    (route.endpoint && isEmpty(data.data || data))
+  ) {
+    return true
+  }
+
+  return Array.isArray(data)
+    ? data.some(resp => resp.code === 404)
+    : Object.keys(data).some(resp => data[resp].code === 404)
+}
+
+export default async (path, query, config) => {
   // get matching route and match data
-  const { route, match } = matchRoutes(prepareAppRoutes(config), requestPath)
+  const { route, match } = matchRoutes(prepareAppRoutes(config), path)
   let componentData = {}
 
   log.debug(`Matched route ${chalk.green(route.path)}`)
@@ -52,21 +66,16 @@ export default async (requestPath, requestQuery, config) => {
   if (route.endpoint) {
     const data = await fetchFromEndpointConfig({
       endpointConfig: route.endpoint,
-      baseUrl: baseUrlResolver(config, requestQuery),
+      baseUrl: baseUrlResolver(config, query),
       params: match.params,
-      queryParams: requestQuery
+      queryParams: query
     })
     componentData = normalizeApiResponse(data, route)
   }
-
   // route hasn't got a match from config.routes
   // status from API response is not OK
   // API returns empty response
-  if (
-    route.notFoundRoute ||
-    componentData.code > 299 ||
-    (route.endpoint && isEmpty(componentData.data || componentData))
-  ) {
+  if (shouldError(componentData, route)) {
     log.silly('Render Error component', { route, match, componentData })
     return errorResponse({ config, route, match })
   }
@@ -76,7 +85,7 @@ export default async (requestPath, requestQuery, config) => {
     route,
     match,
     componentData,
-    queryParams: requestQuery
+    queryParams: query
   })
 
   return {

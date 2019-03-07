@@ -16,8 +16,11 @@ export default async ({
       queryParams
     }
   }
+  const props = Array.isArray(componentData)
+    ? { data: componentData }
+    : componentData
   // create html string from target component
-  const app = <Component {...componentData} _tapestry={_tapestryData} />
+  const app = <Component {...props} _tapestry={_tapestryData} />
   // getLoadableState must be called before renderToString to preload all import() components
   const loadableState = await getLoadableState(app)
   const htmlString = renderToString(app)

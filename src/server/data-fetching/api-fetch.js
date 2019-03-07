@@ -35,7 +35,10 @@ const apiFetch = url => {
       log.silly(`API Fetch: Data from ${chalk.green(url)}`)
       return apiData
     })
-    .catch(err => log.error(`API Fetch: Catch error`, err))
+    .catch(err => {
+      log.error(`API Fetch: Catch error`, err)
+      return err
+    })
 }
 
 export default apiFetch
