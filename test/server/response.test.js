@@ -27,6 +27,11 @@ describe('Handling server responses', () => {
         component: () => <p>404 Response</p>
       },
       {
+        path: '/404-response-multi',
+        endpoint: ['pages?slug=404-response', 'pages?slug=404-response'],
+        component: () => <p>404 Response</p>
+      },
+      {
         path: '/empty-response',
         endpoint: () => 'pages?slug=empty-response',
         component: () => <p>Empty Response</p>
@@ -63,7 +68,7 @@ describe('Handling server responses', () => {
       .times(5)
       .reply(200, dataPosts.data)
       .get('/wp-json/wp/v2/pages?slug=404-response')
-      .times(5)
+      .times(10)
       .reply(404, { data: { status: 404 } })
       .get('/wp-json/wp/v2/pages?slug=empty-response')
       .times(5)
@@ -117,6 +122,13 @@ describe('Handling server responses', () => {
 
   it('Route matched, API 404, status code is 404', done => {
     request.get(`${uri}/404-response`, (err, res) => {
+      expect(res.statusCode).to.equal(404)
+      done()
+    })
+  })
+
+  it('Route matched, multi API 404, status code is 404', done => {
+    request.get(`${uri}/404-response-multi`, (err, res) => {
       expect(res.statusCode).to.equal(404)
       done()
     })
