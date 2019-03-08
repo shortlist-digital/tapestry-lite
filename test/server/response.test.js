@@ -27,11 +27,6 @@ describe('Handling server responses', () => {
         component: () => <p>404 Response</p>
       },
       {
-        path: '/404-response-multi',
-        endpoint: ['pages?slug=404-response', 'pages?slug=404-response'],
-        component: () => <p>404 Response</p>
-      },
-      {
         path: '/empty-response',
         endpoint: () => 'pages?slug=empty-response',
         component: () => <p>Empty Response</p>
@@ -47,6 +42,19 @@ describe('Handling server responses', () => {
           posts: 'posts'
         },
         component: () => <p>Custom endpoint</p>
+      },
+      {
+        path: '/array-endpoint-error',
+        endpoint: ['pages?slug=404-response', 'pages'],
+        component: () => <p>404 Response</p>
+      },
+      {
+        path: '/object-endpoint-error',
+        endpoint: {
+          one: 'pages?slug=404-response',
+          two: 'pages'
+        },
+        component: () => <p>404 Response</p>
       }
     ],
     siteUrl: 'http://response-dummy.api'
@@ -127,13 +135,6 @@ describe('Handling server responses', () => {
     })
   })
 
-  it('Route matched, multi API 404, status code is 404', done => {
-    request.get(`${uri}/404-response-multi`, (err, res) => {
-      expect(res.statusCode).to.equal(404)
-      done()
-    })
-  })
-
   it('Route matched, multiple API requests, status code is 200', done => {
     request.get(`${uri}/object-endpoint`, (err, res) => {
       expect(res.statusCode).to.equal(200)
@@ -151,6 +152,20 @@ describe('Handling server responses', () => {
   it('Static route matched, no data loaded, status code is 200', done => {
     request.get(`${uri}/static-endpoint`, (err, res) => {
       expect(res.statusCode).to.equal(200)
+      done()
+    })
+  })
+
+  it('Route matched, array API 404, status code is 404', done => {
+    request.get(`${uri}/array-endpoint-error`, (err, res) => {
+      expect(res.statusCode).to.equal(404)
+      done()
+    })
+  })
+
+  it('Route matched, object API 404, status code is 404', done => {
+    request.get(`${uri}/object-endpoint-error`, (err, res) => {
+      expect(res.statusCode).to.equal(404)
       done()
     })
   })
