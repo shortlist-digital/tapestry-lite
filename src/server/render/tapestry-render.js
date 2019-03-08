@@ -43,9 +43,11 @@ const shouldError = (data, route) => {
     return true
   }
 
-  return Array.isArray(data)
-    ? data.some(resp => resp.code === 404)
-    : Object.keys(data).some(resp => data[resp].code === 404)
+  if (Array.isArray(data)) {
+    return data.some(resp => resp && resp.code === 404)
+  }
+
+  return Object.keys(data).some(resp => data[resp] && data[resp].code === 404)
 }
 
 export default async (path, query, config) => {
