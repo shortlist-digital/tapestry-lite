@@ -206,10 +206,8 @@ describe('Handling custom endpoint routes', () => {
   it('Route matched, object endpoint works', done => {
     request.get(`${uri}/object-endpoint`, (err, res, body) => {
       const expectedJson = {
-        data: {
-          pages: dataPages.data,
-          posts: dataPosts.data
-        }
+        pages: dataPages.data,
+        posts: dataPosts.data
       }
       expect(body).to.contain(prepareJson(expectedJson))
       done()

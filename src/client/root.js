@@ -10,23 +10,17 @@ const log = (msg, data) =>
 const Root = config => {
   log(`Application data`, window.__TAPESTRY_DATA__)
 
-  if (window.__TAPESTRY_DATA__.appData.code === 404) {
-    const Component = buildErrorView({ config, missing: false })
-    return <Component {...window.__TAPESTRY_DATA__.appData} />
-  }
+  const { appData, _tapestry } = window.__TAPESTRY_DATA__
+  const props = Array.isArray(appData) ? { data: appData } : appData
 
-  const routes = prepareAppRoutes(config)
-  const path = window.__TAPESTRY_DATA__._tapestry.requestData.path
+  const Component =
+    appData.code === 404
+      ? buildErrorView({ config, missing: false })
+      : prepareAppRoutes(config).filter(
+          route => route.path === _tapestry.requestData.path
+        )[0].component
 
-  // We will only ever return the first route, even if multiple are matched
-  const Component = routes.filter(route => route.path === path)[0].component
-
-  return (
-    <Component
-      {...window.__TAPESTRY_DATA__.appData}
-      _tapestry={window.__TAPESTRY_DATA__._tapestry}
-    />
-  )
+  return <Component {...props} _tapestry={_tapestry} />
 }
 
 export default hot(module)(Root)
