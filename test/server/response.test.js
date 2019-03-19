@@ -42,6 +42,19 @@ describe('Handling server responses', () => {
           posts: 'posts'
         },
         component: () => <p>Custom endpoint</p>
+      },
+      {
+        path: '/array-endpoint-error',
+        endpoint: ['pages?slug=404-response', 'pages'],
+        component: () => <p>404 Response</p>
+      },
+      {
+        path: '/object-endpoint-error',
+        endpoint: {
+          one: 'pages?slug=404-response',
+          two: 'pages'
+        },
+        component: () => <p>404 Response</p>
       }
     ],
     siteUrl: 'http://response-dummy.api'
@@ -63,7 +76,7 @@ describe('Handling server responses', () => {
       .times(5)
       .reply(200, dataPosts.data)
       .get('/wp-json/wp/v2/pages?slug=404-response')
-      .times(5)
+      .times(10)
       .reply(404, { data: { status: 404 } })
       .get('/wp-json/wp/v2/pages?slug=empty-response')
       .times(5)
@@ -139,6 +152,20 @@ describe('Handling server responses', () => {
   it('Static route matched, no data loaded, status code is 200', done => {
     request.get(`${uri}/static-endpoint`, (err, res) => {
       expect(res.statusCode).to.equal(200)
+      done()
+    })
+  })
+
+  it('Route matched, array API 404, status code is 404', done => {
+    request.get(`${uri}/array-endpoint-error`, (err, res) => {
+      expect(res.statusCode).to.equal(404)
+      done()
+    })
+  })
+
+  it('Route matched, object API 404, status code is 404', done => {
+    request.get(`${uri}/object-endpoint-error`, (err, res) => {
+      expect(res.statusCode).to.equal(404)
       done()
     })
   })
