@@ -30,9 +30,11 @@ const getProductionBundles = () => {
     path.resolve(process.cwd(), '.tapestry', 'assets.json')
   )
   // fetch module specific manifect
-  const assetsModule = fs.readJsonSync(
-    path.resolve(process.cwd(), '.tapestry', 'assets-module.json')
-  )
+  const assetsModule = moduleBuild
+    ? fs.readJsonSync(
+        path.resolve(process.cwd(), '.tapestry', 'assets-module.json')
+      )
+    : {}
 
   return (
     <Fragment>

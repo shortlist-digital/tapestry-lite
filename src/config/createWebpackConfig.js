@@ -68,6 +68,7 @@ module.exports = (target = 'node', opts = {}) => {
           test: /\.(css|jpe?g|png|svg|ico|woff(2)?)$/,
           loader: require.resolve('file-loader'),
           options: {
+            name: IS_DEV ? '[name].[ext]' : '[hash:10].[ext]',
             publicPath: IS_DEV ? 'http://localhost:4001' : '/_assets',
             emitFile: WEB_DEV || WEB_PROD
           }
@@ -174,8 +175,8 @@ module.exports = (target = 'node', opts = {}) => {
       },
       output: {
         path: paths.appBuildPublic,
-        sourceMapFilename: '[name].[chunkhash].map',
-        filename: '[name].[chunkhash].js',
+        sourceMapFilename: '[name].[chunkhash:10].map',
+        filename: '[name].[chunkhash:10].js',
         publicPath: '/_assets/'
       },
       plugins: [
