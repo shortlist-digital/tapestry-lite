@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+# 4.2.0 (12-03-2019)
+
+- Return 404 if any API endpoints fail
+- Only wrap API response in `{ data: {} }` if an array
+
 # 4.1.0 (19-02-2019)
 
 - Allow `{ path: '/', error: true }` to return 404
