@@ -1,12 +1,16 @@
-import 'isomorphic-fetch'
-import 'promis'
-
 import React from 'react'
 import { hydrate } from 'react-dom'
 import { loadComponents } from 'loadable-components'
 
 import config from '../config/config-proxy'
 import Root from './root'
+
+// No need to include Promise or fetch polyfills
+// if browser supports type="module"
+if (MODULE_BUILD === false) {
+  require('promis')
+  require('isomorphic-fetch')
+}
 
 // Hydrate server rendered CSS with either Emotion or Glamor
 if (CSS_PLUGIN === 'emotion')

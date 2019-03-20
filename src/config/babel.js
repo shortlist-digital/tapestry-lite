@@ -1,7 +1,7 @@
 const fs = require('fs')
 const paths = require('./paths')
 
-module.exports = (target = 'node') => {
+module.exports = (target = 'node', opts = {}) => {
   const { NODE_ENV, CSS_PLUGIN } = process.env
 
   // set @babel/preset-env default options
@@ -16,11 +16,17 @@ module.exports = (target = 'node') => {
 
   // targeting web
   // fetch browserslist file to define environment polyfills/transpilations
-  if (target === 'web' && fs.existsSync(paths.appBrowerslist)) {
+  if (!opts.module && target === 'web' && fs.existsSync(paths.appBrowerslist)) {
     console.log('Using browserslist defined in your app root')
     const browsers = fs.readFileSync(paths.appBrowerslist, 'utf8')
     presetEnvOptions.targets = {
       browsers: browsers.split('\n').filter(Boolean)
+    }
+  }
+
+  if (opts.module && target === 'web') {
+    presetEnvOptions.targets = {
+      esmodules: true
     }
   }
 

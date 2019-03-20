@@ -15,7 +15,7 @@ const babelDefaultConfig = require('./babel')
 const { env, helpers } = require('./env')
 const paths = require('./paths')
 
-module.exports = (target = 'node') => {
+module.exports = (target = 'node', opts = {}) => {
   const { IS_WEB, IS_DEV, NODE_DEV, NODE_PROD, WEB_DEV, WEB_PROD } = helpers(
     target
   )
@@ -23,11 +23,12 @@ module.exports = (target = 'node') => {
   let babelConfig
 
   if (fs.existsSync(paths.appBabelRc)) {
-    if (IS_WEB) console.log('Using .babelrc defined in your app root')
+    if (IS_WEB && !opts.module)
+      console.log('Using .babelrc defined in your app root')
     const babelAppConfig = fs.readJsonSync(paths.appBabelRc)
-    babelConfig = merge(babelDefaultConfig(target), babelAppConfig)
+    babelConfig = merge(babelDefaultConfig(target, opts), babelAppConfig)
   } else {
-    babelConfig = babelDefaultConfig(target)
+    babelConfig = babelDefaultConfig(target, opts)
   }
 
   let babelOptions = {
@@ -67,6 +68,7 @@ module.exports = (target = 'node') => {
           test: /\.(css|jpe?g|png|svg|ico|woff(2)?)$/,
           loader: require.resolve('file-loader'),
           options: {
+            name: IS_DEV ? '[name].[ext]' : '[hash:10].[ext]',
             publicPath: IS_DEV ? 'http://localhost:4001' : '/_assets',
             emitFile: WEB_DEV || WEB_PROD
           }
@@ -173,20 +175,19 @@ module.exports = (target = 'node') => {
       },
       output: {
         path: paths.appBuildPublic,
-        sourceMapFilename: '[name].[chunkhash].map',
-        filename: '[name].[chunkhash].js',
+        sourceMapFilename: '[name].[chunkhash:10].map',
+        filename: '[name].[chunkhash:10].js',
         publicPath: '/_assets/'
       },
       plugins: [
-        new StatsPlugin('../stats.json'),
+        new StatsPlugin(opts.module ? '../stats-module.json' : '../stats.json'),
         new AssetsPlugin({
-          filename: 'assets.json',
+          filename: opts.module ? 'assets-module.json' : 'assets.json',
           path: paths.appBuild,
           prettyPrint: true
         })
       ],
       optimization: {
-        runtimeChunk: true,
         splitChunks: {
           chunks: 'all'
         }
@@ -194,12 +195,19 @@ module.exports = (target = 'node') => {
     })
   }
 
+  // update entry name for esmodule builds
+  if (opts.module) {
+    config.entry = {
+      module: [paths.ownClientIndex]
+    }
+  }
+
   config.plugins.push(
     new CleanPlugin(['.tapestry'], {
       root: process.cwd(),
       verbose: WEB_PROD ? false : true
     }),
-    new webpack.DefinePlugin(env(target))
+    new webpack.DefinePlugin(env(target, opts))
   )
 
   // use custom webpack config
