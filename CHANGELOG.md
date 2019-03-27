@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+# 4.3.0 (27-03-2019)
+
+- Enabled `--esmodule` mode, to create `module` builds without unneccessary transpilations
+
 # 4.2.0 (12-03-2019)
 
 - Return 404 if any API endpoints fail
