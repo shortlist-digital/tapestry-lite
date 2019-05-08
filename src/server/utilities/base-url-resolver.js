@@ -1,7 +1,12 @@
 import idx from 'idx'
 import normaliseUrlPath from './normalise-url-path'
 
-export default (config, queryParams) => {
+export default (config, queryParams, route) => {
+  console.log({ config, queryParams, route })
+  // Use baseUrl if passed
+  if (route.options && route.options.baseUrl) {
+    return route.options.baseUrl
+  }
   // Handle preview API path
   if (idx(queryParams, _ => _.tapestry_hash))
     return `${normaliseUrlPath(config.siteUrl)}/wp-json/revision/v1`
