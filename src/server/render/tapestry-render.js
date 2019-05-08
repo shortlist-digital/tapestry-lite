@@ -68,7 +68,7 @@ export default async (path, query, config) => {
   if (route.endpoint) {
     const data = await fetchFromEndpointConfig({
       endpointConfig: route.endpoint,
-      baseUrl: baseUrlResolver(config, query),
+      baseUrl: baseUrlResolver(config, query, route),
       params: match.params,
       queryParams: query
     })
