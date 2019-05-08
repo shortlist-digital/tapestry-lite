@@ -1,6 +1,6 @@
 import normaliseUrlPath from './normalise-url-path'
 
-export default (config, query = {}, route) => {
+export default (config, query = {}, route = {}) => {
   // Use baseUrl if passed
   if (route.options && route.options.baseUrl) {
     return route.options.baseUrl

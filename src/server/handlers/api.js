@@ -1,6 +1,4 @@
 import baseUrlResolver from '../utilities/base-url-resolver'
-import prepareAppRoutes from '../routing/prepare-app-routes'
-import matchRoutes from '../routing/match-routes'
 
 export default ({ server, config }) => {
   server.route({
@@ -15,8 +13,7 @@ export default ({ server, config }) => {
     },
     handler: ({ params, url }, h) => {
       // get matching route and match data
-      const { route } = matchRoutes(prepareAppRoutes(config), url.pathname)
-      const base = baseUrlResolver(config, params.query, route)
+      const base = baseUrlResolver(config)
       return h.proxy({
         uri: `${base}/${params.query}${url.search || ''}`,
         passThrough: true
