@@ -22,6 +22,12 @@ describe('Handling preview requests', () => {
         path: '/dynamic-string-endpoint/:slug',
         endpoint: ({ slug }) => `posts?slug=${slug}`,
         component: () => <p>Custom endpoint</p>
+      },
+      {
+        path: '/custom-base-url/:slug',
+        endpoint: ({ slug }) => `posts?slug=${slug}`,
+        component: () => <p>Custom endpoint</p>,
+        options: { baseUrl: 'https://bloop.com/something' }
       }
     ],
     siteUrl: 'http://preview-dummy.api'
@@ -35,6 +41,9 @@ describe('Handling preview requests', () => {
       .get(
         '/wp-json/revision/v1/posts?slug=preview-test&tapestry_hash=hash&p=10'
       )
+      .reply(200, dataPost)
+    nock('https://bloop.com')
+      .get('/something/posts?slug=preview-test&tapestry_hash=hash&p=10')
       .reply(200, dataPost)
     // boot tapestry server
     process.env.CACHE_MAX_AGE = 60 * 1000
@@ -51,6 +60,16 @@ describe('Handling preview requests', () => {
   it('Preview route renders', done => {
     request.get(
       `${uri}/dynamic-string-endpoint/preview-test?tapestry_hash=hash&p=10`,
+      (err, res, body) => {
+        expect(body).to.contain(prepareJson(dataPost))
+        done()
+      }
+    )
+  })
+
+  it('Custom baseUrl route renders', done => {
+    request.get(
+      `${uri}/custom-base-url/preview-test?tapestry_hash=hash&p=10`,
       (err, res, body) => {
         expect(body).to.contain(prepareJson(dataPost))
         done()

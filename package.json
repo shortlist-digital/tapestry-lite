@@ -1,6 +1,6 @@
 {
   "name": "tapestry-lite",
-  "version": "4.3.0",
+  "version": "4.4.0",
   "description": "Universal React & Wordpress Renderer",
   "main": "./src/server/index.js",
   "bin": {
@@ -26,7 +26,7 @@
     "@shortlist-studio/eslint-config-standard": "^0.1.0",
     "chai": "^4.0.2",
     "editorconfig-tools": "^0.1.1",
-    "husky": "^0.14.3",
+    "husky": "^2.2.0",
     "lint-staged": "^7.2.2",
     "mocha": "^5.2.0",
     "nock": "^9.6.1",

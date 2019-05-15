@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+# 4.4.0 (08-05-2019)
+
+- Added a `baseUrl` option per route to overriding the default baseUrl behaviour, including the preview revisions endpoint
+
 # 4.3.0 (27-03-2019)
 
 - Enabled `--esmodule` mode, to create `module` builds without unneccessary transpilations

@@ -1,4 +1,7 @@
+import chalk from 'chalk'
 import isPlainObject from 'lodash.isplainobject'
+
+import { log } from '../utilities/logger'
 
 export default ({ server, config }) => {
   if (!Array.isArray(config.proxyPaths)) return
@@ -7,7 +10,10 @@ export default ({ server, config }) => {
     server.route({
       method: 'GET',
       path: from,
-      handler: (req, h) => h.proxy({ uri: to, passThrough: true })
+      handler: (req, h) => {
+        log.silly(`Proxy from: ${chalk.green(from)} to: ${chalk.green(to)}`)
+        return h.proxy({ uri: to, passThrough: true })
+      }
     })
 
   config.proxyPaths.map(path => {

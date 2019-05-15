@@ -1,7 +1,6 @@
 import baseUrlResolver from '../utilities/base-url-resolver'
 
 export default ({ server, config }) => {
-  const base = baseUrlResolver(config)
   server.route({
     method: 'GET',
     path: '/api/v1/{query*}',
@@ -12,10 +11,13 @@ export default ({ server, config }) => {
         privacy: 'public'
       }
     },
-    handler: ({ params, url }, h) =>
-      h.proxy({
+    handler: ({ params, url }, h) => {
+      // get matching route and match data
+      const base = baseUrlResolver(config)
+      return h.proxy({
         uri: `${base}/${params.query}${url.search || ''}`,
         passThrough: true
       })
+    }
   })
 }
