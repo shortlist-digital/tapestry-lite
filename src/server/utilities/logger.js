@@ -1,4 +1,3 @@
-const chalk = require('chalk')
 const { createLogger, format, transports } = require('winston')
 const { combine, timestamp, printf } = format
 
@@ -20,8 +19,3 @@ const log = createLogger({
 
 // instance of Winston logger for debug/error/silly logs
 module.exports.log = log
-
-// console log for terminal messages
-module.exports.notify = str => {
-  console.log(`${chalk.green('→')} ${chalk.white(str)}`) // eslint-disable-line
-}
