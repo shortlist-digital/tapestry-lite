@@ -1,6 +1,6 @@
 {
   "name": "tapestry-lite",
-  "version": "4.4.0",
+  "version": "4.5.0",
   "description": "Universal React & Wordpress Renderer",
   "main": "./src/server/index.js",
   "bin": {
