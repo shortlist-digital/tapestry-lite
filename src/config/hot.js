@@ -9,13 +9,13 @@ if (module.hot) {
     currentApp = createNewServerProxy()
     await registerPluginProxy(currentApp)
     await currentApp.start()
-    log.debug('🔁  HMR Reloading `./hot-server`...')
+    log.info('🔁  HMR Reloading `./hot-server`...')
   })
-  log.debug('✅  Server-side HMR Enabled!')
+  log.info('✅  Server-side HMR Enabled!')
 }
 
 registerPluginProxy(currentApp).then(() => {
   currentApp.start()
 })
 
-log.debug(`Server started at: ${currentApp.info.uri}\n`)
+log.info(`Server started at: ${currentApp.info.uri}\n`)

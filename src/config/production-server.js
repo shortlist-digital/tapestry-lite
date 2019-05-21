@@ -13,7 +13,7 @@ export default async function() {
     await registerPlugins({ config: appConfig, server: currentApp })
     // Start server
     await currentApp.start()
-    log.debug(`Server started at: ${currentApp.info.uri}\n`)
+    log.info(`Server started at: ${currentApp.info.uri}\n`)
   } catch (e) {
     log.error(e)
   }
