@@ -9,10 +9,10 @@ const log = createLogger({
   level: process.env.LOG_LEVEL || 'info',
   format: combine(timestamp(), logFormat),
   transports:
-    process.env.NODE_ENV === 'production'
+    typeof process.env.TAPESTRY_LOGS_FOLDER !== 'undefined'
     ? [
-      new transports.File({ filename: process.env.LOG_PATH + '/error.log', level: 'error' }),
-      new transports.File({ filename: process.env.LOG_PATH + '/access.log' })
+      new transports.File({ filename: process.env.TAPESTRY_LOGS_FOLDER + '/error.log', level: 'error' }),
+      new transports.File({ filename: process.env.TAPESTRY_LOGS_FOLDER + '/access.log' })
     ]
     : [
       new transports.Console({ format: format.simple() })
