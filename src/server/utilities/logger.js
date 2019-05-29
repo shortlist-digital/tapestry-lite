@@ -1,25 +1,23 @@
-const chalk = require('chalk')
-const winston = require('winston')
+const { createLogger, format, transports } = require('winston')
+const { combine, timestamp, printf } = format
 
-const tsFormat = () => new Date().toLocaleTimeString()
-
-const log = new winston.Logger({
-  level: process.env.LOG_LEVEL || 'info',
-  transports: [
-    new winston.transports.Console({
-      timestamp: tsFormat,
-      colorize: true,
-      prettyPrint: true
-    })
-  ]
+const logFormat = printf(({ level, message, timestamp }) => {
+  return `${timestamp} ${level}: ${message}`
 })
 
-log.cli()
+const log = createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: combine(timestamp(), logFormat),
+  transports:
+    typeof process.env.TAPESTRY_LOGS_FOLDER !== 'undefined'
+    ? [
+      new transports.File({ filename: process.env.TAPESTRY_LOGS_FOLDER + '/error.log', level: 'error' }),
+      new transports.File({ filename: process.env.TAPESTRY_LOGS_FOLDER + '/access.log' })
+    ]
+    : [
+      new transports.Console({ format: format.simple() })
+    ]
+})
 
 // instance of Winston logger for debug/error/silly logs
 module.exports.log = log
-
-// console log for terminal messages
-module.exports.notify = str => {
-  console.log(`${chalk.green('→')} ${chalk.white(str)}`) // eslint-disable-line
-}

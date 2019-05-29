@@ -1,5 +1,5 @@
 import { registerPluginProxy, createNewServerProxy } from './hot-server'
-import { notify } from '../server/utilities/logger'
+import { log } from '../server/utilities/logger'
 
 let currentApp = createNewServerProxy()
 
@@ -9,13 +9,13 @@ if (module.hot) {
     currentApp = createNewServerProxy()
     await registerPluginProxy(currentApp)
     await currentApp.start()
-    notify('🔁  HMR Reloading `./hot-server`...')
+    log.info('🔁  HMR Reloading `./hot-server`...')
   })
-  notify('✅  Server-side HMR Enabled!')
+  log.info('✅  Server-side HMR Enabled!')
 }
 
 registerPluginProxy(currentApp).then(() => {
   currentApp.start()
 })
 
-notify(`Server started at: ${currentApp.info.uri}\n`)
+log.info(`Server started at: ${currentApp.info.uri}\n`)

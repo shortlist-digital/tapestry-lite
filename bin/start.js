@@ -19,6 +19,8 @@ if (process.env.ENABLE_CONCURRENCY) {
   const WORKERS =
     process.env.WEB_CONCURRENCY || require('os').cpus().length || 1
   throng(WORKERS, () => server())
+  log.info('Started ' + process.env.WEB_CONCURRENCY + ' processes')
 } else {
   server()
+  log.info('Started server')
 }

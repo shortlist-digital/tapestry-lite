@@ -1,6 +1,6 @@
 {
   "name": "tapestry-lite",
-  "version": "4.4.0",
+  "version": "5.0.0",
   "description": "Universal React & Wordpress Renderer",
   "main": "./src/server/index.js",
   "bin": {
@@ -95,7 +95,7 @@
     "webpack": "^4.17.2",
     "webpack-dev-server": "^3.1.8",
     "webpack-node-externals": "^1.6.0",
-    "winston": "2.4.1"
+    "winston": "^3.1.0"
   },
   "peerDependencies": {
     "react": "^16.2.0",
