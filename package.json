@@ -17,8 +17,8 @@
     "prepublishOnly": "npm run lint && npm run test",
     "lint": "eslint . --fix --cache",
     "test": "HOST=localhost npm run test:server && npm run test:integration",
-    "test:server": "NODE_ENV=test LOG_LEVEL=silent mocha ./src/**/*.test.js ./test/server/*.test.js --require test/babel-register",
-    "test:integration": "PORT=4321 NODE_ENV=test LOG_LEVEL=silent mocha ./test/integration/*.test.js --require test/babel-register"
+    "test:server": "NODE_ENV=test LOG_LEVEL=info mocha ./src/**/*.test.js ./test/server/*.test.js --require test/babel-register",
+    "test:integration": "TAPESTRY_PORT=4321 NODE_ENV=test LOG_LEVEL=info mocha ./test/integration/*.test.js --require test/babel-register"
   },
   "license": "ISC",
   "devDependencies": {
