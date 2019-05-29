@@ -121,23 +121,6 @@ describe('Handling endpoint redirects', () => {
 
   afterEach(async () => await server.stop())
 
-  it('Redirect path loaded from redirects endpoint', async () => {
-    nock('http://dummredirects.api')
-      .get('/web/app/uploads/redirects.json')
-      .query(true)
-      .times(1)
-      .reply(200, dataRedirects)
-
-    // boot tapestry server
-    server = new Server({ config })
-    await server.start()
-    uri = server.info.uri
-    let res = await r.get(`${uri}/redirect/from/this`)
-    let body = await res.text()
-    expect(body).to.contain('Redirected component')
-    expect(res.statusCode).to.equal(200)
-  })
-
   it('Server handles 404 gracefully', async () => {
     nock('http://dummredirects.api')
       .get('/web/app/uploads/redirects.json')
