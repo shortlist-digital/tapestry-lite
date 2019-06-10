@@ -5,7 +5,11 @@ export default (config, query = {}, route = {}) => {
   if (route.options && route.options.baseUrl) {
     return route.options.baseUrl
   }
-  // update to new API
+  // Update to new API
+  if (route.options && route.options.apiBaseUrl) {
+    return route.options.apiBaseUrl
+  }
+  // Handle path only
   if (route.options && route.options.apiBasePath) {
     return `${normaliseUrlPath(config.siteUrl)}${route.options.apiBasePath}`
   }
