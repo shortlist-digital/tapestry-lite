@@ -7,7 +7,7 @@ export default (config, query = {}, route = {}) => {
   }
   // update to new API
   if (route.options && route.options.apiBasePath) {
-    return route.options.apiBasePath
+    return `${normaliseUrlPath(config.siteUrl)}${route.options.apiBasePath}`
   }
   // Handle preview API path
   if (query.tapestry_hash) {
