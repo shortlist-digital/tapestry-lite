@@ -2,11 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
-# 4.5.0 (08-05-2019)
+# 5.1.0 (18-06-2019)
 
 - Added `apiBasePath` option to override the default baseUrl behaviour at the site level
 - Added `apiBasePath` option to override the default baseUrl behaviour at the route level
 - Renamed `baseUrl` to `apiBaseUrl` at the route level
+
+# 5.0.1 (29-05-2019)
+
+- Changed the `PORT` env to `TAPESTRY_PORT` in the tests
+- Changed the `LOG_LEVEL` in the tests
+
+# 5.0.0 (29-05-2019)
+
+- Update Winston and logging methods to allow project level NGINX
+- Create `TAPESTRY_HOST` & `TAPESTRY_PORT` env vars
 
 # 4.4.0 (08-05-2019)
 
