@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# 4.5.0 (08-05-2019)
+
+- Added `apiBasePath` option to override the default baseUrl behaviour at the site level
+- Added `apiBasePath` option to override the default baseUrl behaviour at the route level
+- Renamed `baseUrl` to `apiBaseUrl` at the route level
+
 # 4.4.0 (08-05-2019)
 
 - Added a `baseUrl` option per route to overriding the default baseUrl behaviour, including the preview revisions endpoint

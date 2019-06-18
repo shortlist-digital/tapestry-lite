@@ -5,6 +5,14 @@ export default (config, query = {}, route = {}) => {
   if (route.options && route.options.baseUrl) {
     return route.options.baseUrl
   }
+  // Update to new API
+  if (route.options && route.options.apiBaseUrl) {
+    return route.options.apiBaseUrl
+  }
+  // Handle path only
+  if (route.options && route.options.apiBasePath) {
+    return `${normaliseUrlPath(config.siteUrl)}${route.options.apiBasePath}`
+  }
   // Handle preview API path
   if (query.tapestry_hash) {
     return `${normaliseUrlPath(config.siteUrl)}/wp-json/revision/v1`
@@ -18,5 +26,6 @@ export default (config, query = {}, route = {}) => {
     )}`
   }
   // Default to standard API path
-  return `${normaliseUrlPath(config.siteUrl)}/wp-json/wp/v2`
+  const apiBasePath = config.apiBasePath || '/wp-json/wp/v2'
+  return `${normaliseUrlPath(config.siteUrl)}${apiBasePath}`
 }
