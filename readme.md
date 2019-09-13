@@ -1,49 +1,175 @@
-# Tapestry Lite
-We must write more documentation!
+<p align="center">
+  <img src="https://cdn.rawgit.com/shortlist-digital/tapestry-wp/master/logo/tapestry-logo-glyph.svg" height="100" >
+  <br>
+  <br>
+  <a href="https://www.npmjs.org/package/tapestry-lite"><img src="https://img.shields.io/npm/v/tapestry-lite.svg?style=flat" alt="npm"></a> <a href="https://circleci.com/gh/shortlist-digital/tapestry-lite/tree/master"><img src="https://circleci.com/gh/shortlist-digital/tapestry-lite/tree/master.svg?style=shield" alt="circleci"></a> <a href="https://snyk.io/test/github/shortlist-digital/tapestry-lite"><img src="https://snyk.io/test/github/shortlist-digital/tapestry-lite/badge.svg" alt="snyk"></a>
+</p>
 
+# Tapestry Lite
+
+An opinionated React SPA service for the WordPress Rest API. Create React components and let Tapestry handle the data loading, server rendering, JavaScript bundling and more.
+
+## Features
+
+- Data handling
+- Server rendered React
+- Small, secure Node server through Hapi
+- CSS-in-JS out of the box
+- Hot reloading
+- Production ready
 
 ## Installation
 
-`yarn add react react-dom tapestry-lite`
+`yarn add tapestry-wp react react-dom`
 
-## `tapestry.config.js`
+## Usage
 
-### Component config for default WordPress
+Tapestry has a couple of commands to handle building and running the project, you can pop these into your NPM scripts.
 
-### Custom Route Configuration
+`tapestry` will create the client/server bundles and run the server in development mode, `tapestry build` will create the client and server bundles in production mode and `tapestry start` will run the server in production mode.
 
-## CSS: Glamor or Emotion
+```json
+{
+  "scripts": {
+    "start": "tapestry",
+    "build": "tapestry build",
+    "start:prod": "tapestry start"
+  }
+}
+```
 
-## Loading Data From Wordpress
+Create a `tapestry.config.js` in the root of your project and export an object with your WordPress site URL and routes or components to render.
 
-* Endpoint object on config
+```js
+import Post from './components/post'
+import Page from './components/page'
 
-## Custom `webpack.config.js`
+export default {
+  siteUrl: 'http://your-wordpress.url',
+  components: { Post, Page }
+}
+```
 
-## React Helmet
+These components will match the default WordPress permalink routes for each page type. e.g. `/2017/12/08/a-post-slug`. You can override these default routes by adding a `routes` array to your config.
 
-## Production Build
+Each route requires a `path` and a `component`, to access data from WordPress pass in an `endpoint`
 
-* Building for production
-* Running in production
+```js
+import Post from './components/post'
+import Page from './components/page'
 
-## Caching
+export default {
+  siteUrl: 'http://your-wordpress.url',
+  routes: [{
+    path: '/:slug/:id',
+    endpoint: id => `posts/${id}`,
+    component: Post
+  }, {
+    path: '/about/:slug',
+    endpoint: slug => `pages?filter=${slug}`,
+    component: Page
+  }]
+}
+```
 
-* Redis option
+Once these are set up, you're free to start building your site and writing React components.
 
-## Use of Env Variables
+## Options
 
-* `.env` files
+`tapestry.config.js` has a number of options to modify the Tapestry bundling and server.
 
-## `public` folder
+```js
+{
+  // [string] URL for your WordPress instance
+  siteUrl: '',
+  // [object] Container for React components
+  components: {
+    // [function] React components for rendering a post, page, category
+    Category,
+    CustomError,
+    FrontPage,
+    Page,
+    Post
+  },
+  // [array] Container for route objects
+  routes: [
+    {
+      // [string] Path to match component
+      path: '',
+      path: '/path/:dynamic-path/:optional-path?'
+      
+      // [function] React component to render
+      component: () => {},
+      // [any] Source for WordPress API data, can be one of array, object or string, can also be a function that returns any of those data-types. When used as a function it has access to params from the path
+      endpoint: 'posts',
+      endpoint: ['posts', 'pages'],
+      endpoint: { posts: 'posts', pages: 'pages' },
+      endpoint: (id) => `posts/${id}`,
+      endpoint: (id) => [`posts/${id}`, `pages/${id}`],
+      endpoint: (id) => { posts: `posts/${id}`, pages: `pages/${id}` }
+      // [object] Container for route specific options
+      options: {
+        // [boolean] If WordPress API returns an array, allow the array response to be empty
+        allowEmptyResponse: false,
+        // [function] A React component to handle the surrounding document
+        customDocument: ({ html, css, ids, asyncProps, assets }) => {}
+      }
+    }
+  ],
+  // [array] Paths to proxy through to the WordPress URL
+  proxyPaths: [],
+  // [object] Redirects from key to value e.g. { 'from': 'to' }
+  redirectPaths: {},
+  // [string] [uri] URL for JSON redirects file, will get picked up on server boot
+  redirectsEndpoint: '',
+  // [object] Container for site options
+  options: {
+    // [string] 'localhost', '0.0.0.0'
+    host: '',
+    // [number] 3030
+    port: 3030,
+    // [boolean] Registers https Hapi plugin
+    forceHttps: false,
+    // [boolean] Wordpress.com hosting configuration
+    wordpressDotComHosting: false
+  }
+}
+```
 
-## Advanced Server Configuration
+## Commands
 
-## Wishlist
+Tapestry comes with a series of commands to control compiling and running the server.
 
-* React Loadable included with server side reconciliation
-* Efficient bundling spitting
+- `tapestry` - Compiles the server/client JavaScript and boots the server in development mode
+- `tapestry build` - Compiles the server/client JavaScript
+- `tapestry start` - Runs any server/client bundles
+- `tapestry hot` - Boots a hot-reloading Tapestry instance
+- `tapestry init` - Bootstraps a simple Tapestry project with a `tapestry.config.js` and some components
 
-## Testing during development
+## Custom compilation
 
-Run `yarn test` to run the tests
+### Babel
+If you need to modify the default Tapestry `babel` configuration, you can create a `.babelrc` file in the root of your project and Tapestry will use it to override any default options. You will need to import `tapestry-lite/babelrc` to enable the required plugins.
+
+### Webpack
+To modify the Webpack config you can create a `webpack.config.js` in the root of your project that exports a modified config.
+
+An example config that adds an alias for `components`:
+
+```js
+const path = require('path')
+const merge = require('webpack-merge')
+
+module.exports = (default, options, webpack) => {
+  const custom = {
+    resolve: {
+      alias: {
+        components: path.resolve(
+          __dirname, 'src', 'components'
+        )
+      }
+    }
+  }
+  merge(default, custom)
+}
+```
