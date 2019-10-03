@@ -179,3 +179,29 @@ module.exports = (default, options, webpack) => {
   merge(default, custom)
 }
 ```
+
+### Environment variables
+To configure the application per environment we have a series of environment variables available to use.
+
+#### Server
+`TAPESTRY_HOST` - Define the host for the server
+`TAPESTRY_PORT` - Define the port for the server
+`ENABLE_CONCURRENCY` - Boolean to toggle multiple server instances
+`WEB_CONCURRENCY` - Number of server instances to boot, if not configured this will default to the number of cores available
+`SERVER_SOURCE_MAPS` - Boolean to toggle source maps on server JS bundles
+
+#### Cache
+`CACHE_CONTROL_MAX_AGE` - Cache age for all server responses
+`STATIC_CACHE_CONTROL_MAX_AGE` - Cache age for static assets bundled from Webpack
+`CACHE_MAX_ITEM_COUNT` - Maximum number of items to store in memory or Redis
+`CACHE_MAX_AGE` - Maximum age of item in memory or Redis
+`REDIS_URL` - URL for Redis DB
+`SECRET_PURGE_PATH` - Path to clear the in memory cache or Redis, defaults to `purge`. Purge will use the path from `/purge` as the key when removing from the cache, e.g. `/purge/hello/world` will remove `hello/world` from the cache.
+
+#### Logging
+`LOG_LEVEL` - Tapestry has a series of logs from the server using [Winston](https://github.com/winstonjs/winston), `LOG_LEVEL` corresponds to the log level of Winston [github.com/winstonjs/winston#logging-levels](https://github.com/winstonjs/winston#logging-levels)
+`TAPESTRY_LOGS_FOLDER` - Directory to store logs, defaults to writing to `STDOUT`
+
+#### Application
+`CSS_PLUGIN` - One of `emotion` or `glamor` to switch between CSS-in-JS libraries, defaults to `glamor`
+`NODE_ENV` - Can be used to toggle `production` mode, will affect Webpack, Babel and other vendor services
