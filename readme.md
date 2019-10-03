@@ -2,12 +2,12 @@
   <img src="https://cdn.rawgit.com/shortlist-digital/tapestry-wp/master/logo/tapestry-logo-glyph.svg" height="100" >
   <br>
   <br>
-  <a href="https://www.npmjs.org/package/tapestry-lite"><img src="https://img.shields.io/npm/v/tapestry-lite.svg?style=flat" alt="npm"></a> <a href="https://circleci.com/gh/shortlist-digital/tapestry-lite/tree/master"><img src="https://circleci.com/gh/shortlist-digital/tapestry-lite/tree/master.svg?style=shield" alt="circleci"></a> <a href="https://snyk.io/test/github/shortlist-digital/tapestry-lite"><img src="https://snyk.io/test/github/shortlist-digital/tapestry-lite/badge.svg" alt="snyk"></a>
+  <a href="https://www.npmjs.org/package/tapestry-lite"><img src="https://img.shields.io/npm/v/tapestry-lite.svg?style=flat" alt="npm"></a> <a href="https://circleci.com/gh/shortlist-digital/tapestry-lite/tree/master"><img src="https://circleci.com/gh/shortlist-digital/tapestry-lite/tree/master.svg?style=shield" alt="circleci"></a>
 </p>
 
 # Tapestry Lite
 
-An opinionated React SPA service for the WordPress Rest API. Create React components and let Tapestry handle the data loading, server rendering, JavaScript bundling and more.
+An opinionated React application service for the WordPress Rest API. Create React components and let Tapestry handle the data loading, server rendering, JavaScript bundling and more.
 
 ## Features
 
@@ -20,13 +20,15 @@ An opinionated React SPA service for the WordPress Rest API. Create React compon
 
 ## Installation
 
-`yarn add tapestry-wp react react-dom`
+`yarn add tapestry-lite react react-dom`
 
 ## Usage
 
 Tapestry has a couple of commands to handle building and running the project, you can pop these into your NPM scripts.
 
-`tapestry` will create the client/server bundles and run the server in development mode, `tapestry build` will create the client and server bundles in production mode and `tapestry start` will run the server in production mode.
+`tapestry` will create the client/server bundles and run the server in development mode, `tapestry build` will create the client and server bundles for production and `tapestry start` will run the server in production mode.
+
+Often we'll set up our projects like so:
 
 ```json
 {
@@ -50,9 +52,9 @@ export default {
 }
 ```
 
-These components will match the default WordPress permalink routes for each page type. e.g. `/2017/12/08/a-post-slug`. You can override these default routes by adding a `routes` array to your config.
+These components will match the default WordPress permalink routes for each page type. e.g. `/2017/12/08/a-post-slug`.
 
-Each route requires a `path` and a `component`, to access data from WordPress pass in an `endpoint`
+These default components are a simple way to connect a WordPress instance to your React application, to control the routing schema completely you can add a `routes` array to your config. Each route requires a `path` and a `component` for a static page, to access data from WordPress pass in an `endpoint`
 
 ```js
 import Post from './components/post'
@@ -71,8 +73,6 @@ export default {
   }]
 }
 ```
-
-Once these are set up, you're free to start building your site and writing React components.
 
 ## Options
 
@@ -100,7 +100,7 @@ Once these are set up, you're free to start building your site and writing React
       
       // [function] React component to render
       component: () => {},
-      // [any] Source for WordPress API data, can be one of array, object or string, can also be a function that returns any of those data-types. When used as a function it has access to params from the path
+      // [any] Source for WordPress API data, can be one of array, object or string, can also be a function that returns any of those data-types. When used as a function it has access to the dynamic parameters from the path
       endpoint: 'posts',
       endpoint: ['posts', 'pages'],
       endpoint: { posts: 'posts', pages: 'pages' },
@@ -109,10 +109,16 @@ Once these are set up, you're free to start building your site and writing React
       endpoint: (id) => { posts: `posts/${id}`, pages: `pages/${id}` }
       // [object] Container for route specific options
       options: {
-        // [boolean] If WordPress API returns an array, allow the array response to be empty
-        allowEmptyResponse: false,
         // [function] A React component to handle the surrounding document
-        customDocument: ({ html, css, ids, asyncProps, assets }) => {}
+        customDocument: ({ html, css, ids, asyncProps, assets }) => {},
+        // [boolean] Return the doctype with or without the HTML string
+        disableDoctype: false,
+        // [string] Custom route specific URL for your WordPress instance
+        baseUrl: '',
+        // [string] Custom route specific api URL
+        apiBaseUrl: '',
+        // [string] Custom route specific api base path, utilising the siteUrl as the base
+        apiBasePath: '',
       }
     }
   ],
@@ -140,11 +146,11 @@ Once these are set up, you're free to start building your site and writing React
 
 Tapestry comes with a series of commands to control compiling and running the server.
 
-- `tapestry` - Compiles the server/client JavaScript and boots the server in development mode
+- `tapestry` - Hot compiles the server/client JavaScript and boots the server in development mode
 - `tapestry build` - Compiles the server/client JavaScript
 - `tapestry start` - Runs any server/client bundles
-- `tapestry hot` - Boots a hot-reloading Tapestry instance
-- `tapestry init` - Bootstraps a simple Tapestry project with a `tapestry.config.js` and some components
+
+You can use `--esmodule` to toggle an ES module build utilising [this technique](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/) from Phil Walton.
 
 ## Custom compilation
 
