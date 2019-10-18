@@ -50,7 +50,7 @@ const shouldError = (data, route) => {
   return Object.keys(data).some(resp => data[resp] && data[resp].code === 404)
 }
 
-export default async (path, query, config) => {
+export default async (path, query, config, userCountry) => {
   // get matching route and match data
   const { route, match } = matchRoutes(prepareAppRoutes(config), path)
   let componentData = {}
@@ -87,7 +87,8 @@ export default async (path, query, config) => {
     route,
     match,
     componentData,
-    queryParams: query
+    queryParams: query,
+    userCountry
   })
 
   return {
