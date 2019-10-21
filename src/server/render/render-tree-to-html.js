@@ -9,13 +9,13 @@ export default async ({
   match,
   componentData,
   queryParams,
-  userCountry
+  headers
 }) => {
   const _tapestryData = {
     requestData: {
       ...match,
       queryParams,
-      userCountry
+      headers
     }
   }
   const data = Array.isArray(componentData)

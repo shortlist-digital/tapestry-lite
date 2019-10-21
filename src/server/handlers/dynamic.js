@@ -21,14 +21,6 @@ export default ({ server, config }) => {
     method: 'GET',
     path: '/{path*}',
     handler: async (request, h) => {
-      // logging country info, remove later
-      const userCountry = request.headers['cloudfront-viewer-country']
-      console.log(
-        'debug:',
-        userCountry
-          ? `user browsing from ${userCountry}`
-          : 'unable to determine user country'
-      )
       // Set a cache key
       const currentPath = request.url.pathname || '/'
       const isPreview = Boolean(request.query && request.query.tapestry_hash)
@@ -46,12 +38,20 @@ export default ({ server, config }) => {
       } else {
         log.debug(`Skipping cache: ${chalk.green(cacheKey)}`)
       }
+      // Get headers and filter by client config
+      const headers = {}
+      config.headers.map(key => {
+        Object.keys(request.headers).includes(key)
+          ? (headers[key] = request.headers[key])
+          : (headers[key] = null)
+      })
+      console.log('debug: headers\n', headers)
 
       const { responseString, status } = await tapestryRender(
         currentPath,
         request.query,
         config,
-        userCountry
+        headers
       )
 
       const response = h

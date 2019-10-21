@@ -6,7 +6,7 @@ export default async ({
   match,
   componentData,
   queryParams,
-  userCountry
+  headers
 }) => {
   log.silly('Rendering Success HTML', { match })
 
@@ -16,6 +16,6 @@ export default async ({
     match,
     componentData,
     queryParams,
-    userCountry
+    headers
   })
 }
