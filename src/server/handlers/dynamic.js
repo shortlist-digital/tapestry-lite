@@ -40,12 +40,12 @@ export default ({ server, config }) => {
       }
       // Get headers and filter by client config
       const headers = {}
-      config.headers.map(key => {
-        Object.keys(request.headers).includes(key)
-          ? (headers[key] = request.headers[key])
-          : (headers[key] = null)
-      })
-      console.log('debug: headers\n', headers)
+      config.headers &&
+        config.headers.map(key => {
+          Object.keys(request.headers).includes(key)
+            ? (headers[key] = request.headers[key])
+            : (headers[key] = null)
+        })
 
       const { responseString, status } = await tapestryRender(
         currentPath,
