@@ -1,5 +1,5 @@
 import React from 'react'
-import loadable from 'loadable-components'
+import loadable from '@loadable/component'
 
 const Component = loadable(() => import('./components/front-page'))
 
