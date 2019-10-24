@@ -42,7 +42,7 @@ export default ({ server, config }) => {
       const headers = {}
       const configHeaders = config.headers
       const requestHeaders = request.headers
-      Array.isArray(configHeaders) &&
+      if (Array.isArray(configHeaders))
         configHeaders.forEach(key => {
           Object.keys(requestHeaders).includes(key)
             ? (headers[key] = requestHeaders[key])
