@@ -1,15 +1,6 @@
-import React from 'react'
-import Helmet from 'react-helmet'
-import { expect, assert } from 'chai'
+import { expect } from 'chai'
 import request from 'request'
 import { JSDOM } from 'jsdom'
-import nock from 'nock'
-import fs from 'fs'
-import path from 'path'
-import Inert from 'inert'
-import { css } from 'glamor'
-import styled from 'react-emotion'
-import dataPosts from '../mocks/posts.json'
 import Server, { registerPlugins } from '../../src/server'
 
 describe('Header access', () => {
