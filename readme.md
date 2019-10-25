@@ -62,15 +62,18 @@ import Page from './components/page'
 
 export default {
   siteUrl: 'http://your-wordpress.url',
-  routes: [{
-    path: '/:slug/:id',
-    endpoint: id => `posts/${id}`,
-    component: Post
-  }, {
-    path: '/about/:slug',
-    endpoint: slug => `pages?filter=${slug}`,
-    component: Page
-  }]
+  routes: [
+    {
+      path: '/:slug/:id',
+      endpoint: id => `posts/${id}`,
+      component: Post
+    },
+    {
+      path: '/about/:slug',
+      endpoint: slug => `pages?filter=${slug}`,
+      component: Page
+    }
+  ]
 }
 ```
 
@@ -91,13 +94,15 @@ export default {
     Page,
     Post
   },
+  // [array] Request headers you wish to access from the front-end
+  headers: ['cloudfront-viewer-country', 'connection-speed'],
   // [array] Container for route objects
   routes: [
     {
       // [string] Path to match component
       path: '',
       path: '/path/:dynamic-path/:optional-path?'
-      
+
       // [function] React component to render
       component: () => {},
       // [any] Source for WordPress API data, can be one of array, object or string, can also be a function that returns any of those data-types. When used as a function it has access to the dynamic parameters from the path
@@ -155,9 +160,11 @@ You can use `--esmodule` to toggle an ES module build utilising [this technique]
 ## Custom compilation
 
 ### Babel
+
 If you need to modify the default Tapestry `babel` configuration, you can create a `.babelrc` file in the root of your project and Tapestry will use it to override any default options. You will need to import `tapestry-lite/babelrc` to enable the required plugins.
 
 ### Webpack
+
 To modify the Webpack config you can create a `webpack.config.js` in the root of your project that exports a modified config.
 
 An example config that adds an alias for `components`:
@@ -181,9 +188,11 @@ module.exports = (default, options, webpack) => {
 ```
 
 ### Environment variables
+
 To configure the application per environment we have a series of environment variables available to use.
 
 #### Server
+
 `TAPESTRY_HOST`
 Define the host for the server
 
@@ -200,6 +209,7 @@ Number of server instances to boot, if not configured this will default to the n
 Boolean to toggle source maps on server JS bundles
 
 #### Cache
+
 `CACHE_CONTROL_MAX_AGE`
 Cache age for all server responses
 
@@ -219,6 +229,7 @@ URL for Redis DB
 Path to clear the in memory cache or Redis, defaults to `purge`. Purge will use the path from `/purge` as the key when removing from the cache, e.g. `/purge/hello/world` will remove `hello/world` from the cache
 
 #### Logging
+
 `LOG_LEVEL`
 Tapestry has a series of logs from the server using [Winston](https://github.com/winstonjs/winston), `LOG_LEVEL` corresponds to the log level of Winston [github.com/winstonjs/winston#logging-levels](https://github.com/winstonjs/winston#logging-levels)
 
@@ -226,6 +237,7 @@ Tapestry has a series of logs from the server using [Winston](https://github.com
 Directory to store logs, defaults to writing to `STDOUT`
 
 #### Application
+
 `CSS_PLUGIN`
 One of `emotion` or `glamor` to switch between CSS-in-JS libraries, defaults to `glamor`
 

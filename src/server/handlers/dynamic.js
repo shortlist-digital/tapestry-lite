@@ -38,11 +38,22 @@ export default ({ server, config }) => {
       } else {
         log.debug(`Skipping cache: ${chalk.green(cacheKey)}`)
       }
+      // Get headers and filter by client config
+      const headers = {}
+      const configHeaders = config.headers
+      const requestHeaders = request.headers
+      if (Array.isArray(configHeaders))
+        configHeaders.forEach(key => {
+          Object.keys(requestHeaders).includes(key)
+            ? (headers[key] = requestHeaders[key])
+            : (headers[key] = null)
+        })
 
       const { responseString, status } = await tapestryRender(
         currentPath,
         request.query,
-        config
+        config,
+        headers
       )
 
       const response = h
