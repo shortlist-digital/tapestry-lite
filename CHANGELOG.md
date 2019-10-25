@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+# 5.2.0 (24-10-2019)
+
+- Added feature to enable client access to headers passed during requests
+- Added tests for header access feature
+
 # 5.1.0 (18-06-2019)
 
 - Added `apiBasePath` option to override the default baseUrl behaviour at the site level

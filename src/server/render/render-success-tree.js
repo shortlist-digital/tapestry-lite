@@ -1,7 +1,13 @@
 import renderTreeToHTML from './render-tree-to-html'
 import { log } from '../utilities/logger'
 
-export default async ({ route, match, componentData, queryParams }) => {
+export default async ({
+  route,
+  match,
+  componentData,
+  queryParams,
+  headers
+}) => {
   log.silly('Rendering Success HTML', { match })
 
   return await renderTreeToHTML({
@@ -9,6 +15,7 @@ export default async ({ route, match, componentData, queryParams }) => {
     routeOptions: route.options,
     match,
     componentData,
-    queryParams
+    queryParams,
+    headers
   })
 }

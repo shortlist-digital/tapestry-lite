@@ -8,12 +8,14 @@ export default async ({
   routeOptions = {},
   match,
   componentData,
-  queryParams
+  queryParams,
+  headers
 }) => {
   const _tapestryData = {
     requestData: {
       ...match,
-      queryParams
+      queryParams,
+      headers
     }
   }
   const data = Array.isArray(componentData)
