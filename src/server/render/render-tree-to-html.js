@@ -1,6 +1,6 @@
 import React from 'react'
 import { renderToString, renderToStaticMarkup } from 'react-dom/server'
-import { getLoadableState } from 'loadable-components/server'
+// import { getLoadableState } from 'loadable-components/server'
 import Helmet from 'react-helmet'
 
 export default async ({
@@ -24,7 +24,7 @@ export default async ({
   // create html string from target component
   const app = <Component {...data} _tapestry={_tapestryData} />
   // getLoadableState must be called before renderToString to preload all import() components
-  const loadableState = await getLoadableState(app)
+  // const loadableState = await getLoadableState(app)
   const htmlString = renderToString(app)
   // { html, css, ids }
   let styleData = {}
@@ -40,8 +40,7 @@ export default async ({
     ...styleData,
     head: helmet,
     bootstrapData: data,
-    _tapestryData,
-    loadableState
+    _tapestryData
   }
   let Document =
     routeOptions.customDocument || require('./default-document').default

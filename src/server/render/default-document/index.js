@@ -59,8 +59,7 @@ const DefaultDocument = ({
   ids,
   head,
   bootstrapData,
-  _tapestryData,
-  loadableState
+  _tapestryData
 }) => (
   <html lang="en" {...head.htmlAttributes.toComponent()}>
     <head>
@@ -74,7 +73,6 @@ const DefaultDocument = ({
     </head>
     <body>
       <div id="root" dangerouslySetInnerHTML={{ __html: html }} />
-      {loadableState.getScriptElement()}
       {getBootstrapData({ bootstrapData, ids, _tapestryData })}
       {(process.env.NODE_ENV === 'development' ||
         process.env.NODE_ENV === 'test') &&
