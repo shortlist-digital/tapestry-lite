@@ -90,7 +90,7 @@
     "react-dev-utils": "5.0.2",
     "react-emotion": "^9.2.8",
     "react-helmet": "^5.2.0",
-    "react-hot-loader": "^4.3.6",
+    "react-hot-loader": "^4.12.15",
     "redis-parser": "^3.0.0",
     "source-map-support": "^0.5.9",
     "start-server-webpack-plugin": "^2.2.1",
