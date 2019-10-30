@@ -29,6 +29,7 @@ const getProductionBundles = () => {
   const assets = fs.readJsonSync(
     path.resolve(process.cwd(), '.tapestry', 'assets.json')
   )
+  console.log({ assets })
   // fetch module specific manifect
   const assetsModule = moduleBuild
     ? fs.readJsonSync(
@@ -59,7 +60,8 @@ const DefaultDocument = ({
   ids,
   head,
   bootstrapData,
-  _tapestryData
+  _tapestryData,
+  extractor
 }) => (
   <html lang="en" {...head.htmlAttributes.toComponent()}>
     <head>
@@ -73,6 +75,7 @@ const DefaultDocument = ({
     </head>
     <body>
       <div id="root" dangerouslySetInnerHTML={{ __html: html }} />
+      {extractor.getScriptElements()}
       {getBootstrapData({ bootstrapData, ids, _tapestryData })}
       {(process.env.NODE_ENV === 'development' ||
         process.env.NODE_ENV === 'test') &&

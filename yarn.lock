@@ -4167,10 +4167,6 @@ hoek@5.x.x:
   version "5.0.3"
   resolved "https://registry.npmjs.org/hoek/-/hoek-5.0.3.tgz#b71d40d943d0a95da01956b547f83c4a5b4a34ac"
 
-hoist-non-react-statics@^2.5.0:
-  version "2.5.0"
-  resolved "https://registry.npmjs.org/hoist-non-react-statics/-/hoist-non-react-statics-2.5.0.tgz#d2ca2dfc19c5a91c5a6615ce8e564ef0347e2a40"
-
 hoist-non-react-statics@^3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.0.tgz#b09178f0122184fb95acf525daaecb4d8f45958b"
@@ -5112,13 +5108,6 @@ load-json-file@^2.0.0:
     parse-json "^2.2.0"
     pify "^2.0.0"
     strip-bom "^3.0.0"
-
-loadable-components@2.2.2:
-  version "2.2.2"
-  resolved "https://registry.npmjs.org/loadable-components/-/loadable-components-2.2.2.tgz#0362f5d6d0607f5d9bcc7932c7cdba6f256cbd46"
-  dependencies:
-    babel-plugin-syntax-dynamic-import "^6.18.0"
-    hoist-non-react-statics "^2.5.0"
 
 loader-runner@^2.3.0:
   version "2.4.0"

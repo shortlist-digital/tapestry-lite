@@ -10,6 +10,7 @@ const nodeExternals = require('webpack-node-externals')
 const StartServerPlugin = require('start-server-webpack-plugin')
 const StatsPlugin = require('stats-webpack-plugin')
 const ErrorOverlayPlugin = require('error-overlay-webpack-plugin')
+const LoadablePlugin = require('@loadable/webpack-plugin')
 
 const babelDefaultConfig = require('./babel')
 const { env, helpers } = require('./env')
@@ -207,7 +208,8 @@ module.exports = (target = 'node', opts = {}) => {
       root: process.cwd(),
       verbose: WEB_PROD ? false : true
     }),
-    new webpack.DefinePlugin(env(target, opts))
+    new webpack.DefinePlugin(env(target, opts)),
+    new LoadablePlugin({ writeToDisk: true })
   )
 
   // use custom webpack config
@@ -218,6 +220,5 @@ module.exports = (target = 'node', opts = {}) => {
         ? customConfig(config, {}, webpack)
         : customConfig.default(config, {}, webpack)
   }
-
   return config
 }
