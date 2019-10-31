@@ -1,5 +1,6 @@
+import { hot } from 'react-hot-loader/root'
+
 import React from 'react'
-import { hot } from 'react-hot-loader'
 
 import prepareAppRoutes from '../server/routing/prepare-app-routes'
 import buildErrorView from '../server/render/error-view'
@@ -23,4 +24,4 @@ const Root = config => {
   return <Component {...props} _tapestry={_tapestry} />
 }
 
-export default hot(module)(Root)
+export default hot(Root)

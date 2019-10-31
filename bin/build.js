@@ -3,7 +3,10 @@ const createWebpackConfig = require('../src/config/createWebpackConfig')
 
 const args = process.argv.slice(2)
 
-const serverConfig = createWebpackConfig('node')
+const serverConfig = createWebpackConfig(
+  'node',
+  args.includes('--esmodule') ? { module: true } : {}
+)
 const clientConfig = createWebpackConfig('web')
 
 const configs = [serverConfig, clientConfig]

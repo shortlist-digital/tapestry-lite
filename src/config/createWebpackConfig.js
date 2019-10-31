@@ -81,7 +81,11 @@ module.exports = (target = 'node', opts = {}) => {
 
   if (NODE_DEV) {
     Object.assign(config, {
-      entry: ['webpack/hot/poll?1000', paths.ownDevServer],
+      entry: [
+        'react-hot-loader/patch',
+        'webpack/hot/poll?1000',
+        paths.ownDevServer
+      ],
       output: {
         path: paths.appBuild,
         filename: 'server.js'
@@ -109,7 +113,9 @@ module.exports = (target = 'node', opts = {}) => {
 
   if (NODE_PROD) {
     Object.assign(config, {
-      entry: [paths.ownProdServer],
+      entry: {
+        app: [paths.ownProdServer]
+      },
       output: {
         path: paths.appBuild,
         filename: 'server.production.js',
@@ -141,7 +147,8 @@ module.exports = (target = 'node', opts = {}) => {
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
-        new ErrorOverlayPlugin()
+        new ErrorOverlayPlugin(),
+        new LoadablePlugin({ writeToDisk: true })
       ],
       devServer: {
         disableHostCheck: true,
@@ -167,6 +174,7 @@ module.exports = (target = 'node', opts = {}) => {
         }
       }
     })
+    config.resolve.alias['react-dom'] = '@hot-loader/react-dom'
   }
 
   if (WEB_PROD) {
@@ -186,6 +194,12 @@ module.exports = (target = 'node', opts = {}) => {
           filename: opts.module ? 'assets-module.json' : 'assets.json',
           path: paths.appBuild,
           prettyPrint: true
+        }),
+        new LoadablePlugin({
+          filename: opts.module
+            ? 'loadable-stats-module.json'
+            : 'loadable-stats.json',
+          writeToDisk: true
         })
       ],
       optimization: {
@@ -194,12 +208,10 @@ module.exports = (target = 'node', opts = {}) => {
         }
       }
     })
-  }
-
-  // update entry name for esmodule builds
-  if (opts.module) {
-    config.entry = {
-      module: [paths.ownClientIndex]
+    if (opts.module) {
+      config.entry = {
+        module: [paths.ownClientIndex]
+      }
     }
   }
 
@@ -208,8 +220,7 @@ module.exports = (target = 'node', opts = {}) => {
       root: process.cwd(),
       verbose: WEB_PROD ? false : true
     }),
-    new webpack.DefinePlugin(env(target, opts)),
-    new LoadablePlugin({ writeToDisk: true })
+    new webpack.DefinePlugin(env(target, opts))
   )
 
   // use custom webpack config

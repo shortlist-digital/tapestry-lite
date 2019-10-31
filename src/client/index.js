@@ -1,5 +1,5 @@
-import React from 'react'
 import { hydrate } from 'react-dom'
+import React from 'react'
 import { loadableReady } from '@loadable/component'
 
 import config from '../config/config-proxy'
