@@ -94,6 +94,14 @@ export default {
     Page,
     Post
   },
+  // function(req, key) to change the redis cache key generated. Uses browser request and initial cache key as arguments and must return a string which replaces the initial cache key.
+  cacheKeyHandler: (request, cacheKey) => {
+    let newKey = cacheKey
+    if (request.headers['connection-speed'] > 'fast') {
+      newKey = cacheKey + 'fastuser'
+    }
+    return newKey
+  },
   // [array] Request headers you wish to access from the front-end
   headers: ['cloudfront-viewer-country', 'connection-speed'],
   // [array] Container for route objects
