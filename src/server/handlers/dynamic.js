@@ -28,10 +28,9 @@ export default ({ server, config }) => {
 
       // Run cacheKeyHandler function if provided by client
       const cacheKeyHandler = config.cacheKeyHandler
-      let newCacheKey = cacheKey
       if (typeof cacheKeyHandler === 'function') {
         try {
-          newCacheKey = cacheKeyHandler({ ...request }, cacheKey)
+          const newCacheKey = cacheKeyHandler({ ...request }, cacheKey)
           if (typeof newCacheKey !== 'string')
             throw `cacheKeyHandler() return value: expected "string" but received "${typeof newCacheKey}"`
           cacheKey = newCacheKey
