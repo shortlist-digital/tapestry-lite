@@ -3,7 +3,6 @@ import chalk from 'chalk'
 import normaliseUrlPath from '../utilities/normalise-url-path'
 import CacheManager from '../utilities/cache-manager'
 import { log } from '../utilities/logger'
-import isFunction from 'lodash.isfunction'
 
 import tapestryRender from '../render/tapestry-render'
 
@@ -30,18 +29,14 @@ export default ({ server, config }) => {
       // Run cacheKeyHandler function if provided by client
       const cacheKeyHandler = config.cacheKeyHandler
       let newCacheKey = cacheKey
-      if (isFunction(cacheKeyHandler)) {
+      if (typeof cacheKeyHandler === 'function') {
         try {
-          newCacheKey = cacheKeyHandler(request, cacheKey)
-          if (typeof newCacheKey === 'string') {
-            cacheKey = newCacheKey
-          } else {
-            console.error(
-              `cacheKeyHandler() return value: expected string but received ${typeof cacheKey}`
-            )
-          }
+          newCacheKey = cacheKeyHandler({ ...request }, cacheKey)
+          if (typeof newCacheKey !== 'string')
+            throw `cacheKeyHandler() return value: expected "string" but received "${typeof newCacheKey}"`
+          cacheKey = newCacheKey
         } catch (e) {
-          console.error(`cacheKeyHandler() error: ${e}`)
+          log.error(`cacheKeyHandler() error: ${e}`)
         }
       }
 
