@@ -24,7 +24,21 @@ export default ({ server, config }) => {
       // Set a cache key
       const currentPath = request.url.pathname || '/'
       const isPreview = Boolean(request.query && request.query.tapestry_hash)
-      const cacheKey = normaliseUrlPath(currentPath)
+      let cacheKey = normaliseUrlPath(currentPath)
+
+      // Run cacheKeyHandler function if provided by client
+      const cacheKeyHandler = config.cacheKeyHandler
+      if (typeof cacheKeyHandler === 'function') {
+        try {
+          const newCacheKey = cacheKeyHandler({ ...request }, cacheKey)
+          if (typeof newCacheKey !== 'string')
+            throw `cacheKeyHandler() return value: expected "string" but received "${typeof newCacheKey}"`
+          cacheKey = newCacheKey
+        } catch (e) {
+          log.error(`cacheKeyHandler() error: ${e}`)
+        }
+      }
+
       // Is there cached HTML?
       const cacheString = await cache.get(cacheKey)
       // If there's a cache response, return the response straight away

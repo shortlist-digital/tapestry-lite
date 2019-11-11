@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+# 5.3.0 (11-11-2019)
+
+- Added feature to enable client to pass a function which modifies the cache key used, taking in the request and initial cache key as arguments
+
 # 5.2.0 (24-10-2019)
 
 - Added feature to enable client access to headers passed during requests
