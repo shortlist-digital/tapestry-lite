@@ -10,6 +10,7 @@ const nodeExternals = require('webpack-node-externals')
 const StartServerPlugin = require('start-server-webpack-plugin')
 const StatsPlugin = require('stats-webpack-plugin')
 const ErrorOverlayPlugin = require('error-overlay-webpack-plugin')
+const LoadablePlugin = require('@loadable/webpack-plugin')
 
 const babelDefaultConfig = require('./babel')
 const { env, helpers } = require('./env')
@@ -122,11 +123,17 @@ module.exports = (target = 'node', opts = {}) => {
     Object.assign(config, {
       entry: {
         client: [
+          'react-hot-loader/patch',
           'webpack-dev-server/client?http://localhost:4001/',
           'webpack/hot/only-dev-server',
           paths.ownClientIndex
         ]
       },
+      // resolve: {
+      //   alias: {
+      //     'react-dom': '@hot-loader/react-dom'
+      //   }
+      // },
       output: {
         path: paths.appBuildPublic,
         publicPath: 'http://localhost:4001/',
@@ -140,7 +147,8 @@ module.exports = (target = 'node', opts = {}) => {
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
-        new ErrorOverlayPlugin()
+        new ErrorOverlayPlugin(),
+        new LoadablePlugin({ writeToDisk: true })
       ],
       devServer: {
         disableHostCheck: true,
@@ -185,6 +193,10 @@ module.exports = (target = 'node', opts = {}) => {
           filename: opts.module ? 'assets-module.json' : 'assets.json',
           path: paths.appBuild,
           prettyPrint: true
+        }),
+        new LoadablePlugin({
+          filename: 'loadable-stats.json',
+          writeToDisk: true
         })
       ],
       optimization: {

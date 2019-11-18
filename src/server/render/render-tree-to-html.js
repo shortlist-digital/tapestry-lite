@@ -1,6 +1,7 @@
 import React from 'react'
+import path from 'path'
 import { renderToString, renderToStaticMarkup } from 'react-dom/server'
-import { getLoadableState } from 'loadable-components/server'
+import { ChunkExtractor } from '@loadable/server'
 import Helmet from 'react-helmet'
 
 export default async ({
@@ -22,10 +23,26 @@ export default async ({
     ? { data: componentData }
     : componentData
   // create html string from target component
-  const app = <Component {...data} _tapestry={_tapestryData} />
-  // getLoadableState must be called before renderToString to preload all import() components
-  const loadableState = await getLoadableState(app)
-  const htmlString = renderToString(app)
+  const statsFile = path.resolve(
+    process.cwd(),
+    '.tapestry',
+    '_assets',
+    'loadable-stats.json'
+  )
+
+  // We create extractors from the stats files
+  const extractor = new ChunkExtractor({
+    statsFile,
+    entrypoints: ['client']
+  })
+
+  // Wrap your application using "collectChunks"
+  const jsx = extractor.collectChunks(
+    <Component {...data} _tapestry={_tapestryData} />
+  )
+
+  // Render your application
+  const htmlString = renderToString(jsx)
   // { html, css, ids }
   let styleData = {}
   // extract html, css and ids from either Glamor or Emotion
@@ -41,7 +58,7 @@ export default async ({
     head: helmet,
     bootstrapData: data,
     _tapestryData,
-    loadableState
+    extractor
   }
   let Document =
     routeOptions.customDocument || require('./default-document').default

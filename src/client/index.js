@@ -1,6 +1,6 @@
 import React from 'react'
 import { hydrate } from 'react-dom'
-import { loadComponents } from 'loadable-components'
+import { loadableReady } from '@loadable/component'
 
 import config from '../config/config-proxy'
 import Root from './root'
@@ -18,6 +18,6 @@ if (CSS_PLUGIN === 'emotion')
 if (CSS_PLUGIN === 'glamor')
   require('glamor').rehydrate(window.__TAPESTRY_DATA__.ids)
 
-loadComponents().then(() =>
+loadableReady(() =>
   hydrate(<Root {...config} />, document.getElementById('root'))
 )
