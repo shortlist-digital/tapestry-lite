@@ -2,14 +2,18 @@ const webpack = require('webpack')
 const createWebpackConfig = require('../src/config/createWebpackConfig')
 
 const args = process.argv.slice(2)
+const moduleBuild = args.includes('--esmodule')
 
-const serverConfig = createWebpackConfig('node')
+const serverConfig = createWebpackConfig(
+  'node',
+  moduleBuild ? { module: true } : {}
+)
 const clientConfig = createWebpackConfig('web')
 
 const configs = [serverConfig, clientConfig]
 
 // create esmodule build
-if (args.includes('--esmodule')) {
+if (moduleBuild) {
   configs.push(createWebpackConfig('web', { module: true }))
 }
 

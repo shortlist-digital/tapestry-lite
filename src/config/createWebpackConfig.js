@@ -122,7 +122,7 @@ module.exports = (target = 'node', opts = {}) => {
   if (WEB_DEV) {
     Object.assign(config, {
       entry: {
-        client: [
+        main: [
           'react-hot-loader/patch',
           'webpack-dev-server/client?http://localhost:4001/',
           'webpack/hot/only-dev-server',
@@ -143,7 +143,10 @@ module.exports = (target = 'node', opts = {}) => {
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new ErrorOverlayPlugin(),
-        new LoadablePlugin({ writeToDisk: true })
+        new LoadablePlugin({
+          filename: 'loadable.json',
+          writeToDisk: true
+        })
       ],
       devServer: {
         disableHostCheck: true,
@@ -172,25 +175,29 @@ module.exports = (target = 'node', opts = {}) => {
   }
 
   if (WEB_PROD) {
+    const module = opts.module ? '.module' : ''
+    const filename = `[name].[chunkhash:10]${module}.js`
+
     Object.assign(config, {
       entry: {
-        client: [paths.ownClientIndex]
+        main: [paths.ownClientIndex]
       },
       output: {
         path: paths.appBuildPublic,
-        sourceMapFilename: '[name].[chunkhash:10].map',
-        filename: '[name].[chunkhash:10].js',
+        sourceMapFilename: filename,
+        filename: filename,
+        chunkFilename: filename,
         publicPath: '/_assets/'
       },
       plugins: [
-        new StatsPlugin(opts.module ? '../stats-module.json' : '../stats.json'),
+        new StatsPlugin(`../stats${module}.json`),
         new AssetsPlugin({
-          filename: opts.module ? 'assets-module.json' : 'assets.json',
+          filename: `assets${module}.json`,
           path: paths.appBuild,
           prettyPrint: true
         }),
         new LoadablePlugin({
-          filename: 'loadable-stats.json',
+          filename: `loadable${module}.json`,
           writeToDisk: true
         })
       ],
@@ -200,13 +207,6 @@ module.exports = (target = 'node', opts = {}) => {
         }
       }
     })
-  }
-
-  // update entry name for esmodule builds
-  if (opts.module) {
-    config.entry = {
-      module: [paths.ownClientIndex]
-    }
   }
 
   config.plugins.push(

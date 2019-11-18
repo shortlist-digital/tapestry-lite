@@ -1,5 +1,11 @@
-import React from 'react'
+import React, { Fragment } from 'react'
+import fs from 'fs-extra'
+import path from 'path'
+
 import stringifyEscapeScript from '../../utilities/stringify-escape-script'
+
+const hasModuleBuildAssets = () =>
+  fs.existsSync(path.resolve(process.cwd(), '.tapestry', 'assets-module.json'))
 
 const getBootstrapData = ({ bootstrapData, ids, _tapestryData }) => (
   <script
@@ -13,14 +19,49 @@ const getBootstrapData = ({ bootstrapData, ids, _tapestryData }) => (
   />
 )
 
+const getDevelopmentBundle = () => (
+  <script src={'http://localhost:4001/static/js/bundle.js'} />
+)
+
+const getProductionBundles = () => {
+  const moduleBuild = hasModuleBuildAssets()
+  // fetch assets manifest for prod bundles
+  const assets = fs.readJsonSync(
+    path.resolve(process.cwd(), '.tapestry', 'assets.json')
+  )
+  // fetch module specific manifect
+  const assetsModule = moduleBuild
+    ? fs.readJsonSync(
+        path.resolve(process.cwd(), '.tapestry', 'assets.module.json')
+      )
+    : {}
+
+  console.log({ assets, assetsModule })
+
+  return (
+    <Fragment>
+      {Object.keys(assets)
+        .filter(Boolean)
+        .map((key, index) => (
+          <script noModule={moduleBuild} key={index} src={assets[key].js} />
+        ))}
+      {moduleBuild &&
+        Object.keys(assetsModule)
+          .filter(Boolean)
+          .map((key, index) => (
+            <script type="module" key={index} src={assetsModule[key].js} />
+          ))}
+    </Fragment>
+  )
+}
+
 const DefaultDocument = ({
   html,
   css,
   ids,
   head,
   bootstrapData,
-  _tapestryData,
-  extractor
+  _tapestryData
 }) => (
   <html lang="en" {...head.htmlAttributes.toComponent()}>
     <head>
@@ -34,8 +75,12 @@ const DefaultDocument = ({
     </head>
     <body>
       <div id="root" dangerouslySetInnerHTML={{ __html: html }} />
-      {extractor.getScriptElements()}
+      {/* {loadableState.getScriptElement()} */}
       {getBootstrapData({ bootstrapData, ids, _tapestryData })}
+      {(process.env.NODE_ENV === 'development' ||
+        process.env.NODE_ENV === 'test') &&
+        getDevelopmentBundle()}
+      {process.env.NODE_ENV === 'production' && getProductionBundles()}
     </body>
   </html>
 )

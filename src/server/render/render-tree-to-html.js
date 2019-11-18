@@ -28,12 +28,12 @@ export default async ({
     process.cwd(),
     '.tapestry',
     '_assets',
-    'loadable-stats.json'
+    MODULE_BUILD ? 'loadable.module.json' : 'loadable.json'
   )
   // We create extractors from the stats files
   const extractor = new ChunkExtractor({
     statsFile,
-    entrypoints: ['client']
+    entrypoints: ['main']
   })
   // Wrap your application using "collectChunks"
   const jsx = extractor.collectChunks(
