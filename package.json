@@ -33,8 +33,8 @@
     "nock": "^9.6.1",
     "prettier": "^1.14.2",
     "pstree": "^0.0.1",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "request": "^2.88.0",
     "requisition": "^1.7.0",
     "shelljs": "^0.8.2"
@@ -87,7 +87,7 @@
     "react-dev-utils": "5.0.2",
     "react-emotion": "^9.2.8",
     "react-helmet": "^5.2.0",
-    "react-hot-loader": "^4.3.6",
+    "react-hot-loader": "^4.12.18",
     "redis-parser": "^3.0.0",
     "source-map-support": "^0.5.9",
     "start-server-webpack-plugin": "^2.2.1",
@@ -99,7 +99,7 @@
     "winston": "^3.1.0"
   },
   "peerDependencies": {
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react": "^16.3.0",
+    "react-dom": "^16.3.0"
   }
 }

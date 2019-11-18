@@ -122,6 +122,7 @@ module.exports = (target = 'node', opts = {}) => {
     Object.assign(config, {
       entry: {
         client: [
+          'react-hot-loader/patch',
           'webpack-dev-server/client?http://localhost:4001/',
           'webpack/hot/only-dev-server',
           paths.ownClientIndex
