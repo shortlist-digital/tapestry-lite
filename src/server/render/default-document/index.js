@@ -34,7 +34,7 @@ const DefaultDocument = ({
     </head>
     <body>
       <div id="root" dangerouslySetInnerHTML={{ __html: html }} />
-      {extractor.getScriptElements()}
+      {extractor && extractor.getScriptElements()}
       {getBootstrapData({ bootstrapData, ids, _tapestryData })}
     </body>
   </html>

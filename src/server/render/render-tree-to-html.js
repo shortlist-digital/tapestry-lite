@@ -1,4 +1,5 @@
 import path from 'path'
+import fs from 'fs'
 
 import React from 'react'
 import { renderToString, renderToStaticMarkup } from 'react-dom/server'
@@ -23,6 +24,7 @@ export default async ({
   const data = Array.isArray(componentData)
     ? { data: componentData }
     : componentData
+  const app = <Component {...data} _tapestry={_tapestryData} />
   // create html string from target component
   const statsFile = path.resolve(
     process.cwd(),
@@ -36,11 +38,10 @@ export default async ({
     entrypoints: ['client']
   })
   // Wrap your application using "collectChunks"
-  const jsx = extractor.collectChunks(
-    <Component {...data} _tapestry={_tapestryData} />
-  )
   // Render your application
-  const htmlString = renderToString(jsx)
+  const htmlString = renderToString(
+    fs.existsSync(statsFile) ? extractor.collectChunks(app) : app
+  )
   // { html, css, ids }
   let styleData = {}
   // extract html, css and ids from either Glamor or Emotion
