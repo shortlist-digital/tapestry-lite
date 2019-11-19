@@ -1,17 +1,10 @@
 const webpack = require('webpack')
 const createWebpackConfig = require('../src/config/createWebpackConfig')
 
-const args = process.argv.slice(2)
-
 const serverConfig = createWebpackConfig('node')
 const clientConfig = createWebpackConfig('web')
 
 const configs = [serverConfig, clientConfig]
-
-// create esmodule build
-if (args.includes('--esmodule')) {
-  configs.push(createWebpackConfig('web', { module: true }))
-}
 
 console.log('\nCreating an optimized production build\n')
 

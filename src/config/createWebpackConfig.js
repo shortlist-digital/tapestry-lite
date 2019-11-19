@@ -16,7 +16,7 @@ const babelDefaultConfig = require('./babel')
 const { env, helpers } = require('./env')
 const paths = require('./paths')
 
-module.exports = (target = 'node', opts = {}) => {
+module.exports = (target = 'node') => {
   const { IS_WEB, IS_DEV, NODE_DEV, NODE_PROD, WEB_DEV, WEB_PROD } = helpers(
     target
   )
@@ -24,12 +24,11 @@ module.exports = (target = 'node', opts = {}) => {
   let babelConfig
 
   if (fs.existsSync(paths.appBabelRc)) {
-    if (IS_WEB && !opts.module)
-      console.log('Using .babelrc defined in your app root')
+    if (IS_WEB) console.log('Using .babelrc defined in your app root')
     const babelAppConfig = fs.readJsonSync(paths.appBabelRc)
-    babelConfig = merge(babelDefaultConfig(target, opts), babelAppConfig)
+    babelConfig = merge(babelDefaultConfig(target), babelAppConfig)
   } else {
-    babelConfig = babelDefaultConfig(target, opts)
+    babelConfig = babelDefaultConfig(target)
   }
 
   let babelOptions = {
@@ -183,9 +182,9 @@ module.exports = (target = 'node', opts = {}) => {
         publicPath: '/_assets/'
       },
       plugins: [
-        new StatsPlugin(opts.module ? '../stats-module.json' : '../stats.json'),
+        new StatsPlugin('../stats.json'),
         new AssetsPlugin({
-          filename: opts.module ? 'assets-module.json' : 'assets.json',
+          filename: 'assets.json',
           path: paths.appBuild,
           prettyPrint: true
         }),
@@ -202,19 +201,12 @@ module.exports = (target = 'node', opts = {}) => {
     })
   }
 
-  // update entry name for esmodule builds
-  if (opts.module) {
-    config.entry = {
-      module: [paths.ownClientIndex]
-    }
-  }
-
   config.plugins.push(
     new CleanPlugin(['.tapestry'], {
       root: process.cwd(),
       verbose: WEB_PROD ? false : true
     }),
-    new webpack.DefinePlugin(env(target, opts))
+    new webpack.DefinePlugin(env(target))
   )
 
   // use custom webpack config
