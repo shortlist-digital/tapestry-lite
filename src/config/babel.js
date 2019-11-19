@@ -46,7 +46,7 @@ module.exports = (target = 'node', opts = {}) => {
       // Adds syntax support for import('./component.js')
       require.resolve('@babel/plugin-syntax-dynamic-import'),
       // loadable(() => import('./component.js'))
-      require.resolve('loadable-components/babel'),
+      require.resolve('@loadable/babel-plugin'),
       // Add support for async/await
       require.resolve('@babel/plugin-transform-runtime')
     ]
