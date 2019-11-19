@@ -7,7 +7,8 @@ module.exports = (target = 'node', opts = {}) => {
   // set @babel/preset-env default options
   const presetEnvOptions = {
     modules: false, // retain es modules
-    useBuiltIns: 'usage' // only polyfill from whats used
+    useBuiltIns: 'usage', // only polyfill from whats used
+    corejs: { version: 2 }
   }
 
   // targeting node, no need to transpile a bunch of features
