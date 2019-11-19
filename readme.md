@@ -163,8 +163,6 @@ Tapestry comes with a series of commands to control compiling and running the se
 - `tapestry build` - Compiles the server/client JavaScript
 - `tapestry start` - Runs any server/client bundles
 
-You can use `--esmodule` to toggle an ES module build utilising [this technique](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/) from Phil Walton.
-
 ## Custom compilation
 
 ### Babel
