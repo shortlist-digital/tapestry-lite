@@ -1,5 +1,5 @@
 import path from 'path'
-
+import fs from 'fs-extra'
 import React from 'react'
 import { renderToString, renderToStaticMarkup } from 'react-dom/server'
 import Helmet from 'react-helmet'
@@ -23,6 +23,8 @@ export default async ({
   const data = Array.isArray(componentData)
     ? { data: componentData }
     : componentData
+  const app = <Component {...data} _tapestry={_tapestryData} />
+  // const app = <Component {...data} _tapestry={_tapestryData} />
   // create html string from target component
   const statsFile = path.resolve(
     process.cwd(),
@@ -30,17 +32,22 @@ export default async ({
     '_assets',
     'loadable-stats.json'
   )
-  // We create extractors from the stats files
-  const extractor = new ChunkExtractor({
-    statsFile,
-    entrypoints: ['client']
-  })
-  // Wrap your application using "collectChunks"
-  const jsx = extractor.collectChunks(
-    <Component {...data} _tapestry={_tapestryData} />
-  )
-  // Render your application
-  const htmlString = renderToString(jsx)
+  const statsFileExists = fs.existsSync(statsFile)
+
+  let extractor = null
+  let htmlString = null
+
+  if (statsFileExists) {
+    // We create extractors from the stats files
+    extractor = new ChunkExtractor({
+      statsFile,
+      entrypoints: ['client']
+    })
+    htmlString = renderToString(extractor.collectChunks(app))
+  } else {
+    htmlString = renderToString(app)
+  }
+
   // { html, css, ids }
   let styleData = {}
   // extract html, css and ids from either Glamor or Emotion
