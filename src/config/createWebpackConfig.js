@@ -5,17 +5,18 @@ const merge = require('babel-merge')
 
 const AssetsPlugin = require('assets-webpack-plugin')
 const CleanPlugin = require('clean-webpack-plugin')
+const ErrorOverlayPlugin = require('error-overlay-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
+const LoadablePlugin = require('@loadable/webpack-plugin')
 const nodeExternals = require('webpack-node-externals')
 const StartServerPlugin = require('start-server-webpack-plugin')
 const StatsPlugin = require('stats-webpack-plugin')
-const ErrorOverlayPlugin = require('error-overlay-webpack-plugin')
 
 const babelDefaultConfig = require('./babel')
 const { env, helpers } = require('./env')
 const paths = require('./paths')
 
-module.exports = (target = 'node', opts = {}) => {
+module.exports = (target = 'node') => {
   const { IS_WEB, IS_DEV, NODE_DEV, NODE_PROD, WEB_DEV, WEB_PROD } = helpers(
     target
   )
@@ -23,12 +24,11 @@ module.exports = (target = 'node', opts = {}) => {
   let babelConfig
 
   if (fs.existsSync(paths.appBabelRc)) {
-    if (IS_WEB && !opts.module)
-      console.log('Using .babelrc defined in your app root')
+    if (IS_WEB) console.log('Using .babelrc defined in your app root')
     const babelAppConfig = fs.readJsonSync(paths.appBabelRc)
-    babelConfig = merge(babelDefaultConfig(target, opts), babelAppConfig)
+    babelConfig = merge(babelDefaultConfig(target), babelAppConfig)
   } else {
-    babelConfig = babelDefaultConfig(target, opts)
+    babelConfig = babelDefaultConfig(target)
   }
 
   let babelOptions = {
@@ -122,6 +122,7 @@ module.exports = (target = 'node', opts = {}) => {
     Object.assign(config, {
       entry: {
         client: [
+          'react-hot-loader/patch',
           'webpack-dev-server/client?http://localhost:4001/',
           'webpack/hot/only-dev-server',
           paths.ownClientIndex
@@ -140,7 +141,8 @@ module.exports = (target = 'node', opts = {}) => {
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
-        new ErrorOverlayPlugin()
+        new ErrorOverlayPlugin(),
+        new LoadablePlugin({ writeToDisk: true })
       ],
       devServer: {
         disableHostCheck: true,
@@ -180,11 +182,15 @@ module.exports = (target = 'node', opts = {}) => {
         publicPath: '/_assets/'
       },
       plugins: [
-        new StatsPlugin(opts.module ? '../stats-module.json' : '../stats.json'),
+        new StatsPlugin('../stats.json'),
         new AssetsPlugin({
-          filename: opts.module ? 'assets-module.json' : 'assets.json',
+          filename: 'assets.json',
           path: paths.appBuild,
           prettyPrint: true
+        }),
+        new LoadablePlugin({
+          filename: 'loadable-stats.json',
+          writeToDisk: true
         })
       ],
       optimization: {
@@ -195,19 +201,12 @@ module.exports = (target = 'node', opts = {}) => {
     })
   }
 
-  // update entry name for esmodule builds
-  if (opts.module) {
-    config.entry = {
-      module: [paths.ownClientIndex]
-    }
-  }
-
   config.plugins.push(
     new CleanPlugin(['.tapestry'], {
       root: process.cwd(),
       verbose: WEB_PROD ? false : true
     }),
-    new webpack.DefinePlugin(env(target, opts))
+    new webpack.DefinePlugin(env(target))
   )
 
   // use custom webpack config

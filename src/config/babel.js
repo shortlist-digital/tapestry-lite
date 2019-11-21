@@ -1,13 +1,14 @@
 const fs = require('fs')
 const paths = require('./paths')
 
-module.exports = (target = 'node', opts = {}) => {
+module.exports = (target = 'node') => {
   const { NODE_ENV, CSS_PLUGIN } = process.env
 
   // set @babel/preset-env default options
   const presetEnvOptions = {
     modules: false, // retain es modules
-    useBuiltIns: 'usage' // only polyfill from whats used
+    useBuiltIns: 'usage', // only polyfill from whats used
+    corejs: { version: 2 }
   }
 
   // targeting node, no need to transpile a bunch of features
@@ -16,17 +17,11 @@ module.exports = (target = 'node', opts = {}) => {
 
   // targeting web
   // fetch browserslist file to define environment polyfills/transpilations
-  if (!opts.module && target === 'web' && fs.existsSync(paths.appBrowerslist)) {
+  if (target === 'web' && fs.existsSync(paths.appBrowerslist)) {
     console.log('Using browserslist defined in your app root')
     const browsers = fs.readFileSync(paths.appBrowerslist, 'utf8')
     presetEnvOptions.targets = {
       browsers: browsers.split('\n').filter(Boolean)
-    }
-  }
-
-  if (opts.module && target === 'web') {
-    presetEnvOptions.targets = {
-      esmodules: true
     }
   }
 
@@ -46,7 +41,7 @@ module.exports = (target = 'node', opts = {}) => {
       // Adds syntax support for import('./component.js')
       require.resolve('@babel/plugin-syntax-dynamic-import'),
       // loadable(() => import('./component.js'))
-      require.resolve('loadable-components/babel'),
+      require.resolve('@loadable/babel-plugin'),
       // Add support for async/await
       require.resolve('@babel/plugin-transform-runtime')
     ]
