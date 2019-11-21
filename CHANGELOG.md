@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+# 6.0.0 (21-11-2019)
+
+- Upgraded React, React Hot Loader, Loadable Components and Babel
+- Removed `--esmodule` option
+
 # 5.3.0 (11-11-2019)
 
 - Added feature to enable client to pass a function which modifies the cache key used, taking in the request and initial cache key as arguments
