@@ -1,9 +1,12 @@
 import path from 'path'
 import fs from 'fs-extra'
+
 import React from 'react'
 import { renderToString, renderToStaticMarkup } from 'react-dom/server'
-import Helmet from 'react-helmet'
+import { HelmetProvider } from 'react-helmet-async'
 import { ChunkExtractor } from '@loadable/server'
+
+const helmetContext = {}
 
 export default async ({
   Component,
@@ -23,8 +26,11 @@ export default async ({
   const data = Array.isArray(componentData)
     ? { data: componentData }
     : componentData
-  const app = <Component {...data} _tapestry={_tapestryData} />
-  // const app = <Component {...data} _tapestry={_tapestryData} />
+  const app = (
+    <HelmetProvider context={helmetContext}>
+      <Component {...data} _tapestry={_tapestryData} />
+    </HelmetProvider>
+  )
   // create html string from target component
   const statsFile = path.resolve(
     process.cwd(),
@@ -56,11 +62,10 @@ export default async ({
   } else {
     styleData = require('glamor/server').renderStaticOptimized(() => htmlString)
   }
-  const helmet = Helmet.renderStatic()
   // Assets to come, everything else works
   const renderData = {
     ...styleData,
-    head: helmet,
+    head: helmetContext.helmet,
     bootstrapData: data,
     _tapestryData,
     extractor

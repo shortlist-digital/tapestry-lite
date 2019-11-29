@@ -1,12 +1,10 @@
 import React from 'react'
 import { hydrate } from 'react-dom'
 import { loadableReady } from '@loadable/component'
+import { HelmetProvider } from 'react-helmet-async'
 
 import config from '../config/config-proxy'
 import Root from './root'
-
-require('promis')
-require('isomorphic-fetch')
 
 // Hydrate server rendered CSS with either Emotion or Glamor
 if (CSS_PLUGIN === 'emotion')
@@ -15,5 +13,10 @@ if (CSS_PLUGIN === 'glamor')
   require('glamor').rehydrate(window.__TAPESTRY_DATA__.ids)
 
 loadableReady(() =>
-  hydrate(<Root {...config} />, document.getElementById('root'))
+  hydrate(
+    <HelmetProvider>
+      <Root {...config} />
+    </HelmetProvider>,
+    document.getElementById('root')
+  )
 )

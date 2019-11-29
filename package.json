@@ -89,7 +89,7 @@
     "ps-tree": "1.2.0",
     "react-dev-utils": "5.0.2",
     "react-emotion": "^9.2.8",
-    "react-helmet": "^5.2.0",
+    "react-helmet-async": "^1.0.4",
     "react-hot-loader": "^4.12.18",
     "redis-parser": "^3.0.0",
     "source-map-support": "^0.5.9",
