@@ -1,6 +1,6 @@
 import React from 'react'
 import HTTPStatus from 'http-status'
-import Helmet from 'react-helmet'
+import { Helmet } from 'react-helmet-async'
 import { expect } from 'chai'
 import request from 'request'
 import nock from 'nock'
