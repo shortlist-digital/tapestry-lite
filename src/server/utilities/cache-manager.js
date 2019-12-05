@@ -1,10 +1,44 @@
 import chalk from 'chalk'
 import NCM from 'cache-manager'
+
 import { log } from './logger'
+import normaliseUrlPath from './normalise-url-path'
 
 let internalCaches = []
 let instance = null
 let cacheConfig
+
+export const getCacheKey = (path, request, keyHandler) => {
+  let key = normaliseUrlPath(path)
+  // Run cacheKeyHandler function if provided by client
+  if (typeof keyHandler === 'function') {
+    try {
+      const updatedKey = keyHandler({ ...request }, key)
+      if (typeof updatedKey !== 'string')
+        throw `cacheKeyHandler() return value: expected "string" but received "${typeof updatedKey}"`
+      key = updatedKey
+    } catch (e) {
+      log.error(`cacheKeyHandler() error: ${e}`)
+    }
+  }
+  return key
+}
+
+export const getPurgeKey = (path, purgeHandler) => {
+  let key = normaliseUrlPath(path)
+  // Run cacheKeyHandler function if provided by client
+  if (typeof purgeHandler === 'function') {
+    try {
+      const updatedKey = purgeHandler(key)
+      if (typeof updatedKey !== 'string' && !Array.isArray(updatedKey))
+        throw `cachePurgeHandler() return value: expected "string" or "array" but received "${typeof updatedKey}"`
+      key = updatedKey
+    } catch (e) {
+      log.error(`cachePurgeHandler() error: ${e}`)
+    }
+  }
+  return key
+}
 
 export default class CacheManager {
   constructor() {

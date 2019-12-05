@@ -45,7 +45,7 @@ class Server {
       return h.continue
     })
     // Handle server routes
-    PurgeHandler({ server })
+    PurgeHandler({ config, server })
     RedirectHandler({ config, server })
     DynamicRouteHandler({ config, server })
     // return server instance (not class)
@@ -66,7 +66,7 @@ export const registerPlugins = async ({ server, config }) => {
   // Register all required plugins before use
   await server.register(plugins)
   StaticHandler({ server })
-  ProxyHandler({ server, config })
+  ProxyHandler({ config, server })
   ApiHandler({ config, server })
 }
 
