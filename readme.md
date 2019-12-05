@@ -94,16 +94,6 @@ export default {
     Page,
     Post
   },
-  // function(req, key) to modify the cache key. Uses browser request and initial cache key as arguments and must return a string which replaces the initial cache key.
-  cacheKeyHandler: (request, cacheKey) => {
-    let newKey = cacheKey
-    if (request.headers['connection-speed'] > 'fast') {
-      newKey = cacheKey + 'fastuser'
-    }
-    return newKey
-  },
-  // [array] Request headers you wish to access from the front-end
-  headers: ['cloudfront-viewer-country', 'connection-speed'],
   // [array] Container for route objects
   routes: [
     {
@@ -151,7 +141,21 @@ export default {
     forceHttps: false,
     // [boolean] Wordpress.com hosting configuration
     wordpressDotComHosting: false
-  }
+  },
+  // function(req, key) to modify the cache key. Uses browser request and initial cache key as arguments and must return a string which replaces the initial cache key.
+  cacheKeyHandler: (request, cacheKey) => {
+    let newKey = cacheKey
+    if (request.headers['region'] === 'en-us') {
+      newKey = cacheKey + ':region-us'
+    }
+    return newKey
+  },
+  // function(key) to declare all keys per cache entry. Uses initial cache key as arguments and must return a string or array representing all possible keys that could be used for the cache entry.
+  cachePurgeHandler: (key) => {
+    return [key, key + ':region-us']
+  },
+  // [array] Request headers you wish to access from the front-end
+  headers: ['region'],
 }
 ```
 
