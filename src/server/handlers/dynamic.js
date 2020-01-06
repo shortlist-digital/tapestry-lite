@@ -1,7 +1,6 @@
 import chalk from 'chalk'
 
-import normaliseUrlPath from '../utilities/normalise-url-path'
-import CacheManager from '../utilities/cache-manager'
+import CacheManager, { getCacheKey } from '../utilities/cache-manager'
 import { log } from '../utilities/logger'
 
 import tapestryRender from '../render/tapestry-render'
@@ -24,22 +23,8 @@ export default ({ server, config }) => {
       // Set a cache key
       const currentPath = request.url.pathname || '/'
       const isPreview = Boolean(request.query && request.query.tapestry_hash)
-      let cacheKey = normaliseUrlPath(currentPath)
-
-      // Run cacheKeyHandler function if provided by client
-      const cacheKeyHandler = config.cacheKeyHandler
-      if (typeof cacheKeyHandler === 'function') {
-        try {
-          const newCacheKey = cacheKeyHandler({ ...request }, cacheKey)
-          if (typeof newCacheKey !== 'string')
-            throw `cacheKeyHandler() return value: expected "string" but received "${typeof newCacheKey}"`
-          cacheKey = newCacheKey
-        } catch (e) {
-          log.error(`cacheKeyHandler() error: ${e}`)
-        }
-      }
-
       // Is there cached HTML?
+      const cacheKey = getCacheKey(currentPath, request, config.cacheKeyHandler)
       const cacheString = await cache.get(cacheKey)
       // If there's a cache response, return the response straight away
       if (cacheString && !isPreview) {

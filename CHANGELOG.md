@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+# 6.1.0 (05-12-2019)
+
+- Created `cachePurgeHandler` method to allow users to declare all possible keys of a cache entry
+
 # 6.0.0 (21-11-2019)
 
 - Upgraded React, React Hot Loader, Loadable Components and Babel

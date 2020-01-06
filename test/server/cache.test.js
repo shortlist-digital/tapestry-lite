@@ -221,3 +221,69 @@ describe('Handling cache set/get', () => {
     })
   }
 })
+
+describe('Handling cache set/get', () => {
+  let server = null
+  let uri = null
+  let config = {
+    routes: [
+      {
+        path: '/hello',
+        component: () => <p>Hello</p>
+      },
+      {
+        path: '/world',
+        component: () => <p>World</p>
+      }
+    ],
+    siteUrl: 'http://dummy.api',
+    cacheKeyHandler: (req, key) => {
+      if (key === 'world') return key
+      return (key += '-hello')
+    },
+    cachePurgeHandler: key => [key, (key += '-hello')]
+  }
+
+  const cacheManager = new CacheManager()
+
+  before(async () => {
+    process.env.CACHE_MAX_AGE = 60 * 1000
+    // boot tapestry server
+    server = new Server({ config })
+    await server.start()
+    uri = server.info.uri
+  })
+
+  after(async () => {
+    await server.stop()
+  })
+
+  it('Sets HTML cache items correctly using cacheKeyHandler', async () => {
+    await request.get(`${uri}/hello`, async (err, res, body) => {
+      const cacheHtml = cacheManager.getCache('html')
+      const keys = await cacheHtml.keys()
+      expect(keys).to.contain('hello-hello')
+    })
+    await request.get(`${uri}/world`, async (err, res, body) => {
+      const cacheHtml = cacheManager.getCache('html')
+      const keys = await cacheHtml.keys()
+      expect(keys).to.contain('world')
+    })
+  })
+
+  it('Purges HTML cache items correctly using cachePurgeHandler', async () => {
+    const cacheHtml = cacheManager.getCache('html')
+    cacheHtml.set('test', 'test')
+    cacheHtml.set('test-hello', 'test')
+
+    await request.get(`${uri}/purge/hello`, async (err, res, body) => {
+      const keys = await cacheHtml.keys()
+      expect(keys).to.not.contain('hello-hello')
+    })
+    await request.get(`${uri}/purge/test`, async (err, res, body) => {
+      const keys = await cacheHtml.keys()
+      expect(keys).to.not.contain('test')
+      expect(keys).to.not.contain('test-hello')
+    })
+  })
+})
