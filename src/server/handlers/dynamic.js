@@ -62,6 +62,10 @@ export default ({ server, config }) => {
 
       // cache _must_ be set after response is created
       if (!isPreview) {
+        // At this point check if this cache key is blacklisted
+        log.debug(
+          `\n ***this is our chance to check if this key is blacklisted***\n${cacheKey} \n`
+        )
         log.debug(`Setting html in cache: ${chalk.green(cacheKey)}`)
         cache.set(cacheKey, JSON.stringify({ responseString, status }))
       }
