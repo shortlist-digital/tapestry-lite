@@ -3,8 +3,6 @@
 
 require('dotenv').config()
 
-console.log('USING LOCAL')
-
 const chalk = require('chalk')
 const spawn = require('react-dev-utils/crossSpawn')
 const command = process.argv[2]
