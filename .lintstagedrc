@@ -1,8 +1,4 @@
 {
-  "*.{md,sh,txt,xml,html,json}": [
-    "editorconfig-tools fix",
-    "git add"
-  ],
   "*.js": [
     "node_modules/.bin/eslint . --fix --cache",
     "node_modules/.bin/prettier --config .prettierrc --write",
