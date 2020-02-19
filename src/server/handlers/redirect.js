@@ -6,7 +6,9 @@ import { log } from '../utilities/logger'
 
 const setRedirects = (server, redirects) => {
   server.ext('onPreHandler', async (request, h) => {
-    const redirect = redirects[request.url.pathname.toLowerCase()]
+    const redirect =
+      redirects[decodeURIComponent(request.url.pathname.toLowerCase())]
+
     if (typeof redirect !== 'undefined') {
       log.debug(
         `Redirect handled for ${chalk.green(
