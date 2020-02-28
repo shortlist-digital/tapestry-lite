@@ -1,5 +1,5 @@
 import 'make-promises-safe'
-import Hapi from 'hapi'
+import Hapi from '@hapi/hapi'
 
 import DynamicRouteHandler from './handlers/dynamic'
 import ProxyHandler from './handlers/proxy'
@@ -55,7 +55,7 @@ class Server {
 
 export const registerPlugins = async ({ server, config }) => {
   // Handles static files and proxying
-  const plugins = [require('inert'), require('h2o2')]
+  const plugins = [require('@hapi/inert'), require('@hapi/h2o2')]
   // Redirects all internal requests to https
   if (config.forceHttps) {
     plugins.push({

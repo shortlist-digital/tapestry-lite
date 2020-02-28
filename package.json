@@ -6,6 +6,9 @@
   "bin": {
     "tapestry": "./bin/index.js"
   },
+  "engines": {
+    "node": "10.18.1"
+  },
   "files": [
     "src/",
     "bin/",
@@ -22,6 +25,7 @@
   },
   "license": "ISC",
   "devDependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.8.3",
     "@babel/register": "^7.0.0",
     "@shortlist-studio/eslint-config-standard": "^0.1.0",
     "chai": "^4.0.2",
@@ -51,6 +55,9 @@
     "@babel/preset-env": "^7.7.1",
     "@babel/preset-react": "^7.7.0",
     "@babel/runtime": "^7.7.2",
+    "@hapi/h2o2": "8.3.2",
+    "@hapi/hapi": "18.4.0",
+    "@hapi/inert": "6.0.0",
     "@loadable/babel-plugin": "^5.10.3",
     "@loadable/component": "^5.10.3",
     "@loadable/server": "^5.10.3",
@@ -60,7 +67,6 @@
     "babel-merge": "^3.0.0",
     "babel-plugin-dynamic-import-node": "^2.3.0",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
-    "boom": "^7.2.0",
     "cache-manager": "^2.9.0",
     "cache-manager-redis-store": "^1.5.0",
     "clean-webpack-plugin": "^0.1.19",
@@ -72,13 +78,10 @@
     "friendly-errors-webpack-plugin": "^1.7.0",
     "fs-extra": "^7.0.0",
     "glamor": "^2.20.40",
-    "h2o2": "^8.0.0",
-    "hapi": "^17.2.1",
-    "hapi-require-https": "^3.0.0",
+    "hapi-require-https": "^4.0.0",
     "history": "^4.7.2",
     "http-status": "^1.2.0",
     "idx": "^2.4.0",
-    "inert": "^5.1.0",
     "isomorphic-fetch": "^2.2.1",
     "lodash.isempty": "^4.4.0",
     "lodash.isfunction": "^3.0.9",
