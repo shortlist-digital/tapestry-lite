@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+# 6.2.0 (12-03-2020)
+
+- Update Hapi to 18.4.0
+- Require Node 10.18.1
+
 # 6.1.0 (05-12-2019)
 
 - Created `cachePurgeHandler` method to allow users to declare all possible keys of a cache entry
