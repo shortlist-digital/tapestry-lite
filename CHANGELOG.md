@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+# 6.2.1 (12-03-2020)
+
+- Made the @babel/plugin-proposal-optional-chaining a dependency (not a dev one)
+
 # 6.2.0 (12-03-2020)
 
 - Update Hapi to 18.4.0
