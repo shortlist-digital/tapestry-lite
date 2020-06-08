@@ -1,4 +1,4 @@
-export const sanitizeMap = {
+const sanitizeMap = {
   '&': '&amp;',
   '<': '&lt;',
   '>': '&gt;',
@@ -9,14 +9,14 @@ export const sanitizeMap = {
 const sanitizeString = string =>
   string.replace(/[&<>"'/]/gi, match => sanitizeMap[match])
 
-const sanitizeQueryValues = ObjectOfEntries => {
-  if (!ObjectOfEntries) return {}
+const sanitizeQueryValues = queriesObj => {
+  if (!queriesObj) return {}
 
   const sanitized = {}
 
-  Object.entries(ObjectOfEntries).forEach(
-    entry => (sanitized[entry[0]] = sanitizeString(entry[1]))
-  )
+  for (let key in queriesObj) {
+    sanitized[key] = sanitizeString(queriesObj[key])
+  }
 
   return sanitized
 }

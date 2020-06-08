@@ -15,7 +15,6 @@ const expectedParams = {
   ampersand: 'calvin&amp;hobbes',
   quotesAndDoubleQuotes: `&quot;HR sent me a &#x27;gentle&#x27; reminder&quot;`,
   forwardSlash: 'stylist&#x2F;emails',
-  // this one is an actual attack
   tags:
     '&lt;%2fscript&gt;&lt;script&gt;alert(String.fromCharCode(81,67,12 1,98,101,114,95,88,83,83))&lt;%2fscript&gt;eeno3'
 }
