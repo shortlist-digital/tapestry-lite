@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+# 6.3.0 (08-06-2020)
+
+- Fixed a vulnerability whereby attacks could be passed via URL queries
+- Added unit tests to the new functions
+
 # 6.2.1 (12-03-2020)
 
 - Made the @babel/plugin-proposal-optional-chaining a dependency (not a dev one)
