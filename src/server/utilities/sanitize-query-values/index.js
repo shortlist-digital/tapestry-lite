@@ -1,4 +1,4 @@
-const sanitizeMap = {
+export const sanitizeMap = {
   '&': '&amp;',
   '<': '&lt;',
   '>': '&gt;',
