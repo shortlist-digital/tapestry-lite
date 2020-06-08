@@ -1,17 +1,28 @@
 import React from 'react'
 import stringifyEscapeScript from '../../utilities/stringify-escape-script'
+import sanitizeQueryValues from '../../utilities/sanitize-query-values'
 
-const getBootstrapData = ({ bootstrapData, ids, _tapestryData }) => (
-  <script
-    dangerouslySetInnerHTML={{
-      __html: `window.__TAPESTRY_DATA__ = { appData: ${stringifyEscapeScript(
-        bootstrapData
-      )}, ids: ${JSON.stringify(ids)}, _tapestry: ${JSON.stringify(
-        _tapestryData
-      )} }`
-    }}
-  />
-)
+const getBootstrapData = ({ bootstrapData, ids, _tapestryData }) => {
+  const escapedTapestryData = {
+    ..._tapestryData,
+    requestData: {
+      ..._tapestryData.requestData,
+      queryParams: sanitizeQueryValues(_tapestryData.requestData.queryParams)
+    }
+  }
+
+  return (
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `window.__TAPESTRY_DATA__ = { appData: ${stringifyEscapeScript(
+          bootstrapData
+        )},
+        ids: ${JSON.stringify(ids)},
+        _tapestry: ${JSON.stringify(escapedTapestryData)} }`
+      }}
+    />
+  )
+}
 
 const DefaultDocument = ({
   html,
