@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-# 6.3.0 (08-06-2020)
+# 6.3.1 (09-06-2020)
 
 - Fixed a vulnerability whereby attacks could be passed via URL queries
 - Added unit tests to the new functions
