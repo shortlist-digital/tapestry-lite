@@ -74,6 +74,17 @@ export default async (path, query, config, headers) => {
     })
     componentData = normalizeApiResponse(data, route)
   }
+
+  if (route.goudaEndpoint) {
+    const data = await fetchFromEndpointConfig({
+      endpointConfig: route.goudaEndpoint,
+      baseUrl: config.goudaUrl,
+      params: match.params,
+      queryParams: query
+    })
+    componentData = normalizeApiResponse(data, route)
+  }
+
   // route hasn't got a match from config.routes
   // status from API response is not OK
   // API returns empty response
