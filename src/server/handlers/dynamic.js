@@ -27,7 +27,7 @@ export default ({ server, config }) => {
       const cacheKey = getCacheKey(currentPath, request, config.cacheKeyHandler)
       const cacheString = await cache.get(cacheKey)
       // If there's a cache response, return the response straight away
-      if (cacheString && !isPreview) {
+      if (!currentPath.includes('/books/') && cacheString && !isPreview) {
         const cacheObject = JSON.parse(cacheString)
         log.debug(`Rendering HTML from cache: ${chalk.green(cacheKey)}`)
         return h
