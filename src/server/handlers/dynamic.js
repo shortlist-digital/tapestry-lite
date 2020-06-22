@@ -27,7 +27,7 @@ export default ({ server, config }) => {
       const cacheKey = getCacheKey(currentPath, request, config.cacheKeyHandler)
       const cacheString = await cache.get(cacheKey)
       // If there's a cache response, return the response straight away
-      if (!currentPath.includes('/books/') && cacheString && !isPreview) {
+      if (cacheString && !isPreview) {
         const cacheObject = JSON.parse(cacheString)
         log.debug(`Rendering HTML from cache: ${chalk.green(cacheKey)}`)
         return h
@@ -48,7 +48,7 @@ export default ({ server, config }) => {
             : (headers[key] = null)
         })
 
-      const { responseString, status } = await tapestryRender(
+      const { responseString, status, shouldCache } = await tapestryRender(
         currentPath,
         request.query,
         config,
@@ -61,7 +61,7 @@ export default ({ server, config }) => {
         .code(status)
 
       // cache _must_ be set after response is created
-      if (!isPreview) {
+      if (!isPreview && shouldCache) {
         log.debug(`Setting html in cache: ${chalk.green(cacheKey)}`)
         cache.set(cacheKey, JSON.stringify({ responseString, status }))
       }
