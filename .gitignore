@@ -128,3 +128,4 @@ dist
 example/
 
 test-app
+package-lock.json
