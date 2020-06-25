@@ -55,9 +55,15 @@ describe('Handling server responses', () => {
           two: 'pages'
         },
         component: () => <p>404 Response</p>
+      },
+      {
+        path: '/books/:id',
+        component: () => <p>great cheese</p>,
+        nonCacheableEndpoint: () => `get/123`
       }
     ],
-    siteUrl: 'http://response-dummy.api'
+    siteUrl: 'http://response-dummy.api',
+    nonCacheableSiteUrl: 'http://gouda.com'
   }
 
   before(async () => {
@@ -81,6 +87,12 @@ describe('Handling server responses', () => {
       .get('/wp-json/wp/v2/pages?slug=empty-response')
       .times(5)
       .reply(200, [])
+
+    nock('http://gouda.com')
+      .get('/get/123')
+      .times(1)
+      .reply(200, dataPages.data)
+
     // boot tapestry server
     process.env.CACHE_CONTROL_MAX_AGE = 60
     server = new Server({ config })
@@ -166,6 +178,13 @@ describe('Handling server responses', () => {
   it('Route matched, object API 404, status code is 404', done => {
     request.get(`${uri}/object-endpoint-error`, (err, res) => {
       expect(res.statusCode).to.equal(404)
+      done()
+    })
+  })
+
+  it('It should call gouda Api', done => {
+    request.get(`${uri}/books/123`, (err, res) => {
+      expect(res.statusCode).to.equal(200)
       done()
     })
   })

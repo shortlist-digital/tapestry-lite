@@ -7,7 +7,7 @@
 
 # Tapestry Lite
 
-An opinionated React application service for the WordPress Rest API. Create React components and let Tapestry handle the data loading, server rendering, JavaScript bundling and more.
+An opinionated React application service. Create React components and let Tapestry handle the data loading, server rendering, JavaScript bundling and more.
 
 ## Features
 
@@ -40,28 +40,28 @@ Often we'll set up our projects like so:
 }
 ```
 
-Create a `tapestry.config.js` in the root of your project and export an object with your WordPress site URL and routes or components to render.
+Create a `tapestry.config.js` in the root of your project and export an object with your site URL and routes or components to render.
 
 ```js
 import Post from './components/post'
 import Page from './components/page'
 
 export default {
-  siteUrl: 'http://your-wordpress.url',
+  siteUrl: 'http://your-api.url',
   components: { Post, Page }
 }
 ```
 
-These components will match the default WordPress permalink routes for each page type. e.g. `/2017/12/08/a-post-slug`.
+These components will match the default permalink routes for each page type. e.g. `/2017/12/08/a-post-slug`.
 
-These default components are a simple way to connect a WordPress instance to your React application, to control the routing schema completely you can add a `routes` array to your config. Each route requires a `path` and a `component` for a static page, to access data from WordPress pass in an `endpoint`
+These default components are a simple way to connect a instance to your React application, to control the routing schema completely you can add a `routes` array to your config. Each route requires a `path` and a `component` for a static page, to access data pass in an `endpoint` or `nonCacheableEndpoint`
 
 ```js
 import Post from './components/post'
 import Page from './components/page'
 
 export default {
-  siteUrl: 'http://your-wordpress.url',
+  siteUrl: 'http://your-api.url',
   routes: [
     {
       path: '/:slug/:id',
@@ -72,6 +72,11 @@ export default {
       path: '/about/:slug',
       endpoint: slug => `pages?filter=${slug}`,
       component: Page
+    },
+    {
+      path: '/path/:slug',
+      nonCacheableEndpoint: slug => `get/{slug}`,
+      component: Post
     }
   ]
 }
@@ -83,8 +88,10 @@ export default {
 
 ```js
 {
-  // [string] URL for your WordPress instance
+  // [string] URL for your api
   siteUrl: '',
+  // [string] URL for your non cacheable api
+  nonCacheableSiteUrl: '',
   // [object] Container for React components
   components: {
     // [function] React components for rendering a post, page, category
@@ -103,7 +110,7 @@ export default {
 
       // [function] React component to render
       component: () => {},
-      // [any] Source for WordPress API data, can be one of array, object or string, can also be a function that returns any of those data-types. When used as a function it has access to the dynamic parameters from the path
+      // [any] Source for API data, can be one of array, object or string, can also be a function that returns any of those data-types. When used as a function it has access to the dynamic parameters from the path
       endpoint: 'posts',
       endpoint: ['posts', 'pages'],
       endpoint: { posts: 'posts', pages: 'pages' },
@@ -116,7 +123,7 @@ export default {
         customDocument: ({ html, css, ids, asyncProps, assets }) => {},
         // [boolean] Return the doctype with or without the HTML string
         disableDoctype: false,
-        // [string] Custom route specific URL for your WordPress instance
+        // [string] Custom route specific URL for your api instance
         baseUrl: '',
         // [string] Custom route specific api URL
         apiBaseUrl: '',
@@ -125,7 +132,7 @@ export default {
       }
     }
   ],
-  // [array] Paths to proxy through to the WordPress URL
+  // [array] Paths to proxy through to the api URL
   proxyPaths: [],
   // [object] Redirects from key to value e.g. { 'from': 'to' }
   redirectPaths: {},

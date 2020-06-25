@@ -54,6 +54,7 @@ export default async (path, query, config, headers) => {
   // get matching route and match data
   const { route, match } = matchRoutes(prepareAppRoutes(config), path)
   let componentData = {}
+  let shouldCache = true
 
   log.debug(`Matched route ${chalk.green(route.path)}`)
 
@@ -74,6 +75,18 @@ export default async (path, query, config, headers) => {
     })
     componentData = normalizeApiResponse(data, route)
   }
+
+  if (route.nonCacheableEndpoint) {
+    const data = await fetchFromEndpointConfig({
+      endpointConfig: route.nonCacheableEndpoint,
+      baseUrl: config.nonCacheableSiteUrl,
+      params: match.params,
+      queryParams: query
+    })
+    componentData = normalizeApiResponse(data, route)
+    shouldCache = false
+  }
+
   // route hasn't got a match from config.routes
   // status from API response is not OK
   // API returns empty response
@@ -93,6 +106,7 @@ export default async (path, query, config, headers) => {
 
   return {
     responseString,
-    status: 200
+    status: 200,
+    shouldCache
   }
 }

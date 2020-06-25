@@ -48,7 +48,7 @@ export default ({ server, config }) => {
             : (headers[key] = null)
         })
 
-      const { responseString, status } = await tapestryRender(
+      const { responseString, status, shouldCache } = await tapestryRender(
         currentPath,
         request.query,
         config,
@@ -61,7 +61,7 @@ export default ({ server, config }) => {
         .code(status)
 
       // cache _must_ be set after response is created
-      if (!isPreview) {
+      if (!isPreview && shouldCache) {
         log.debug(`Setting html in cache: ${chalk.green(cacheKey)}`)
         cache.set(cacheKey, JSON.stringify({ responseString, status }))
       }
