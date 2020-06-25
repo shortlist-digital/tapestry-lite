@@ -76,10 +76,10 @@ export default async (path, query, config, headers) => {
     componentData = normalizeApiResponse(data, route)
   }
 
-  if (route.goudaEndpoint) {
+  if (route.nonCacheableEndpoint) {
     const data = await fetchFromEndpointConfig({
-      endpointConfig: route.goudaEndpoint,
-      baseUrl: config.goudaUrl,
+      endpointConfig: route.nonCacheableEndpoint,
+      baseUrl: config.nonCacheableSiteUrl,
       params: match.params,
       queryParams: query
     })

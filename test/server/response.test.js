@@ -58,12 +58,12 @@ describe('Handling server responses', () => {
       },
       {
         path: '/books/:id',
-        component: () => <p>greate cheese</p>,
-        goudaEndpoint: () => `get/123`
+        component: () => <p>great cheese</p>,
+        nonCacheableEndpoint: () => `get/123`
       }
     ],
     siteUrl: 'http://response-dummy.api',
-    goudaUrl: 'http://gouda.com'
+    nonCacheableSiteUrl: 'http://gouda.com'
   }
 
   before(async () => {
