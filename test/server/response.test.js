@@ -59,7 +59,8 @@ describe('Handling server responses', () => {
       {
         path: '/books/:id',
         component: () => <p>great cheese</p>,
-        nonCacheableEndpoint: () => `get/123`
+        nonCacheableEndpoint: ({ id }) => `get/${id}`,
+        endpoint: ({ id }) => `posts/${id}`
       }
     ],
     siteUrl: 'http://response-dummy.api',
@@ -87,6 +88,9 @@ describe('Handling server responses', () => {
       .get('/wp-json/wp/v2/pages?slug=empty-response')
       .times(5)
       .reply(200, [])
+      .get('/wp-json/revision/v1/posts/123?tapestry_hash=some_hash&p=123')
+      .times(1)
+      .reply(200, dataPosts.data)
 
     nock('http://gouda.com')
       .get('/get/123')
@@ -122,16 +126,16 @@ describe('Handling server responses', () => {
     })
   })
 
-  // it('Preview routes send no-cache headers', done => {
-  //   request.get(
-  //     `${uri}/foo/bar/571?tapestry_hash=somesortofhash&p=571`,
-  //     (err, res) => {
-  //       expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
-  //       expect(res.headers['cache-control']).to.equal('no-cache')
-  //       done()
-  //     }
-  //   )
-  // })
+  it('Preview routes send no-cache headers', done => {
+    request.get(
+      `${uri}/foo/bar/571?tapestry_hash=somesortofhash&p=571`,
+      (err, res) => {
+        expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
+        expect(res.headers['cache-control']).to.equal('no-cache')
+        done()
+      }
+    )
+  })
 
   it('Route not matched, status code is 404', done => {
     request.get(`${uri}/route/not/matched/in/any/way`, (err, res) => {
@@ -183,9 +187,21 @@ describe('Handling server responses', () => {
   })
 
   it('It should call gouda Api', done => {
-    request.get(`${uri}/books/123`, (err, res) => {
+    request.get(`${uri}/books/123`, (err, res, body) => {
       expect(res.statusCode).to.equal(200)
+      expect(body).to.contain('great cheese')
       done()
     })
+  })
+
+  it('It should not call gouda Api for previews', done => {
+    request.get(
+      `${uri}/books/123?tapestry_hash=some_hash&p=123&preview=true`,
+      (err, res, body) => {
+        expect(res.statusCode).to.equal(200)
+        expect(body).to.contain('great cheese')
+        done()
+      }
+    )
   })
 })

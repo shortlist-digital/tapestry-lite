@@ -65,18 +65,7 @@ export default async (path, query, config, headers) => {
     return errorResponse({ config, route, match, missing: true })
   }
 
-  // endpoint has been specified, data requested
-  if (route.endpoint) {
-    const data = await fetchFromEndpointConfig({
-      endpointConfig: route.endpoint,
-      baseUrl: baseUrlResolver(config, query, route),
-      params: match.params,
-      queryParams: query
-    })
-    componentData = normalizeApiResponse(data, route)
-  }
-
-  if (route.nonCacheableEndpoint) {
+  if (!query.preview && route.nonCacheableEndpoint) {
     const data = await fetchFromEndpointConfig({
       endpointConfig: route.nonCacheableEndpoint,
       baseUrl: config.nonCacheableSiteUrl,
@@ -85,6 +74,17 @@ export default async (path, query, config, headers) => {
     })
     componentData = normalizeApiResponse(data, route)
     shouldCache = false
+  }
+
+  // endpoint has been specified, data requested
+  if (shouldCache && route.endpoint) {
+    const data = await fetchFromEndpointConfig({
+      endpointConfig: route.endpoint,
+      baseUrl: baseUrlResolver(config, query, route),
+      params: match.params,
+      queryParams: query
+    })
+    componentData = normalizeApiResponse(data, route)
   }
 
   // route hasn't got a match from config.routes
