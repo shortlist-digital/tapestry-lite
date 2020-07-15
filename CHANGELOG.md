@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+# 6.4.2 (01-07-2020)
+
+ - bugfix for nonCacheable endpoints being called on previews
+ - Create nonCacheable enpoint
+
+# 6.3.1 (09-06-2020)
+
+- Fixed a vulnerability whereby attacks could be passed via URL queries
+- Added unit tests to the new functions
+
 # 6.2.1 (12-03-2020)
 
 - Made the @babel/plugin-proposal-optional-chaining a dependency (not a dev one)
