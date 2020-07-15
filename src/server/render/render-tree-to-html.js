@@ -1,30 +1,32 @@
 import path from 'path'
 import fs from 'fs-extra'
 import React from 'react'
-import { renderToString, renderToStaticMarkup } from 'react-dom/server'
+import { renderToString } from 'react-dom/server'
 import Helmet from 'react-helmet'
 import { ChunkExtractor } from '@loadable/server'
 
 export default async ({
   Component,
-  routeOptions = {},
   match,
   componentData,
   queryParams,
-  headers
+  headers,
+  isAuthenticated,
+  userData
 }) => {
   const _tapestryData = {
     requestData: {
       ...match,
       queryParams,
-      headers
+      headers,
+      isAuthenticated,
+      userData
     }
   }
   const data = Array.isArray(componentData)
     ? { data: componentData }
     : componentData
   const app = <Component {...data} _tapestry={_tapestryData} />
-  // const app = <Component {...data} _tapestry={_tapestryData} />
   // create html string from target component
   const statsFile = path.resolve(
     process.cwd(),
@@ -56,21 +58,20 @@ export default async ({
   } else {
     styleData = require('glamor/server').renderStaticOptimized(() => htmlString)
   }
+
   const helmet = Helmet.renderStatic()
-  // Assets to come, everything else works
-  const renderData = {
-    ...styleData,
-    head: helmet,
-    bootstrapData: data,
+
+  const responseData = {
+    htmlString: styleData.html,
+    css: styleData.css,
+    ids: styleData.ids,
+    extractor,
     _tapestryData,
-    extractor
+    compData: data,
+    helmet,
+    htmlAttributes: helmet.htmlAttributes.toComponent(),
+    htmlTitle: helmet.title.toComponent()
   }
-  let Document =
-    routeOptions.customDocument || require('./default-document').default
 
-  const doctype = routeOptions.customDoctype || '<!doctype html>'
-
-  return `${routeOptions.disableDoctype ? '' : doctype}${renderToStaticMarkup(
-    <Document {...renderData} />
-  )}`
+  return responseData
 }

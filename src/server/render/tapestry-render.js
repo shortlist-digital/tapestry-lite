@@ -8,7 +8,7 @@ import normalizeApiResponse from '../data-fetching/normalize-api-response'
 import fetchFromEndpointConfig from '../data-fetching/fetch-from-endpoint-config'
 
 import buildErrorView from './error-view'
-import renderSuccessTree from './render-success-tree'
+import renderTreeToHTML from './render-tree-to-html'
 import renderErrorTree from './render-error-tree'
 
 import baseUrlResolver from '../utilities/base-url-resolver'
@@ -82,9 +82,10 @@ export default async (path, query, config, headers) => {
     return errorResponse({ config, route, match })
   }
 
-  // otherwise build component tree with API data
-  const responseString = await renderSuccessTree({
-    route,
+  // Render the tree to HTML and gather all necessary 'needs' to build out a HTML page
+  const componentNeeds = await renderTreeToHTML({
+    Component: route.component,
+    routeOptions: route.options,
     match,
     componentData,
     queryParams: query,
@@ -92,7 +93,7 @@ export default async (path, query, config, headers) => {
   })
 
   return {
-    responseString,
+    componentNeeds,
     status: 200
   }
 }

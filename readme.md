@@ -112,8 +112,6 @@ export default {
       endpoint: (id) => { posts: `posts/${id}`, pages: `pages/${id}` }
       // [object] Container for route specific options
       options: {
-        // [function] A React component to handle the surrounding document
-        customDocument: ({ html, css, ids, asyncProps, assets }) => {},
         // [boolean] Return the doctype with or without the HTML string
         disableDoctype: false,
         // [string] Custom route specific URL for your WordPress instance
