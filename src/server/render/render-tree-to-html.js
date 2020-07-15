@@ -64,9 +64,7 @@ export default async ({
     extractor,
     _tapestryData,
     compData: data,
-    helmet,
-    htmlAttributes: helmet.htmlAttributes.toComponent(),
-    htmlTitle: helmet.title.toComponent()
+    helmet
   }
 
   return responseData
