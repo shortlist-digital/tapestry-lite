@@ -54,7 +54,7 @@ export default async (path, query, config, headers) => {
   // get matching route and match data
   const { route, match } = matchRoutes(prepareAppRoutes(config), path)
   let componentData = {}
-  let shouldCache = true
+  let secondaryEndpointUsed = false
 
   log.debug(`Matched route ${chalk.green(route.path)}`)
 
@@ -65,19 +65,19 @@ export default async (path, query, config, headers) => {
     return errorResponse({ config, route, match, missing: true })
   }
 
-  if (!query.preview && route.nonCacheableEndpoint) {
+  if (!query.preview && route.secondaryEndpoint) {
     const data = await fetchFromEndpointConfig({
-      endpointConfig: route.nonCacheableEndpoint,
-      baseUrl: config.nonCacheableSiteUrl,
+      endpointConfig: route.secondaryEndpoint,
+      baseUrl: config.secondarySiteUrl,
       params: match.params,
       queryParams: query
     })
     componentData = normalizeApiResponse(data, route)
-    shouldCache = false
+    secondaryEndpointUsed = true
   }
 
   // endpoint has been specified, data requested
-  if (shouldCache && route.endpoint) {
+  if (!secondaryEndpointUsed && route.endpoint) {
     const data = await fetchFromEndpointConfig({
       endpointConfig: route.endpoint,
       baseUrl: baseUrlResolver(config, query, route),
@@ -106,7 +106,6 @@ export default async (path, query, config, headers) => {
 
   return {
     responseString,
-    status: 200,
-    shouldCache
+    status: 200
   }
 }
