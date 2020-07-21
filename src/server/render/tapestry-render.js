@@ -9,7 +9,6 @@ import fetchFromEndpointConfig from '../data-fetching/fetch-from-endpoint-config
 
 import buildErrorView from './error-view'
 import renderTreeToHTML from './render-tree-to-html'
-import renderErrorTree from './render-error-tree'
 
 import baseUrlResolver from '../utilities/base-url-resolver'
 import { log } from '../utilities/logger'
@@ -19,17 +18,18 @@ const errorResponse = async ({ config, route, match, missing = false }) => {
 
   const errorComponent = buildErrorView({ config, missing })
 
-  const responseString = await renderErrorTree({
-    errorComponent,
-    route,
+  const componentNeeds = await renderTreeToHTML({
+    Component: errorComponent,
+    routeOptions: route.options,
     match,
     componentData: {
       code: 404,
       message: 'Not Found'
     }
   })
+
   return {
-    responseString,
+    componentNeeds,
     status: 404
   }
 }

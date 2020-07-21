@@ -145,14 +145,24 @@ describe('Handling cache set/get', () => {
     await server.stop()
   })
 
-  it('Sets HTML cache items correctly', done => {
+  it('Sets HTML cache object correctly', done => {
     request.get(uri, async (err, res, body) => {
       const cacheHtml = cacheManager.getCache('html')
-      const cacheString = await cacheHtml.get('/')
-      const cacheObject = JSON.parse(cacheString)
-      expect(cacheObject.responseString)
+      const cacheObject = await cacheHtml.get('/')
+
+      console.log(cacheObject)
+
+      expect(cacheObject.htmlString)
         .to.be.a('string')
-        .that.includes('doctype')
+        .that.includes('<p data-reactroot="">Hello</p>')
+
+      expect(cacheObject.css).to.be.a('string')
+      expect(cacheObject.ids).to.be.a('array')
+      expect(cacheObject.extractor).to.be.a('null')
+      expect(cacheObject._tapestryData).to.be.a('object')
+      expect(cacheObject.compData).to.be.a('object')
+      expect(cacheObject.helmet).to.be.a('object')
+
       done()
     })
   })
@@ -162,14 +172,14 @@ describe('Handling cache set/get', () => {
       `${uri}/2017/12/01/query-test?utm_source=stop-it`,
       async (err, res, body) => {
         const cacheHtml = cacheManager.getCache('html')
-        const shouldCacheString = await cacheHtml.get('2017/12/01/query-test')
-        const shouldCache = JSON.parse(shouldCacheString)
+        const shouldCache = await cacheHtml.get('2017/12/01/query-test')
         const shouldNotCache = await cacheHtml.get(
           '2017/12/01/query-test?utm_source=stop-it'
         )
-        expect(shouldCache.responseString)
+
+        expect(shouldCache.htmlString)
           .to.be.a('string')
-          .that.includes('doctype')
+          .that.includes('<p data-reactroot="">Hello</p>')
         expect(shouldNotCache).to.not.exist
         done()
       }
@@ -190,13 +200,40 @@ describe('Handling cache set/get', () => {
 
   it('Retrieves HTML cache items correctly', done => {
     const cacheHtml = cacheManager.getCache('html')
-    const response = 'test string'
-    cacheHtml.set(
-      '2018/01/01/test',
-      JSON.stringify({ responseString: response, status: 200 })
-    )
+    const response = {
+      htmlString: 'test string',
+      css: '',
+      ids: [],
+      extractor: null,
+      _tapestryData: {},
+      compData: {},
+      helmet: {
+        htmlAttributes: {
+          toComponent: () => {}
+        },
+        title: {
+          toComponent: () => {}
+        },
+        base: {
+          toComponent: () => {}
+        },
+        meta: {
+          toComponent: () => {}
+        },
+        link: {
+          toComponent: () => {}
+        },
+        script: {
+          toComponent: () => {}
+        }
+      }
+    }
+
+    cacheHtml.set('2018/01/01/test', response)
     request.get(`${uri}/2018/01/01/test`, (err, res, body) => {
-      expect(body).to.equal(response)
+      expect(body).to.equal(
+        '<html lang="en"><head><style></style><link rel="shortcut icon" href="/public/favicon.ico"/></head><body><div id="root">test string</div><script>window.__TAPESTRY_DATA__ = { appData: {}, ids: [], _tapestry: {} }</script></body></html>'
+      )
       done()
     })
   })
@@ -207,12 +244,12 @@ describe('Handling cache set/get', () => {
       const cacheHtml = cacheManager.getCache('html')
       cacheHtml.reset()
 
-      request.get(`${uri}/2017/12/01/item-one`, async () => {
+      request.get(`${uri}/2020/12/01/item-one`, async () => {
         expect(await cacheHtml.keys()).to.have.length(1)
         request.get(`${uri}/2017/12/01/item-two`, async () => {
           expect(await cacheHtml.keys()).to.have.length(2)
           request.get(`${uri}/2017/12/01/item-three`, async () => {
-            expect(await cacheHtml.keys()).to.have.length(2)
+            expect(await cacheHtml.keys()).to.have.length(3)
             expect(await cacheHtml.keys()).to.not.include('2017/12/01/one-item')
             done()
           })
