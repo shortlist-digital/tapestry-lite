@@ -43,7 +43,6 @@ describe('Default view rendering', () => {
 
   it('Default FrontPage is rendered', done => {
     request(uri, (err, res, body) => {
-      console.log('lulbody', body)
       expect(body).to.contain('FrontPage component')
       done()
     })
