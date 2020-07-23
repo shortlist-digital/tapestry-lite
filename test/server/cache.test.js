@@ -219,7 +219,7 @@ describe('Handling cache set/get', () => {
     cacheHtml.set('2018/01/01/test', response)
     request.get(`${uri}/2018/01/01/test`, (err, res, body) => {
       expect(body).to.equal(
-        '<html lang="en"><head><style></style><link rel="shortcut icon" href="/public/favicon.ico"/></head><body><div id="root">test string</div><script>window.__TAPESTRY_DATA__ = { appData: {}, ids: [], _tapestry: {} }</script></body></html>'
+        '<!doctype html><html lang="en"><head><style></style><link rel="shortcut icon" href="/public/favicon.ico"/></head><body><div id="root">test string</div><script>window.__TAPESTRY_DATA__ = { appData: {}, ids: [], _tapestry: {} }</script></body></html>'
       )
       done()
     })

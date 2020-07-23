@@ -7,6 +7,9 @@ import { log } from '../utilities/logger'
 
 import tapestryRender from '../render/tapestry-render'
 
+import prepareAppRoutes from '../routing/prepare-app-routes'
+import matchRoutes from '../routing/match-routes'
+
 const HtmlTemplate = require('../template').default
 
 const cacheManager = new CacheManager()
@@ -36,9 +39,23 @@ const buildNewServerSideRender = async ({ currentPath, config, request }) => {
   }
 }
 
+const getDocument = route =>
+  route.options?.customDocument ? route.options.customDocument : HtmlTemplate
+const getDoctype = route => {
+  if (route.options && route.options.disableDoctype) return ''
+
+  return route.options && route.options.customDoctype
+    ? route.options.customDoctype
+    : '<!doctype html>'
+}
+
 const renderHtmlResponse = async ({ request, h, config }) => {
   const currentPath = request.url.pathname || '/'
   const isPreview = Boolean(request.query && request.query.tapestry_hash)
+  const { route } = matchRoutes(prepareAppRoutes(config), currentPath)
+
+  const Document = getDocument(route)
+  const doctype = getDoctype(route)
 
   const cacheKey = getCacheKey(currentPath, request, config.cacheKeyHandler)
   const cacheObject = await cache.get(cacheKey)
@@ -53,9 +70,9 @@ const renderHtmlResponse = async ({ request, h, config }) => {
 
     // If we meet the criteria to render a cache response, do so
     if (parsedCacheObject.htmlString) {
-      responseToHtml = renderToStaticMarkup(
-        <HtmlTemplate {...parsedCacheObject} />
-      )
+      responseToHtml = `${doctype}${renderToStaticMarkup(
+        <Document {...parsedCacheObject} />
+      )}`
       status = 200 // We only cache if 200
     } else {
       // Else, build out a new server side render (predominantly here to support legacy cache)
@@ -63,9 +80,9 @@ const renderHtmlResponse = async ({ request, h, config }) => {
         componentNeeds,
         status: newResponseStatus
       } = await buildNewServerSideRender({ currentPath, config, request })
-      responseToHtml = renderToStaticMarkup(
-        <HtmlTemplate {...componentNeeds} />
-      )
+      responseToHtml = `${doctype}${renderToStaticMarkup(
+        <Document {...componentNeeds} />
+      )}`
       status = newResponseStatus
     }
 
@@ -83,9 +100,9 @@ const renderHtmlResponse = async ({ request, h, config }) => {
     request
   })
 
-  const responseToHtml = renderToStaticMarkup(
-    <HtmlTemplate {...componentNeeds} />
-  )
+  const responseToHtml = `${doctype}${renderToStaticMarkup(
+    <Document {...componentNeeds} />
+  )}`
 
   const response = h
     .response(responseToHtml)

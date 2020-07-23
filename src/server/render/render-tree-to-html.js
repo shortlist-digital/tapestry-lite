@@ -63,7 +63,9 @@ export default async ({
     base: helmet.base.toString(),
     meta: helmet.meta.toString(),
     link: helmet.link.toString(),
-    script: helmet.script.toString()
+    script: helmet.script.toString(),
+    noscript: helmet.noscript.toString(),
+    style: helmet.style.toString()
   }
 
   let extractorScriptsToString = null
