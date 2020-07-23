@@ -46,7 +46,7 @@ const renderHtmlResponse = async ({ request, h, config }) => {
         : (headers[key] = null)
     })
 
-  const { componentNeeds, status, shouldCache } = await tapestryRender(
+  const { componentNeeds, status } = await tapestryRender(
     currentPath,
     request.query,
     config,
@@ -63,12 +63,7 @@ const renderHtmlResponse = async ({ request, h, config }) => {
     .code(status)
 
   // cache _must_ be set after response is created
-  if (
-    !isPreview &&
-    shouldCache &&
-    status === 200 &&
-    !process.env.DISABLE_CACHE
-  ) {
+  if (!isPreview && status === 200 && !process.env.DISABLE_CACHE) {
     log.debug(`Setting html in cache: ${chalk.green(cacheKey)}`)
     cache.set(cacheKey, componentNeeds)
   }
