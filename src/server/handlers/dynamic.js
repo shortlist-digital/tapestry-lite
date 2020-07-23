@@ -51,12 +51,14 @@ const renderHtmlResponse = async ({ request, h, config }) => {
     let responseToHtml
     let status
 
+    // If we meet the criteria to render a cache response, do so
     if (parsedCacheObject.htmlString) {
       responseToHtml = renderToStaticMarkup(
         <HtmlTemplate {...parsedCacheObject} />
       )
-      status = 200
+      status = 200 // We only cache if 200
     } else {
+      // Else, build out a new server side render (predominantly here to support legacy cache)
       const {
         componentNeeds,
         status: newResponseStatus
