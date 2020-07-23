@@ -148,9 +148,8 @@ describe('Handling cache set/get', () => {
   it('Sets HTML cache object correctly', done => {
     request.get(uri, async (err, res, body) => {
       const cacheHtml = cacheManager.getCache('html')
-      const cacheObject = await cacheHtml.get('/')
-
-      console.log(cacheObject)
+      const cacheString = await cacheHtml.get('/')
+      const cacheObject = JSON.parse(cacheString)
 
       expect(cacheObject.htmlString)
         .to.be.a('string')
@@ -172,11 +171,11 @@ describe('Handling cache set/get', () => {
       `${uri}/2017/12/01/query-test?utm_source=stop-it`,
       async (err, res, body) => {
         const cacheHtml = cacheManager.getCache('html')
-        const shouldCache = await cacheHtml.get('2017/12/01/query-test')
+        const shouldCacheString = await cacheHtml.get('2017/12/01/query-test')
+        const shouldCache = JSON.parse(shouldCacheString)
         const shouldNotCache = await cacheHtml.get(
           '2017/12/01/query-test?utm_source=stop-it'
         )
-
         expect(shouldCache.htmlString)
           .to.be.a('string')
           .that.includes('<p data-reactroot="">Hello</p>')
@@ -200,7 +199,7 @@ describe('Handling cache set/get', () => {
 
   it('Retrieves HTML cache items correctly', done => {
     const cacheHtml = cacheManager.getCache('html')
-    const response = {
+    const response = JSON.stringify({
       htmlString: 'test string',
       css: '',
       ids: [],
@@ -208,26 +207,14 @@ describe('Handling cache set/get', () => {
       _tapestryData: {},
       compData: {},
       helmet: {
-        htmlAttributes: {
-          toComponent: () => {}
-        },
-        title: {
-          toComponent: () => {}
-        },
-        base: {
-          toComponent: () => {}
-        },
-        meta: {
-          toComponent: () => {}
-        },
-        link: {
-          toComponent: () => {}
-        },
-        script: {
-          toComponent: () => {}
-        }
+        htmlAttributes: '',
+        title: '',
+        base: '',
+        meta: '',
+        link: '',
+        script: ''
       }
-    }
+    })
 
     cacheHtml.set('2018/01/01/test', response)
     request.get(`${uri}/2018/01/01/test`, (err, res, body) => {

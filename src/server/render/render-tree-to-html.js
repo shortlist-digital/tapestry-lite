@@ -57,14 +57,29 @@ export default async ({
 
   const helmet = Helmet.renderStatic()
 
+  const helmetDataToString = {
+    htmlAttributes: helmet.htmlAttributes.toString(),
+    title: helmet.title.toString(),
+    base: helmet.base.toString(),
+    meta: helmet.meta.toString(),
+    link: helmet.link.toString(),
+    script: helmet.script.toString()
+  }
+
+  let extractorScriptsToString = null
+
+  if (extractor) {
+    extractorScriptsToString = renderToString(extractor.getScriptElements())
+  }
+
   const responseData = {
     htmlString: styleData.html,
     css: styleData.css,
     ids: styleData.ids,
-    extractor,
+    extractor: extractorScriptsToString,
     _tapestryData,
     compData: data,
-    helmet
+    helmet: helmetDataToString
   }
 
   return responseData

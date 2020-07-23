@@ -18,13 +18,15 @@ const renderHtmlResponse = async ({ request, h, config }) => {
 
   const cacheKey = getCacheKey(currentPath, request, config.cacheKeyHandler)
   const cacheObject = await cache.get(cacheKey)
+  const hasHtmlString =
+    cacheObject && Boolean(JSON.parse(cacheObject).htmlString)
 
   // If there's a cache response, return the response straight away
-  if (cacheObject && cacheObject.htmlString && !isPreview) {
+  if (cacheObject && hasHtmlString && !isPreview) {
     log.debug(`Rendering HTML from cache: ${chalk.green(cacheKey)}`)
 
     const responseToHtml = renderToStaticMarkup(
-      <HtmlTemplate {...cacheObject} />
+      <HtmlTemplate {...JSON.parse(cacheObject)} />
     )
 
     return h
@@ -65,7 +67,7 @@ const renderHtmlResponse = async ({ request, h, config }) => {
   // cache _must_ be set after response is created
   if (!isPreview && status === 200 && !process.env.DISABLE_CACHE) {
     log.debug(`Setting html in cache: ${chalk.green(cacheKey)}`)
-    cache.set(cacheKey, componentNeeds)
+    cache.set(cacheKey, JSON.stringify(componentNeeds))
   }
 
   if (isPreview) {
