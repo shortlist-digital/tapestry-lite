@@ -12,32 +12,7 @@ const HtmlTemplate = require('../template').default
 const cacheManager = new CacheManager()
 const cache = cacheManager.createCache('html')
 
-const renderHtmlResponse = async ({ request, h, config }) => {
-  const currentPath = request.url.pathname || '/'
-  const isPreview = Boolean(request.query && request.query.tapestry_hash)
-
-  const cacheKey = getCacheKey(currentPath, request, config.cacheKeyHandler)
-  const cacheObject = await cache.get(cacheKey)
-  const hasHtmlString =
-    cacheObject && Boolean(JSON.parse(cacheObject).htmlString)
-
-  // If there's a cache response, return the response straight away
-  if (cacheObject && hasHtmlString && !isPreview) {
-    log.debug(`Rendering HTML from cache: ${chalk.green(cacheKey)}`)
-
-    const responseToHtml = renderToStaticMarkup(
-      <HtmlTemplate {...JSON.parse(cacheObject)} />
-    )
-
-    return h
-      .response(responseToHtml)
-      .type('text/html')
-      .code(200)
-  } else {
-    log.debug(`Skipping cache: ${chalk.green(cacheKey)}`)
-  }
-
-  // Get headers and filter by client config
+const buildNewServerSideRender = async ({ currentPath, config, request }) => {
   const headers = {}
   const configHeaders = config.headers
   const requestHeaders = request.headers
@@ -54,6 +29,57 @@ const renderHtmlResponse = async ({ request, h, config }) => {
     config,
     headers
   )
+
+  return {
+    componentNeeds,
+    status
+  }
+}
+
+const renderHtmlResponse = async ({ request, h, config }) => {
+  const currentPath = request.url.pathname || '/'
+  const isPreview = Boolean(request.query && request.query.tapestry_hash)
+
+  const cacheKey = getCacheKey(currentPath, request, config.cacheKeyHandler)
+  const cacheObject = await cache.get(cacheKey)
+
+  // If there's a cache response, return the response straight away
+  if (cacheObject && !isPreview) {
+    log.debug(`Rendering HTML from cache: ${chalk.green(cacheKey)}`)
+
+    const parsedCacheObject = JSON.parse(cacheObject)
+    let responseToHtml
+    let status
+
+    if (parsedCacheObject.htmlString) {
+      responseToHtml = renderToStaticMarkup(
+        <HtmlTemplate {...parsedCacheObject} />
+      )
+      status = 200
+    } else {
+      const {
+        componentNeeds,
+        status: newResponseStatus
+      } = await buildNewServerSideRender({ currentPath, config, request })
+      responseToHtml = renderToStaticMarkup(
+        <HtmlTemplate {...componentNeeds} />
+      )
+      status = newResponseStatus
+    }
+
+    return h
+      .response(responseToHtml)
+      .type('text/html')
+      .code(status)
+  } else {
+    log.debug(`Skipping cache: ${chalk.green(cacheKey)}`)
+  }
+
+  const { componentNeeds, status } = await buildNewServerSideRender({
+    currentPath,
+    config,
+    request
+  })
 
   const responseToHtml = renderToStaticMarkup(
     <HtmlTemplate {...componentNeeds} />
