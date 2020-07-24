@@ -80,6 +80,7 @@
     "glamor": "^2.20.40",
     "hapi-require-https": "^4.0.0",
     "history": "^4.7.2",
+    "html-react-parser": "^0.13.0",
     "http-status": "^1.2.0",
     "idx": "^2.4.0",
     "isomorphic-fetch": "^2.2.1",

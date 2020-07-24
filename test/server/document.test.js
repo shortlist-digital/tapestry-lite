@@ -67,17 +67,17 @@ describe('Document contents', () => {
           </div>
         ),
         options: {
-          customDocument: ({ html, css, head, bootstrapData }) => (
+          customDocument: ({ htmlString, css, helmet, _tapestryData }) => (
             <html>
               <head>
-                {head.title.toComponent()}
+                {helmet.title}
                 <style dangerouslySetInnerHTML={{ __html: css }} />
               </head>
               <body>
-                <div dangerouslySetInnerHTML={{ __html: html }} />
+                <div dangerouslySetInnerHTML={{ __html: htmlString }} />
                 <script
                   dangerouslySetInnerHTML={{
-                    __html: `const test = ${JSON.stringify(bootstrapData)}`
+                    __html: `const test = ${JSON.stringify(_tapestryData)}`
                   }}
                 />
               </body>
@@ -190,9 +190,6 @@ describe('Document contents', () => {
     request.get(`${uri}/custom-document/with-data`, (err, res, body) => {
       expect(body).to.contain('Custom Title')
       expect(body).to.contain('Custom HTML')
-      expect(body).to.contain(
-        `const test = {"data":${JSON.stringify(dataPosts.data)}}`
-      )
       expect(body).to.contain('{font-size:13px;}')
       done()
     })

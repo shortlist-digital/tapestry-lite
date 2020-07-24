@@ -8,8 +8,7 @@ import normalizeApiResponse from '../data-fetching/normalize-api-response'
 import fetchFromEndpointConfig from '../data-fetching/fetch-from-endpoint-config'
 
 import buildErrorView from './error-view'
-import renderSuccessTree from './render-success-tree'
-import renderErrorTree from './render-error-tree'
+import renderTreeToHTML from './render-tree-to-html'
 
 import baseUrlResolver from '../utilities/base-url-resolver'
 import { log } from '../utilities/logger'
@@ -19,17 +18,18 @@ const errorResponse = async ({ config, route, match, missing = false }) => {
 
   const errorComponent = buildErrorView({ config, missing })
 
-  const responseString = await renderErrorTree({
-    errorComponent,
-    route,
+  const componentNeeds = await renderTreeToHTML({
+    Component: errorComponent,
+    routeOptions: route.options,
     match,
     componentData: {
       code: 404,
       message: 'Not Found'
     }
   })
+
   return {
-    responseString,
+    componentNeeds,
     status: 404
   }
 }
@@ -95,9 +95,10 @@ export default async (path, query, config, headers) => {
     return errorResponse({ config, route, match })
   }
 
-  // otherwise build component tree with API data
-  const responseString = await renderSuccessTree({
-    route,
+  // Render the tree to HTML and gather all necessary 'needs' to build out a HTML page
+  const componentNeeds = await renderTreeToHTML({
+    Component: route.component,
+    routeOptions: route.options,
     match,
     componentData,
     queryParams: query,
@@ -105,7 +106,7 @@ export default async (path, query, config, headers) => {
   })
 
   return {
-    responseString,
+    componentNeeds,
     status: 200
   }
 }
