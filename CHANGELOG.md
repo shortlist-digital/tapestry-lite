@@ -2,14 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+# 7.0.0 (24-07-2020)
+
+- Refactored the Redis cache
+
 # 6.4.3 (20-07-2020)
 
- - rename nonCacheable endpoint to secondaryEndpoint
- - apply redis cache to all backend endpoints
+ - Rename nonCacheable endpoint to secondaryEndpoint
+ - Apply redis cache to all backend endpoints
 
 # 6.4.2 (01-07-2020)
 
- - bugfix for nonCacheable endpoints being called on previews
+ - Bugfix for nonCacheable endpoints being called on previews
  - Create nonCacheable enpoint
 
 # 6.3.1 (09-06-2020)
