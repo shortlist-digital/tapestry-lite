@@ -3,6 +3,25 @@ import parse from 'html-react-parser'
 
 import stringifyEscapeScript from '../utilities/stringify-escape-script'
 
+const stringToProps = htmlString => {
+  if (!htmlString) return {}
+
+  let props = {}
+
+  const splitProps = htmlString.split(' ')
+
+  splitProps.forEach(prop => {
+    const [propName, propValue] = prop.split('=')
+
+    props = {
+      ...props,
+      [propName]: propValue.replace(/(^"|"$)/g, '')
+    }
+  })
+
+  return props
+}
+
 const toDocumentFromObject = ({
   htmlString,
   css,
@@ -13,7 +32,7 @@ const toDocumentFromObject = ({
   helmet
 }) => {
   const {
-    htmlAttributes = [],
+    htmlAttributes = '',
     title = '',
     base = '',
     meta = '',
@@ -21,8 +40,10 @@ const toDocumentFromObject = ({
     script = ''
   } = helmet
 
+  const attrs = stringToProps(htmlAttributes)
+
   return (
-    <html lang="en" {...htmlAttributes}>
+    <html lang="en" {...attrs}>
       <head>
         {title && parse(title)}
         {base && parse(base)}
