@@ -7,7 +7,7 @@
     "tapestry": "./bin/index.js"
   },
   "engines": {
-    "node": "10.18.1"
+    "node": "10.22.0"
   },
   "files": [
     "src/",
