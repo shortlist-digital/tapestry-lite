@@ -8,7 +8,7 @@ module.exports = (target = 'node') => {
   const presetEnvOptions = {
     modules: false, // retain es modules
     useBuiltIns: 'usage', // only polyfill from whats used
-    corejs: { version: 2 }
+    corejs: { version: 3 }
   }
 
   /**
