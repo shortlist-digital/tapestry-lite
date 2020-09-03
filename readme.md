@@ -1,3 +1,5 @@
+# This repository is no longer maintained (as of Sept 2020).
+
 <p align="center">
   <img src="https://cdn.rawgit.com/shortlist-digital/tapestry-wp/master/logo/tapestry-logo-glyph.svg" height="100" >
   <br>
