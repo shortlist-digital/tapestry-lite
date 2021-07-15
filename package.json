@@ -91,7 +91,7 @@
     "path-to-regexp": "^2.4.0",
     "promis": "^1.1.4",
     "ps-tree": "1.2.0",
-    "react-dev-utils": "5.0.2",
+    "react-dev-utils": "11.0.4",
     "react-emotion": "^9.2.8",
     "react-helmet": "^5.2.0",
     "react-hot-loader": "^4.12.18",
